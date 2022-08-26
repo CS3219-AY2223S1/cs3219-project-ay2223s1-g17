@@ -24,23 +24,25 @@ export const createUser = async (username: string, password: string) => {
   if (!username) throw new Error('Username is required');
   if (!password) throw new Error('Password is required');
 
-  const hashedPassword = await bcrypt.hash(
-    password,
-    process.env.SALT_ROUNDS || 10
-  );
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  return new UserModel({ username, hashedPassword });
+  return new UserModel({ username, password: hashedPassword });
 };
 
 /**
  * Attempts to get a user by the specified username
  *
  * @param username User's username
+ * @param includePassword Whether or not to include password in the user info
  */
-export const getUserByUsername = async (username: string) => {
+export const getUserByUsername = async (
+  username: string,
+  includePassword?: boolean
+) => {
   if (!username) throw new Error('Username is required');
 
-  const user = await UserModel.findOne({ username }).select('-password -__v');
+  const projection = `${includePassword ? '' : '-password'} -__v `;
+  const user = await UserModel.findOne({ username }).select(projection);
   if (!user) throw new Error(`User ${username} not found`);
 
   return user;
@@ -70,10 +72,13 @@ export const verifyUserLogin = async (username: string, password: string) => {
   if (!username) throw new Error('Username is required');
   if (!password) throw new Error('Password is required');
 
-  const user = await getUserByUsername(username);
+  const user = await getUserByUsername(username, true);
 
+  console.log(password, user, user.password);
   const isVerified = await bcrypt.compare(password, user.password);
   if (!isVerified) throw new Error('Password is incorrect');
 
-  return user;
+  const userObject = user.toObject();
+  const { password: userPassword, ...userWithoutPassword } = userObject;
+  return userWithoutPassword;
 };

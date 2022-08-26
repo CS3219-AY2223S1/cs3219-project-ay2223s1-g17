@@ -1,8 +1,6 @@
 import { createUser, getUserById, verifyUserLogin } from './repository';
 import jwt from 'jsonwebtoken';
 
-// need to separate orm functions from repository to decouple business logic from persistence
-
 /**
  * Creates a new user with the given credentials
  *
@@ -11,7 +9,7 @@ import jwt from 'jsonwebtoken';
  */
 export const ormCreateUser = async (username: string, password: string) => {
   const newUser = await createUser(username, password);
-  newUser.save();
+  await newUser.save();
 };
 
 /**
@@ -26,7 +24,11 @@ export const ormGetVerifiedUserAndToken = async (
 ) => {
   const verifiedUser = await verifyUserLogin(username, password);
 
-  const token = jwt.sign(verifiedUser._id, process.env.JWT_SECRET ?? '');
+  const token = jwt.sign(
+    verifiedUser._id.toString(),
+    process.env.JWT_SECRET ?? ''
+  );
+
   return { verifiedUser, token };
 };
 
