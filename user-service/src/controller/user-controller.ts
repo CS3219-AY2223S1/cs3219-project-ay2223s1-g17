@@ -74,7 +74,7 @@ export const logOut = async (_: Request, res: Response) => {
 /**
  * Fetches the information of a user given a
  * user id. User id will only exist if authentication
- * middleware successfully detected HttpOnly cookie'
+ * middleware successfully detected HttpOnly cookie
  * embedded in request and decrypted the token in it
  *
  * @param req HTTP request from router
