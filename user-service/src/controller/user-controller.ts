@@ -42,6 +42,7 @@ export const logIn = async (req: Request, res: Response) => {
     );
 
     res
+      .setHeader('authorization', `Bearer ${token}`)
       .cookie('token', token, {
         httpOnly: true,
         sameSite: 'none',

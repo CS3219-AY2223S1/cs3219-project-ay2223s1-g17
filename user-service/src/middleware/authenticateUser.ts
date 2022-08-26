@@ -20,13 +20,18 @@ export const authenticateUser = (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.token;
+    let token = req.cookies.token;
 
-    if (!token)
-      throw new PeerPrepError(
-        HttpStatusCode.UNAUTHENTICATED,
-        'You are not authenticated'
-      );
+    if (!token) {
+      const bearerHeader = req.headers['authorization'];
+      if (!bearerHeader)
+        throw new PeerPrepError(
+          HttpStatusCode.UNAUTHENTICATED,
+          'You are not authenticated'
+        );
+
+      token = bearerHeader.split(' ')[1];
+    }
 
     const userId = jwt.verify(token, process.env.JWT_SECRET ?? '');
     req.body.userId = userId;
