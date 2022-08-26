@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import 'dotenv/config'
 import express, { Express } from 'express'
+import router from './routes'
 
 const app: Express = express()
 const port = process.env.PORT || '8001'
@@ -31,6 +32,9 @@ app.use(
     extended: true,
   })
 )
+
+// routes
+app.use('/', router)
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
