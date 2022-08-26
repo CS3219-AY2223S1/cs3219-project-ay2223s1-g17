@@ -4,6 +4,16 @@ import { HttpStatusCode } from '../utils/HttpsStatusCode';
 import { PeerPrepError } from '../utils/PeerPrepError';
 import jwt from 'jsonwebtoken';
 
+/**
+ * Middleware to authenticate a user.
+ * A user is authenticated if token exists in
+ * HttpOnly cookie embedded in request, which will
+ * only be true if the user is logged in
+ *
+ * @param req HTTP request from router
+ * @param res HTTP response from router
+ * @param next Next function to execute after middleware successfully terminates
+ */
 export const authenticateUser = (
   req: Request,
   res: Response,
