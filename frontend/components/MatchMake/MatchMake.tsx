@@ -1,7 +1,7 @@
 import useSocket from 'components/MatchMake/hooks/useSocket';
 import React from 'react';
 
-export const MatchMake = () => {
+const MatchMake = () => {
   const { isConnected, lastPong, sendPing } = useSocket();
 
   return (
@@ -12,3 +12,5 @@ export const MatchMake = () => {
     </div>
   );
 };
+
+export default MatchMake;

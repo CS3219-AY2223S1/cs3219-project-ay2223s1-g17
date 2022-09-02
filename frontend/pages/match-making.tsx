@@ -1,6 +1,14 @@
-import AuthForm from 'components/AuthForm';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+const DynamicMatchMake = dynamic(
+  () => import('../components/MatchMake/MatchMake'),
+  {
+    suspense: true,
+  }
+);
 
 const MatchPage: NextPage = () => {
   return (
@@ -10,8 +18,9 @@ const MatchPage: NextPage = () => {
         <meta name="PeerPrep" content="Leetcode with friends uwu" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <AuthForm />
+      <Suspense fallback={`Loading...`}>
+        <DynamicMatchMake />
+      </Suspense>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
-const socket = io(process.env.MATCHING_SERVICE_URL || '');
+const socket = io(process.env.NEXT_PUBLIC_MATCHING_SERVICE_URL || '');
 
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
