@@ -2,7 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { activeRooms, mediumWaitRoom, Room } from './match';
+import {
+  activeRooms,
+  getWaitingRooms,
+  mediumWaitRooms,
+  easyWaitRooms,
+  hardWaitRooms,
+} from './match';
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
@@ -23,52 +29,83 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  console.log('New WebSocket connection');
+  console.log('New WebSocket connection\n');
 
-  socket.on('matchingStart', (difficulty) => {
-    let counter = 30;
-
-    const countdown = setInterval(() => {
-      socket.emit('matchCountdown', counter);
-      counter--;
-      if (counter === 0) {
-        socket.emit('matchFail');
-        clearInterval(countdown);
-      }
-    }, 1000);
+  socket.on('matchStart', (difficulty) => {
+    const waitingRooms = getWaitingRooms(difficulty);
+    if (!waitingRooms) {
+      console.log('ERROR: unreachable statement, check frontend code');
+      return;
+    }
 
     // if found a match, join active room
-    if (mediumWaitRoom.length > 0) {
-      // const roomId = uuidv4();
-      const [waitingRoom] = mediumWaitRoom.splice(0, 1);
-      const { id, user1, socket1, countdown1 } = waitingRoom;
+    if (waitingRooms.length > 0) {
+      const [waitingRoom] = waitingRooms.splice(0, 1); // dequeue
+      const { id, user1, socket1, countdown } = waitingRoom;
 
-      clearInterval(countdown1);
+      // clear the countdown timer for waiting client
       clearInterval(countdown);
 
       socket.join(id);
-      waitingRoom.user2 = uuidv4();
       activeRooms.push({
         id,
         user1,
         socket1,
+        user2: uuidv4(),
+        socket2: socket,
       });
 
       // emit success match (find a way to tell the first guy)
       socket.emit('matchSuccess');
       socket1.emit('matchSuccess');
+      console.log({
+        easyWaitRoom: easyWaitRooms,
+        mediumWaitRoom: mediumWaitRooms,
+        hardWaitRoom: hardWaitRooms,
+        activeRooms,
+      });
+      return;
     }
 
-    // if no match, join a waiting room
-    const room = {
-      id: uuidv4(),
+    // if no match, start countdown timer, join a waiting room
+
+    let counter = 4;
+    const id = uuidv4();
+
+    socket.emit('matchCountdown', counter);
+    counter--;
+    const countdown = setInterval(() => {
+      socket.emit('matchCountdown', counter);
+      if (counter === 0) {
+        // clear interval
+        clearInterval(countdown);
+        // remove waiting room if timeout
+        const room = waitingRooms.find((room) => room.id === id);
+        if (!room) {
+          return;
+        }
+        waitingRooms.splice(waitingRooms.indexOf(room), 1);
+        // leave the socket.io room
+        socket.leave(id);
+      }
+      counter--;
+    }, 1000);
+
+    const waitingRoom = {
+      id,
       user1: uuidv4(),
       socket1: socket,
-      countdown1: countdown,
+      countdown,
     };
 
-    socket.join(room.id);
-    mediumWaitRoom.push(room);
+    socket.join(waitingRoom.id);
+    waitingRooms.push(waitingRoom);
+    console.log({
+      easyWaitRoom: easyWaitRooms,
+      mediumWaitRoom: mediumWaitRooms,
+      hardWaitRoom: hardWaitRooms,
+      activeRooms,
+    });
   });
 });
 

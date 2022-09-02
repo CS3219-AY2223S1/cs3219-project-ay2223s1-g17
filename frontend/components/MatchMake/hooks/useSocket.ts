@@ -3,9 +3,16 @@ import io from 'socket.io-client';
 
 const socket = io(process.env.NEXT_PUBLIC_MATCHING_SERVICE_URL || '');
 
+export enum DIFFICULTY {
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
+}
+
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastPong, setLastPong] = useState<string | null>(null);
+  const [isMatching, setIsMatching] = useState(false);
+  const [count, setCount] = useState(null);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -16,25 +23,38 @@ const useSocket = () => {
       setIsConnected(false);
     });
 
-    socket.on('pong', () => {
-      setLastPong(new Date().toISOString());
+    socket.on('matchCountdown', (counter) => {
+      console.log(counter);
+      if (counter === 0) {
+        setCount(null);
+        setIsMatching(false);
+        return;
+      }
+      setCount(counter);
+    });
+
+    socket.on('matchSuccess', () => {
+      alert('match success');
     });
 
     return () => {
       socket.off('connect');
       socket.off('disconnect');
-      socket.off('pong');
+      socket.off('matchSuccess');
+      socket.off('matchCountdown');
     };
   }, []);
 
-  const sendPing = () => {
-    socket.emit('ping');
+  const startMatch = (difficulty: DIFFICULTY) => {
+    socket.emit('matchStart', difficulty);
+    setIsMatching(true);
   };
 
   return {
     isConnected,
-    lastPong,
-    sendPing,
+    startMatch,
+    count,
+    isMatching,
   };
 };
 
