@@ -1,6 +1,4 @@
-import { Box, Button, Card, CardActions, CardMedia, Stack, TextField, Grid, Typography } from '@mui/material';
-import { blueGrey } from '@mui/material/colors';
-import { height } from '@mui/system';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { FormEvent, useState } from 'react';
 
 const AuthForm = () => {
@@ -15,65 +13,73 @@ const AuthForm = () => {
   };
 
   return (
-    <Box height="100vh" alignContent="center">
-      <Card sx={{ maxHeight: 500, maxWidth: 700, borderRadius: '13px'}}>
-        <Grid container
-          spacing={0}
-          alignItems="center"
-          justifyContent="center">
-          <Grid item >
-            <CardMedia
-              component="img"
-              alt="login illustration"
-              image="/assets/login-illustration.png"
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        backgroundImage: 'linear-gradient(to right, #3275c4, #1c2d50)',
+      }}
+    >
+      <Stack
+        sx={{
+          borderRadius: '13px',
+          display: 'flex',
+          bgcolor: 'white',
+          flexDirection: 'row',
+          columnGap: 8,
+          paddingY: 4,
+          paddingX: 8,
+        }}
+      >
+        <img
+          src="/assets/login-illustration.png"
+          alt="auth"
+          style={{ objectFit: 'contain' }}
+        />
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <Typography variant="h6" align="center" color="black">
+              PeerPrep Login
+            </Typography>
+            <TextField
+              name="username"
+              label="Username"
+              value={username}
+              size="small"
+              onChange={(e) => setUsername(e.target.value)}
+              variant="outlined"
             />
-          </Grid>
-          <Grid item >
-            <CardActions>
-              <form onSubmit={handleSubmit}>
-                <Stack spacing={2}>
-                  <Typography variant="h6" align="center">
-                    PeerPrep Login
-                  </Typography>
-                  <TextField
-                    name="username"
-                    label="Username"
-                    value={username}
-                    size="small"
-                    onChange={(e) => setUsername(e.target.value)}
-                    variant="outlined"
-                    sx={{ borderRadius: '12px' }}
-                  />
-                  <TextField
-                    name="password"
-                    label="Password"
-                    type="password"
-                    size="small"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    variant="outlined"
-                    sx={{ borderRadius: '12px' }}
-                  />
-                  <Button type="submit" variant="contained" size="large" style={{backgroundColor: "#8AA0D2"}}>
-                    Login
-                  </Button>
-                  <Button variant="text" size="small" style={{color: "black"}}>
-                    Forgot Username/ Password? 
-                  </Button>
-                  <Box height="1000"/>
+            <TextField
+              name="password"
+              label="Password"
+              type="password"
+              size="small"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              variant="outlined"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              style={{ backgroundColor: '#8AA0D2' }}
+            >
+              Login
+            </Button>
+            <Button variant="text" size="small" style={{ color: 'black' }}>
+              Forgot Username/ Password?
+            </Button>
+            <Box height="1000" />
 
-                  <Button variant="text" size="small" style={{color: "black"}}>
-                    Create your account
-                  </Button>
-
-                </Stack>
-              </form>
-            </CardActions>
-          </Grid>
-        </Grid>
-      </Card>
+            <Button variant="text" size="small" style={{ color: 'black' }}>
+              Create your account
+            </Button>
+          </Stack>
+        </form>
+      </Stack>
     </Box>
-
   );
 };
 
