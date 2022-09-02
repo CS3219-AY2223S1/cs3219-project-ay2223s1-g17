@@ -161,7 +161,7 @@ export enum HttpStatusCode {
    * requested resource. See Basic access authentication and Digest access authentication. 401 semantically means
    * "unauthenticated",i.e. the user does not have the necessary credentials.
    */
-  UNAUTHENTICATED = 401,
+  UNAUTHORIZED = 401,
 
   /**
    * Reserved for future use. The original intention was that this code might be used as part of some form of digital
