@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import User from '../model';
 import { errorHandler, successHandler } from '../utils';
 
-/***
+/**
  * Creates a new user
  *
  * @param req Incoming HTTP request with the user's credentials
@@ -18,7 +18,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-/***
+/**
  * Attempts to login a user and authorizes the user if successful
  *
  * @param req Incoming HTTP request with the user's credentials
@@ -35,7 +35,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-/***
+/**
  * Attempts to log out a user and un-authorizes the user if successful
  *
  * @param req Incoming HTTP request with the user's jwt token
@@ -49,7 +49,7 @@ export const logout = async (_: Request, res: Response) => {
   }
 };
 
-/***
+/**
  * Fetches the data of a user via the user's jwt token
  *
  * @param req Incoming HTTP request with the user's jwt token
@@ -65,7 +65,7 @@ export const refreshUserInfoByToken = async (req: Request, res: Response) => {
   }
 };
 
-/***
+/**
  * Fetches the friends list of a user via the user's jwt token
  *
  * @param req Incoming HTTP request with the user's jwt token
