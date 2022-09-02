@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { errorHandler, HttpStatusCode, PeerPrepError } from '../utils';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 /**
  * Middleware to authenticate a user.
@@ -25,8 +25,8 @@ export const authenticate = (
         'Authentication Required'
       );
 
-    const userId = jwt.verify(token, process.env.JWT_SECRET ?? '');
-    req.body.userId = userId;
+    const user = jwt.verify(token, process.env.JWT_SECRET ?? '');
+    req.body.userId = (user as JwtPayload)._id;
     next();
   } catch (error) {
     errorHandler(res, error);

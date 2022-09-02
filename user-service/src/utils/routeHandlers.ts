@@ -6,7 +6,7 @@ type SuccessfulResponseOptions =
   | { clearToken: boolean; setToken?: never }
   | { setToken: string; clearToken?: never };
 
-/***
+/**
  * Standardized success handler for all routes
  *
  * @param res Incoming HTTP request
@@ -37,7 +37,7 @@ export const successHandler = (
   }
 };
 
-/***
+/**
  * Standardized error handler for all routes
  *
  * @param res Incoming HTTP request

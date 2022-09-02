@@ -107,7 +107,7 @@ userSchema.static(
 
     const query = User.findOne({ username });
     const user = options?.onlySelectId
-      ? await query.select('_id').exec()
+      ? await query.select('-username -friends -__v').exec()
       : await query.exec();
 
     if (!user) throw new Error(`User ${username} not found`);
@@ -140,7 +140,7 @@ userSchema.static(
 
 userSchema.method(
   'generateJwtToken',
-  /***
+  /**
    * Generates a jwt token for a user
    *
    * @returns User's jwt token
@@ -148,10 +148,7 @@ userSchema.method(
   function generateJwtToken() {
     const user: UserDocument = this;
 
-    return jwt.sign(
-      { userId: user._id, timestamp: Date.now() },
-      String(process.env.JWT_SECRET)
-    );
+    return jwt.sign({ _id: user._id }, String(process.env.JWT_SECRET));
   }
 );
 

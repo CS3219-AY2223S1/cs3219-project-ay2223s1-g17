@@ -29,7 +29,7 @@ export const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const verifiedUser = await User.findVerifiedUser(username, password);
     const jwtToken = verifiedUser.generateJwtToken();
-    successHandler(res, { userId: verifiedUser._id }, { setToken: jwtToken });
+    successHandler(res, verifiedUser, { setToken: jwtToken });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -58,8 +58,8 @@ export const logout = async (_: Request, res: Response) => {
 export const refreshUserInfoByToken = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
-    await User.findUserById(userId);
-    successHandler(res, userId);
+    const { _id } = await User.findUserById(userId, { onlySelectId: true });
+    successHandler(res, { _id });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -74,10 +74,10 @@ export const refreshUserInfoByToken = async (req: Request, res: Response) => {
 export const fetchFriendsListByToken = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
-    const friendsList = await User.findUserById(userId, {
+    const { friends } = await User.findUserById(userId, {
       onlySelectFriends: true,
     });
-    successHandler(res, friendsList);
+    successHandler(res, friends);
   } catch (error) {
     errorHandler(res, error);
   }
