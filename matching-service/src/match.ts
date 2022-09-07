@@ -28,14 +28,12 @@ export const getWaitingRooms = (difficulty: DIFFICULTY) => {
 export interface Room {
   id: string;
   user1: string;
-  socket1: Socket;
   user2: string;
-  socket2: Socket;
 }
 
 export interface WaitRoom {
   id: string;
-  user1: string;
-  socket1: Socket;
+  waitingUserId: string;
+  waitingSocketId: string;
   countdown: NodeJS.Timer;
 }
