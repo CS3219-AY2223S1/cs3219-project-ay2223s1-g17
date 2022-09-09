@@ -9,3 +9,9 @@ export enum HTTP_METHOD {
 	PUT = "PUT",
 	DELETE = "DELETE",
 }
+
+export enum Difficulty {
+	EASY = "easy",
+	MEDIUM = "medium",
+	HARD = "hard"
+}
