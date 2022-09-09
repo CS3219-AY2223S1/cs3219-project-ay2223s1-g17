@@ -19,14 +19,11 @@ export const apiCall = async ({
   body,
   onSucces,
 }: ApiCallOptions) => {
-  const apiUrl = SERVICE.USER
-    ? String(process.env.USER_SERVICE_API_URL)
-    : SERVICE.MATCHING
-    ? String(process.env.MATCHING_SERVICE_API_URL)
-    : '';
-  console.log('test: ', process.env[`${service}_API_URL`]);
+  const apiUrl = `${
+    process.env[`NEXT_PUBLIC_${service}_SERVICE_API_URL`]
+  }/${path}`;
 
-  const res = await fetch(`${apiUrl}/${path}`, {
+  const res = await fetch(apiUrl, {
     method: method,
     credentials: requiresCredentials ? 'include' : undefined,
     body: body,
