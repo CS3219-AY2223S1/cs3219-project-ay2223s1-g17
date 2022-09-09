@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  client:
+    depends_on:
+      - user-service
+    container_name: frontend
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app/client
+      - /app/frontend/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_ENV_USER_SERVICE_API_URL: http://localhost:8001/api
+    networks:
+      - cs3219-project-network
+
+  user:
+    container_name: user-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./user-service
+    volumes:
+      - ./user-service:/app/server/user
+      - /app/server/user/node_modules
+    ports:
+      - "8001:8001"
+    environment:
+      JWT_SECRET: "jwt-secret"
+      DB_LOCAL_URI: mongodb://mongo_db:27017/cs3219-bce
+    networks:
+      - cs3219-project-network
+
+  mongo:
+    container_name: mongo_db
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      - cs3219-project-network
+
+networks:
+  cs3219-project-network:
+    driver: bridge
+
+volumes:
+  mongo_db: {}
