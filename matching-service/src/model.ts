@@ -6,7 +6,7 @@ const WaitRoomModel = sequelize.define('WaitRoom', {
     type: DataTypes.STRING,
     primaryKey: true,
   },
-  waitingUserId: {
+  waitingSocketId: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -18,16 +18,15 @@ const WaitRoomModel = sequelize.define('WaitRoom', {
   },
 });
 
-export enum DIFFICULTY {
-  EASY = 'EASY',
-  MEDIUM = 'MEDIUM',
-  HARD = 'HARD',
-}
-
 interface WaitRoom {
   id: string;
-  waitingUserId: string;
+  waitingSocketId: string;
   difficulty: DIFFICULTY;
+}
+interface Room {
+  id: string;
+  user1_id: string;
+  user2_id: string;
 }
 
 const RoomModel = sequelize.define('Room', {
@@ -46,14 +45,25 @@ const RoomModel = sequelize.define('Room', {
 });
 
 const UserModel = sequelize.define('User', {
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-  },
   socketId: {
     type: DataTypes.STRING,
+    primaryKey: true,
+    allowNull: false,
+  },
+  isMatched: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
   },
 });
 
-export { RoomModel, UserModel, WaitRoomModel, WaitRoom };
+interface User {
+  socketId: string;
+  isMatched: boolean;
+}
+
+export enum DIFFICULTY {
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
+}
+export { RoomModel, UserModel, WaitRoomModel, WaitRoom, User, Room };

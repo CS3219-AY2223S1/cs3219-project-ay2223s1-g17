@@ -1,18 +1,19 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
-import {
-  activeRooms,
-  getWaitingRooms,
-  mediumWaitRooms,
-  easyWaitRooms,
-  hardWaitRooms,
-} from './match';
+import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import './db';
-import { UserModel, WaitRoomModel, WaitRoom, RoomModel } from './model';
+import {
+  UserModel,
+  WaitRoomModel,
+  WaitRoom,
+  RoomModel,
+  User,
+  Room,
+} from './model';
 import { timers } from './timers';
+import { Op } from 'sequelize';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -31,86 +32,68 @@ const io = new Server(httpServer, {
   },
 });
 
-io.on('connection', (socket) => {
-  console.log('New WebSocket connection\n');
+let i = 0;
+io.on('connection', async (socket) => {
+  const { count: numRooms } = await WaitRoomModel.findAndCountAll({});
+  const { count: numUsers } = await UserModel.findAndCountAll({});
+  console.log({ numRooms, numUsers });
+
+  console.log('New WebSocket connection\n', i++);
+  await UserModel.create({ socketId: socket.id, isMatched: false });
 
   socket.on('matchStart', async (difficulty) => {
     const waitRooms = (await WaitRoomModel.findAll({
       where: {
         difficulty,
       },
+      // can be removed as there will only ever be one waitRoom for every difficulty
       order: [['createdAt', 'ASC']],
       limit: 1,
     })) as unknown as WaitRoom[];
 
     if (waitRooms.length) {
-      const { id: waitRoomId, waitingUserId } = waitRooms[0];
+      const { id: waitRoomId, waitingSocketId } = waitRooms[0];
 
-      // delete from waitRoom
+      clearInterval(timers[waitRoomId]);
+
+      // delete waitRoom
       await WaitRoomModel.destroy({
         where: {
           id: waitRoomId,
         },
       });
-      // add new room (waiting room id will be used as room's id)
+
+      // add new room
       await RoomModel.create({
         id: waitRoomId,
-        user1_id: waitingUserId,
-        user2_id: uuidv4(),
+        user1_id: waitingSocketId,
+        user2_id: socket.id,
       });
 
+      // update users isMatched attribute
+      await UserModel.update(
+        { isMatched: true },
+        {
+          where: {
+            socketId: {
+              [Op.or]: [waitingSocketId, socket.id],
+            },
+          },
+        }
+      );
+
       // clear countdown interval
-      clearInterval(timers[waitRoomId]);
 
       // second user will join the wait room to form a full room
       socket.join(waitRoomId);
 
-      // emit emit success
-      const user1 = (await UserModel.findByPk(
-        waitingUserId
-      )) as unknown as User;
-      console.log({ user1: JSON.stringify(user1) });
-
-      return;
-    }
-    const waitingRooms = getWaitingRooms(difficulty);
-    if (!waitingRooms) {
-      console.log('ERROR: unreachable statement, check frontend code');
+      socket.to(waitingSocketId).emit('matchSuccess');
+      socket.emit('matchSuccess');
       return;
     }
 
-    // if found a match, join active room
-    // if (waitingRooms.length > 0) {
-    //   const [waitingRoom] = waitingRooms.splice(0, 1); // dequeue
-    //   const { id, waitingUserId, waitingSocketId, countdown } = waitingRoom;
-
-    //   // clear the countdown timer for waiting client
-    //   clearInterval(countdown);
-
-    //   socket.join(id);
-    //   activeRooms.push({
-    //     id,
-    //     user1: waitingUserId,
-    //     user2: uuidv4(),
-    //   });
-
-    //   // emit success match (find a way to tell the first guy)
-    //   socket.emit('matchSuccess');
-    //   socket.to(waitingSocketId).emit('matchSuccess');
-    //   console.log({
-    //     easyWaitRoom: easyWaitRooms,
-    //     mediumWaitRoom: mediumWaitRooms,
-    //     hardWaitRoom: hardWaitRooms,
-    //     activeRooms,
-    //   });
-    //   return;
-    // }
-
-    // if no match, start countdown timer, join a waiting room
-
-    let counter = 4;
+    let counter = 30;
     const waitRoomId = uuidv4();
-    const userId = uuidv4();
 
     socket.emit('matchCountdown', counter);
     counter--;
@@ -123,7 +106,7 @@ io.on('connection', (socket) => {
         // remove waiting room and user if timeout
         await UserModel.destroy({
           where: {
-            id: userId,
+            socketId: socket.id,
           },
         });
         await WaitRoomModel.destroy({
@@ -139,11 +122,50 @@ io.on('connection', (socket) => {
 
     timers[waitRoomId] = countdown;
     socket.join(waitRoomId);
-    await UserModel.create({ id: userId, socketId: socket.id });
     await WaitRoomModel.create({
       id: waitRoomId,
-      waitingUserId: userId,
+      waitingSocketId: socket.id,
       difficulty,
+    });
+  });
+
+  socket.on('disconnect', async () => {
+    const { socketId: disconnectingUserId, isMatched } =
+      (await UserModel.findByPk(socket.id)) as unknown as User;
+    console.log({
+      disconnectingUserId,
+      isMatched,
+    });
+    if (isMatched) {
+      // if user is in a matched room,  notify 2nd user, destroy matched room,
+      const { id: roomId } = (await RoomModel.findOne({
+        where: {
+          [Op.or]: [
+            { user1_id: disconnectingUserId },
+            { user2_id: disconnectingUserId },
+          ],
+        },
+      })) as unknown as Room;
+
+      socket.broadcast.to(roomId).emit('matchLeave');
+      await RoomModel.destroy({
+        where: {
+          id: roomId,
+        },
+      });
+    } else {
+      // if user is not matched yet, destroy wait room
+      await WaitRoomModel.destroy({
+        where: {
+          waitingSocketId: disconnectingUserId,
+        },
+      });
+    }
+
+    await UserModel.destroy({
+      where: {
+        socketId: disconnectingUserId,
+      },
     });
   });
 });

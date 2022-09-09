@@ -1,3 +1,4 @@
+import { SocketAddress } from 'net';
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
@@ -36,12 +37,16 @@ const useSocket = () => {
     socket.on('matchSuccess', () => {
       alert('match success');
     });
+    socket.on('matchLeave', () => {
+      alert('the other user has left the room');
+    });
 
     return () => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('matchSuccess');
       socket.off('matchCountdown');
+      socket.off('matchLeave');
     };
   }, []);
 
