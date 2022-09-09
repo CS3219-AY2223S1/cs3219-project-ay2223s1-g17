@@ -13,13 +13,14 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
 import { HTTP_METHOD, SERVICE } from 'util/enums';
 import { apiCall } from 'util/helpers';
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -86,7 +87,7 @@ const AuthForm = () => {
               fontWeight="bold"
               sx={{ marginBottom: 2 }}
             >
-              PeerPrep {isLogin ? 'Login' : 'Signup'}
+              PeerPrep {isLogin ? 'Login' : 'Sign Up'}
             </Typography>
             <TextField
               name="username"
@@ -103,33 +104,24 @@ const AuthForm = () => {
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
             />
-            <TextField
-              name="password"
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              size="small"
+            <PasswordInput
+              showPassword={showPassword}
+              handleSwitchVisibility={handleSwitchVisibility}
               value={password}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleSwitchVisibility}>
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) => setPassword(e.target.value)}
-              variant="outlined"
+              label="Password"
+              handleChange={setPassword}
             />
+            {isLogin ? (
+              <></>
+            ) : (
+              <PasswordInput
+                showPassword={showPassword}
+                handleSwitchVisibility={handleSwitchVisibility}
+                value={confirmPassword}
+                label="Confirm Password"
+                handleChange={setConfirmPassword}
+              />
+            )}
             <Button
               type="submit"
               variant="contained"
@@ -159,7 +151,7 @@ const AuthForm = () => {
               }}
               onClick={handleSwitchMode}
             >
-              {isLogin ? 'Create your account' : 'Log In'}
+              {isLogin ? 'Create account' : 'Sign in instead'}
             </Button>
           </Stack>
         </form>
@@ -167,5 +159,45 @@ const AuthForm = () => {
     </Box>
   );
 };
+
+type Props = {
+  showPassword: boolean;
+  handleSwitchVisibility: () => void;
+  value: string;
+  label: string;
+  handleChange: Dispatch<SetStateAction<string>>;
+};
+
+const PasswordInput: FC<Props> = ({
+  showPassword,
+  handleSwitchVisibility,
+  value,
+  label,
+  handleChange,
+}) => (
+  <TextField
+    name="password"
+    label={label}
+    type={showPassword ? 'text' : 'password'}
+    size="small"
+    value={value}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <LockIcon />
+        </InputAdornment>
+      ),
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton onClick={handleSwitchVisibility}>
+            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          </IconButton>
+        </InputAdornment>
+      ),
+    }}
+    onChange={(e) => handleChange(e.target.value)}
+    variant="outlined"
+  />
+);
 
 export default AuthForm;
