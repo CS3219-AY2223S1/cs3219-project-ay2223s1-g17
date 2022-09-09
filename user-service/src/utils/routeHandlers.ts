@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { HttpStatusCode } from './httpStatusCode';
-import { PeerPrepError } from './peerPrepError';
+import HttpStatusCode from './httpStatusCode';
+import PeerPrepError from './peerPrepError';
 
 type SuccessfulResponseOptions =
   | { clearToken: boolean; setToken?: never }

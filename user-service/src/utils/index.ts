@@ -1,3 +1,3 @@
 export * from './routeHandlers';
-export * from './httpStatusCode';
-export * from './peerPrepError';
+export { default as HttpStatusCode } from './httpStatusCode';
+export { default as PeerPrepError } from './peerPrepError';
