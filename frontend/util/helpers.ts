@@ -1,12 +1,12 @@
-import { HTTP_METHOD, Service } from './enums';
+import { HTTP_METHOD, SERVICE } from './enums';
 
 type ApiCallOptions = {
   path: string;
-  service: Service;
+  service: SERVICE;
   method: HTTP_METHOD;
   requiresCredentials?: boolean;
   body?: any;
-  onSucces: () => void;
+  onSucces?: () => void;
 };
 
 export const apiCall = async ({
@@ -20,17 +20,17 @@ export const apiCall = async ({
   let apiUrl = '';
 
   switch (service) {
-    case 'USER':
-      apiUrl = `${process.env.USER_SERVICE_API_URL}/${path}`;
+    case SERVICE.USER:
+      apiUrl = String(process.env.USER_SERVICE_API_URL);
       break;
-    case 'MATCHING':
-      apiUrl = `${process.env.MATCHING_SERVICE_API_URL}/${path}`;
+    case SERVICE.MATCHING:
+      apiUrl = String(process.env.MATCHING_SERVICE_API_URL);
       break;
     default:
       break;
   }
 
-  const res = await fetch(apiUrl, {
+  const res = await fetch(`${apiUrl}/${path}`, {
     method: method,
     credentials: requiresCredentials ? 'include' : undefined,
     body: body,
