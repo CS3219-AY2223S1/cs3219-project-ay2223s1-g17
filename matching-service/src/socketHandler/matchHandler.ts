@@ -128,7 +128,7 @@ const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
         },
       }
     );
-    let user2Socket = io.of('/').sockets.get(otherUserId);
+    const user2Socket = io.of('/').sockets.get(otherUserId);
     socket.broadcast.to(roomId).emit('matchLeave');
     user2Socket?.leave(roomId);
 
