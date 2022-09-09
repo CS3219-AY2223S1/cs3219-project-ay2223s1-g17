@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import './db';
 import {
@@ -33,11 +33,15 @@ const io = new Server(httpServer, {
 });
 
 let i = 0;
-io.on('connection', async (socket) => {
-  const { count: numRooms } = await WaitRoomModel.findAndCountAll({});
-  const { count: numUsers } = await UserModel.findAndCountAll({});
-  console.log({ numRooms, numUsers });
 
+setInterval(async () => {
+  const { count: numRooms } = await RoomModel.findAndCountAll({});
+  const { count: numWaitRooms } = await WaitRoomModel.findAndCountAll({});
+  const { count: numUsers } = await UserModel.findAndCountAll({});
+  console.log({ numRooms, numUsers, numWaitRooms });
+}, 2000);
+
+io.on('connection', async (socket) => {
   console.log('New WebSocket connection\n', i++);
   await UserModel.create({ socketId: socket.id, isMatched: false });
 
@@ -92,7 +96,7 @@ io.on('connection', async (socket) => {
       return;
     }
 
-    let counter = 30;
+    let counter = 3;
     const waitRoomId = uuidv4();
 
     socket.emit('matchCountdown', counter);
@@ -104,11 +108,6 @@ io.on('connection', async (socket) => {
         clearInterval(timers[waitRoomId]);
 
         // remove waiting room and user if timeout
-        await UserModel.destroy({
-          where: {
-            socketId: socket.id,
-          },
-        });
         await WaitRoomModel.destroy({
           where: {
             id: waitRoomId,
@@ -132,13 +131,14 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', async () => {
     const { socketId: disconnectingUserId, isMatched } =
       (await UserModel.findByPk(socket.id)) as unknown as User;
-    console.log({
-      disconnectingUserId,
-      isMatched,
-    });
+
     if (isMatched) {
-      // if user is in a matched room,  notify 2nd user, destroy matched room,
-      const { id: roomId } = (await RoomModel.findOne({
+      // if user is in a matched room,
+      const {
+        id: roomId,
+        user1_id,
+        user2_id,
+      } = (await RoomModel.findOne({
         where: {
           [Op.or]: [
             { user1_id: disconnectingUserId },
@@ -147,7 +147,22 @@ io.on('connection', async (socket) => {
         },
       })) as unknown as Room;
 
+      const otherUserId = user1_id === socket.id ? user2_id : user1_id;
+
+      // notify 2nd user, change isMatched status, leave socket room
+      await UserModel.update(
+        { isMatched: false },
+        {
+          where: {
+            socketId: otherUserId,
+          },
+        }
+      );
+      let user2Socket = io.of('/').sockets.get(otherUserId);
       socket.broadcast.to(roomId).emit('matchLeave');
+      user2Socket?.leave(roomId);
+
+      // delete matched room,
       await RoomModel.destroy({
         where: {
           id: roomId,
