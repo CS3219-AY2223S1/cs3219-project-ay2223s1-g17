@@ -3,8 +3,9 @@ FROM node:alpine
 WORKDIR /app/server/user
 
 COPY package.json ./
+COPY yarn.lock ./
 
-RUN yarn
+RUN yarn install
 
 COPY ./ ./
 
