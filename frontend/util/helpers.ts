@@ -9,6 +9,8 @@ type ApiCallOptions = {
   onSucces?: () => void;
 };
 
+// TODO: toast for errors
+
 export const apiCall = async ({
   path,
   service,
@@ -17,18 +19,12 @@ export const apiCall = async ({
   body,
   onSucces,
 }: ApiCallOptions) => {
-  let apiUrl = '';
-
-  switch (service) {
-    case SERVICE.USER:
-      apiUrl = String(process.env.USER_SERVICE_API_URL);
-      break;
-    case SERVICE.MATCHING:
-      apiUrl = String(process.env.MATCHING_SERVICE_API_URL);
-      break;
-    default:
-      break;
-  }
+  const apiUrl = SERVICE.USER
+    ? String(process.env.USER_SERVICE_API_URL)
+    : SERVICE.MATCHING
+    ? String(process.env.MATCHING_SERVICE_API_URL)
+    : '';
+  console.log('test: ', process.env[`${service}_API_URL`]);
 
   const res = await fetch(`${apiUrl}/${path}`, {
     method: method,
