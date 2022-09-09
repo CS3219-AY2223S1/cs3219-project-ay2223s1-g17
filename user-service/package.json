@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/src/app.js",
     "dev:test": "export NODE_ENV=test || set NODE_ENV=test&&nodemon src/app.ts",
-    "dev": "nodemon src/app.ts",
+    "dev": "nodemon -L src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

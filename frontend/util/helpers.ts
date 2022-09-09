@@ -1,14 +1,20 @@
-import { HTTP_METHOD, Service } from './enums';
+import { HTTP_METHOD, SERVICE } from './enums';
 
 type ApiCallOptions = {
   path: string;
-  service: Service;
+  service: SERVICE;
   method: HTTP_METHOD;
   requiresCredentials?: boolean;
   body?: any;
-  onSucces: () => void;
+  onSucces?: () => void;
 };
 
+const servicePortMap: Record<SERVICE, Number> = {
+  USER: Number(process.env.NEXT_PUBLIC_USER_SERVICE_PORT),
+  MATCHING: Number(process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT),
+};
+
+// TODO: toast for errors
 export const apiCall = async ({
   path,
   service,
@@ -17,28 +23,19 @@ export const apiCall = async ({
   body,
   onSucces,
 }: ApiCallOptions) => {
-  let apiUrl = '';
+  const apiUrl = `http://localhost:${servicePortMap[service]}${path}`;
 
-  switch (service) {
-    case 'USER':
-      apiUrl = `${process.env.USER_SERVICE_API_URL}/${path}`;
-      break;
-    case 'MATCHING':
-      apiUrl = `${process.env.MATCHING_SERVICE_API_URL}/${path}`;
-      break;
-    default:
-      break;
+  try {
+    const res = await fetch(apiUrl, {
+      method,
+      credentials: requiresCredentials ? 'include' : undefined,
+      headers: {
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+    return onSucces ? onSucces() : res.json();
+  } catch (error) {
+    console.error(error);
   }
-
-  const res = await fetch(apiUrl, {
-    method: method,
-    credentials: requiresCredentials ? 'include' : undefined,
-    body: body,
-    headers: {
-      ...(body ? { 'Content-Type': 'application/json' } : {}),
-    },
-  });
-
-  if (onSucces) onSucces();
-  return res.json();
 };

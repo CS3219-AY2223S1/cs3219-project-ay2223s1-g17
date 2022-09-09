@@ -1,11 +1,11 @@
-import { HttpStatusCode } from './httpStatusCode';
+import HttpStatusCode from './httpStatusCode';
 
 /**
  * Class representing server errors in PeerPrep application
  *
  * @extends Error
  */
-export class PeerPrepError extends Error {
+class PeerPrepError extends Error {
   statusCode: HttpStatusCode;
   message: string;
 
@@ -22,3 +22,5 @@ export class PeerPrepError extends Error {
     Object.setPrototypeOf(this, PeerPrepError.prototype);
   }
 }
+
+export default PeerPrepError;

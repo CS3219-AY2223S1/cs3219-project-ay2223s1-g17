@@ -58,7 +58,9 @@ export const logout = async (_: Request, res: Response) => {
 export const refreshUserInfoByToken = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
-    const { _id } = await User.findUserById(userId, { onlySelectId: true });
+    const { _id } = await User.findUserById(userId, {
+      onlySelectIdentifiers: true,
+    });
     successHandler(res, { _id });
   } catch (error) {
     errorHandler(res, error);
