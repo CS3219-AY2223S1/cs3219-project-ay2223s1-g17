@@ -12,5 +12,9 @@ const checkConnection = async () => {
 };
 
 checkConnection();
+(async () => {
+  await sequelize.sync({ force: true });
+  // Code here
+})();
 
 export { sequelize };

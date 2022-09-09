@@ -11,7 +11,7 @@ import {
 } from './match';
 import { v4 as uuidv4 } from 'uuid';
 import './db';
-import { UserModel, WaitRoomModel } from './model';
+import { UserModel, WaitRoomModel, WaitRoom, RoomModel } from './model';
 import { timers } from './timers';
 
 const app = express();
@@ -35,6 +35,44 @@ io.on('connection', (socket) => {
   console.log('New WebSocket connection\n');
 
   socket.on('matchStart', async (difficulty) => {
+    const waitRooms = (await WaitRoomModel.findAll({
+      where: {
+        difficulty,
+      },
+      order: [['createdAt', 'ASC']],
+      limit: 1,
+    })) as unknown as WaitRoom[];
+
+    if (waitRooms.length) {
+      const { id: waitRoomId, waitingUserId } = waitRooms[0];
+
+      // delete from waitRoom
+      await WaitRoomModel.destroy({
+        where: {
+          id: waitRoomId,
+        },
+      });
+      // add new room (waiting room id will be used as room's id)
+      await RoomModel.create({
+        id: waitRoomId,
+        user1_id: waitingUserId,
+        user2_id: uuidv4(),
+      });
+
+      // clear countdown interval
+      clearInterval(timers[waitRoomId]);
+
+      // second user will join the wait room to form a full room
+      socket.join(waitRoomId);
+
+      // emit emit success
+      const user1 = (await UserModel.findByPk(
+        waitingUserId
+      )) as unknown as User;
+      console.log({ user1: JSON.stringify(user1) });
+
+      return;
+    }
     const waitingRooms = getWaitingRooms(difficulty);
     if (!waitingRooms) {
       console.log('ERROR: unreachable statement, check frontend code');
@@ -73,42 +111,40 @@ io.on('connection', (socket) => {
     let counter = 4;
     const waitRoomId = uuidv4();
     const userId = uuidv4();
-    const timerId = uuidv4();
 
     socket.emit('matchCountdown', counter);
     counter--;
-    const countdown = setInterval(() => {
+    const countdown = setInterval(async () => {
       socket.emit('matchCountdown', counter);
       if (counter === 0) {
         // clear interval
-        clearInterval(timers[timerId]);
-        // remove waiting room if timeout
-        const room = waitingRooms.find((room) => room.id === waitRoomId);
-        if (!room) {
-          return;
-        }
-        waitingRooms.splice(waitingRooms.indexOf(room), 1);
+        clearInterval(timers[waitRoomId]);
+
+        // remove waiting room and user if timeout
+        await UserModel.destroy({
+          where: {
+            id: userId,
+          },
+        });
+        await WaitRoomModel.destroy({
+          where: {
+            id: waitRoomId,
+          },
+        });
         // leave the socket.io room
         socket.leave(waitRoomId);
       }
       counter--;
     }, 1000);
 
-    timers[timerId] = countdown;
+    timers[waitRoomId] = countdown;
     socket.join(waitRoomId);
-    await UserModel.build({ id: userId, socketId: socket.id }).save();
-    await WaitRoomModel.build({
+    await UserModel.create({ id: userId, socketId: socket.id });
+    await WaitRoomModel.create({
       id: waitRoomId,
       waitingUserId: userId,
-      timerId,
-    }).save();
-
-    // console.log({
-    //   easyWaitRoom: easyWaitRooms,
-    //   mediumWaitRoom: mediumWaitRooms,
-    //   hardWaitRoom: hardWaitRooms,
-    //   activeRooms,
-    // });
+      difficulty,
+    });
   });
 });
 

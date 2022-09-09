@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize/types';
+import { DataTypes } from 'sequelize';
 import { sequelize } from './db';
 
 const WaitRoomModel = sequelize.define('WaitRoom', {
@@ -10,11 +10,25 @@ const WaitRoomModel = sequelize.define('WaitRoom', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  timerId: {
-    type: DataTypes.STRING,
+  difficulty: {
+    type: DataTypes.ENUM({
+      values: ['HARD', 'MEDIUM', 'EASY'],
+    }),
     allowNull: false,
   },
 });
+
+export enum DIFFICULTY {
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
+}
+
+interface WaitRoom {
+  id: string;
+  waitingUserId: string;
+  difficulty: DIFFICULTY;
+}
 
 const RoomModel = sequelize.define('Room', {
   id: {
@@ -42,4 +56,4 @@ const UserModel = sequelize.define('User', {
   },
 });
 
-export { RoomModel, UserModel, WaitRoomModel };
+export { RoomModel, UserModel, WaitRoomModel, WaitRoom };
