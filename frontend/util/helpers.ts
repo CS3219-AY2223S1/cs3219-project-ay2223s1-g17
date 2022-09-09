@@ -9,8 +9,12 @@ type ApiCallOptions = {
   onSucces?: () => void;
 };
 
-// TODO: toast for errors
+const servicePortMap: Record<SERVICE, Number> = {
+  USER: Number(process.env.NEXT_PUBLIC_USER_SERVICE_PORT),
+  MATCHING: Number(process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT),
+};
 
+// TODO: toast for errors
 export const apiCall = async ({
   path,
   service,
@@ -19,19 +23,19 @@ export const apiCall = async ({
   body,
   onSucces,
 }: ApiCallOptions) => {
-  const apiUrl = `${
-    process.env[`NEXT_PUBLIC_${service}_SERVICE_API_URL`]
-  }/${path}`;
+  const apiUrl = `http://localhost:${servicePortMap[service]}${path}`;
 
-  const res = await fetch(apiUrl, {
-    method: method,
-    credentials: requiresCredentials ? 'include' : undefined,
-    body: body,
-    headers: {
-      ...(body ? { 'Content-Type': 'application/json' } : {}),
-    },
-  });
-
-  if (onSucces) onSucces();
-  return res.json();
+  try {
+    const res = await fetch(apiUrl, {
+      method,
+      credentials: requiresCredentials ? 'include' : undefined,
+      headers: {
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+    return onSucces ? onSucces() : res.json();
+  } catch (error) {
+    console.error(error);
+  }
 };
