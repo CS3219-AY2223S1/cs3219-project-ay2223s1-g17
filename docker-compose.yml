@@ -13,7 +13,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_ENV_USER_SERVICE_API_URL: http://localhost:8001/api
+      NEXT_PUBLIC_USER_SERVICE_API_URL: localhost:8001/api
     networks:
       - cs3219-project-network
 
