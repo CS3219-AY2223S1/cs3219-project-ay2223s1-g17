@@ -85,7 +85,7 @@ userSchema.static(
     const isVerified = await bcrypt.compare(password, user.password);
     if (!isVerified) throw new Error('Password is incorrect');
 
-    return User.findUserByUsername(username, { onlySelectId: true });
+    return User.findUserByUsername(username, { onlySelectIdentifiers: true });
   }
 );
 
@@ -106,8 +106,8 @@ userSchema.static(
     if (!username) throw new Error('Username is required');
 
     const query = User.findOne({ username });
-    const user = options?.onlySelectId
-      ? await query.select('-username -friends -__v').exec()
+    const user = options?.onlySelectIdentifiers
+      ? await query.select('-friends -__v').exec()
       : await query.exec();
 
     if (!user) throw new Error(`User ${username} not found`);

@@ -16,7 +16,7 @@ export interface IUserMethods {
 }
 
 export type UserQueryOptions = {
-  onlySelectId?: boolean;
+  onlySelectIdentifiers?: boolean;
   onlySelectFriends?: boolean;
 };
 
