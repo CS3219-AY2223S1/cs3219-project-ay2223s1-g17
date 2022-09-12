@@ -7,7 +7,7 @@ import {
   register,
 } from '../controller';
 import { authenticate } from '../middleware';
-import { HttpStatusCode } from '../utils';
+import { HttpStatusCode } from '../../../utils';
 
 const router = Router();
 
