@@ -1,11 +1,11 @@
 import { Box, Button, Stack, Typography } from '@mui/material/';
 import { useState } from 'react';
-import { Difficulty } from 'util/enums';
+import { DIFFICULTY } from 'util/enums';
 
 const DifficultySelect = () => {
   const [difficulty, setDifficulty] = useState('');
 
-  const handleChangeDifficulty = (difficulty: Difficulty) => {
+  const handleChangeDifficulty = (difficulty: DIFFICULTY) => {
     setDifficulty(difficulty);
   };
 
@@ -28,15 +28,20 @@ const DifficultySelect = () => {
           columnGap: 8,
           paddingY: 4,
           paddingX: 8,
-        }}>
-
-
-        <Stack spacing={2}
+        }}
+      >
+        <Stack
+          spacing={2}
           sx={{
             width: '40vh',
-          }}>
-            
-          <Typography variant="h5" align="center" color="black" fontWeight="bold">
+          }}
+        >
+          <Typography
+            variant="h5"
+            align="center"
+            color="black"
+            fontWeight="bold"
+          >
             Select Difficulty
           </Typography>
 
@@ -44,33 +49,49 @@ const DifficultySelect = () => {
             type="submit"
             variant="contained"
             size="large"
-            style={{ backgroundColor: '#93DB9A', fontSize: '20px', fontWeight: 'bold', textTransform: 'none' }}
-            onClick={() => handleChangeDifficulty(Difficulty.EASY)}>
-            Easy
+            style={{
+              backgroundColor: '#93DB9A',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              textTransform: 'none',
+            }}
+            onClick={() => handleChangeDifficulty(DIFFICULTY.EASY)}
+          >
+            {DIFFICULTY.EASY}
           </Button>
 
           <Button
             type="submit"
             variant="contained"
             size="large"
-            style={{ backgroundColor: '#F8B06E', fontSize: '20px', fontWeight: 'bold', textTransform: 'none' }}
-            onClick={() => handleChangeDifficulty(Difficulty.MEDIUM)}>
-            Medium
-
+            style={{
+              backgroundColor: '#F8B06E',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              textTransform: 'none',
+            }}
+            onClick={() => handleChangeDifficulty(DIFFICULTY.MEDIUM)}
+          >
+            {DIFFICULTY.MEDIUM}
           </Button>
 
           <Button
             type="submit"
             variant="contained"
             size="large"
-            style={{ backgroundColor: '#ED8D8D', fontSize: '20px', fontWeight: 'bold', textTransform: 'none' }}
-            onClick={() => handleChangeDifficulty(Difficulty.HARD)}>
-            Hard
+            style={{
+              backgroundColor: '#ED8D8D',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              textTransform: 'none',
+            }}
+            onClick={() => handleChangeDifficulty(DIFFICULTY.HARD)}
+          >
+            {DIFFICULTY.HARD}
           </Button>
         </Stack>
       </Stack>
     </Box>
-
   );
 };
 

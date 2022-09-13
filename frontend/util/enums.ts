@@ -10,8 +10,8 @@ export enum HTTP_METHOD {
   DELETE = 'DELETE',
 }
 
-export enum Difficulty {
-	EASY = "easy",
-	MEDIUM = "medium",
-	HARD = "hard"
+export enum DIFFICULTY {
+	EASY = "EASY",
+	MEDIUM = "MEDIUM",
+	HARD = "HARD"
 }
