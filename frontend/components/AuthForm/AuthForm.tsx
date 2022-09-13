@@ -6,7 +6,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Button,
-  Container,
   IconButton,
   InputAdornment,
   Stack,
@@ -15,8 +14,9 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
+import { toast } from 'react-toastify';
 import { HTTP_METHOD, SERVICE } from 'utils/enums';
-import { apiCall } from 'utils/helpers';
+import { apiCall, handleErrorWithToast } from 'utils/helpers';
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
@@ -29,9 +29,8 @@ const AuthForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: error handling with toast
-    if (password !== confirmPassword)
-      return console.error('Passwords do not match!');
+    if (!isLogin && password !== confirmPassword)
+      handleErrorWithToast('Passwords do not match');
 
     await apiCall({
       method: HTTP_METHOD.POST,
@@ -39,22 +38,32 @@ const AuthForm = () => {
       body: { username, password },
       requiresCredentials: isLogin,
       path: isLogin ? '/login' : '/register',
+      onSuccess,
     });
-
-    setPassword('');
-    setUsername('');
-    setIsLogin(true);
-    setShowPassword(false);
-
-    if (isLogin) router.push('/');
   };
 
   const handleSwitchMode = () => {
+    handleReset();
     setIsLogin((prev) => !prev);
   };
 
   const handleSwitchVisibility = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const handleReset = () => {
+    setPassword('');
+    setUsername('');
+    setConfirmPassword('');
+    setShowPassword(false);
+  };
+
+  const onSuccess = () => {
+    toast.success(
+      `Successfully ${isLogin ? 'logged in!' : 'crreated new account!'}`
+    );
+    handleReset();
+    return isLogin ? router.push('/') : setIsLogin(true);
   };
 
   return (

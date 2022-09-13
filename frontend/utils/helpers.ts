@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { HTTP_METHOD, SERVICE } from './enums';
 
 type ApiCallOptions = {
@@ -6,7 +7,7 @@ type ApiCallOptions = {
   method: HTTP_METHOD;
   requiresCredentials?: boolean;
   body?: any;
-  onSucces?: () => void;
+  onSuccess?: () => void;
 };
 
 const servicePortMap: Record<SERVICE, Number> = {
@@ -14,14 +15,13 @@ const servicePortMap: Record<SERVICE, Number> = {
   MATCHING: Number(process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT),
 };
 
-// TODO: toast for errors
 export const apiCall = async ({
   path,
   service,
   method,
   requiresCredentials,
   body,
-  onSucces,
+  onSuccess,
 }: ApiCallOptions) => {
   const apiUrl = `http://localhost:${servicePortMap[service]}${path}`;
 
@@ -34,8 +34,20 @@ export const apiCall = async ({
       },
       body: JSON.stringify(body),
     });
-    return onSucces ? onSucces() : res.json();
+
+    if (!res.ok) {
+      const { error } = await res.json();
+      return handleErrorWithToast(error);
+    }
+
+    return onSuccess ? onSuccess() : res.json();
   } catch (error) {
-    console.error(error);
+    handleErrorWithToast(error);
   }
+};
+
+export const handleErrorWithToast = (error: unknown) => {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  console.error(errorMessage);
+  toast.error(errorMessage);
 };
