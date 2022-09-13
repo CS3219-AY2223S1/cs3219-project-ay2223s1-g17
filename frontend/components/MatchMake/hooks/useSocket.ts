@@ -1,14 +1,8 @@
-import { SocketAddress } from 'net';
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { DIFFICULTY } from 'utils/enums';
 
-const socket = io(process.env.NEXT_PUBLIC_MATCHING_SERVICE_URL || '');
-
-export enum DIFFICULTY {
-  EASY = 'EASY',
-  MEDIUM = 'MEDIUM',
-  HARD = 'HARD',
-}
+const socket = io(process.env.NEXT_PUBLIC_MATCHING_SERVICE_URL ?? '');
 
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
