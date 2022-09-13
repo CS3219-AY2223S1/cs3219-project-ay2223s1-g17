@@ -41,7 +41,7 @@ setInterval(async () => {
   console.log({ numRooms, numUsers, numWaitRooms });
 }, 2000);
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8002;
 
 httpServer.listen(port, () => {
   console.log(`Server is up on port ${port}!`);

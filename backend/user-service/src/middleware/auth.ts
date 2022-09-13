@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { errorHandler, HttpStatusCode, PeerPrepError } from '../utils';
+import { errorHandler, HttpStatusCode, PeerPrepError } from '../../../utils';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 /**

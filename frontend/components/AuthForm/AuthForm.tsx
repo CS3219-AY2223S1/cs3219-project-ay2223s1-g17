@@ -6,6 +6,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Button,
+  Container,
   IconButton,
   InputAdornment,
   Stack,
@@ -28,6 +29,10 @@ const AuthForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // TODO: error handling with toast
+    if (password !== confirmPassword)
+      return console.error('Passwords do not match!');
+
     await apiCall({
       method: HTTP_METHOD.POST,
       service: SERVICE.USER,
@@ -41,7 +46,7 @@ const AuthForm = () => {
     setIsLogin(true);
     setShowPassword(false);
 
-    if (isLogin) return router.push('/');
+    if (isLogin) router.push('/');
   };
 
   const handleSwitchMode = () => {

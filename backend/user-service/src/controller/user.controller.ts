@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../model';
-import { errorHandler, successHandler } from '../utils';
+import { errorHandler, successHandler } from '../../../utils';
 
 /**
  * Creates a new user

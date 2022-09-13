@@ -1,15 +1,14 @@
 version: '3.9'
 
 services:
-  client:
+  frontend:
     depends_on:
       - user-service
     container_name: frontend
     build:
       context: ./frontend
     volumes:
-      - ./frontend:/app/client
-      - /app/frontend/node_modules
+      - ./frontend:/app/frontend
     ports:
       - "3000:3000"
     environment:
@@ -18,15 +17,15 @@ services:
     networks:
       - cs3219-project-network
 
-  user:
+  user-service:
     container_name: user-service
     depends_on:
       - mongo_db
     build:
-      context: ./user-service
+      context: ./backend/user-service
     volumes:
-      - ./user-service:/app/server/user
-      - /app/server/user/node_modules
+      - ./user-service:/app/backend/user
+      - /app/backend/user/node_modules
     ports:
       - "8001:8001"
     environment:
@@ -35,7 +34,18 @@ services:
     networks:
       - cs3219-project-network
 
-  mongo:
+  matching-service:
+    container_name: matching-service
+    build:
+      context: ./backend/matching-service
+    volumes:
+      - ./matching-service:/app/backend/matching
+    ports:
+      - "8002:8002"
+    networks:
+      - cs3219-project-network
+
+  mongo_db:
     container_name: mongo_db
     image: mongo:latest
     restart: always

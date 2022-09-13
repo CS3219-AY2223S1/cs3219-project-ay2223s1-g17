@@ -15,7 +15,7 @@ import { timers } from '../timers';
 import { InputOutput } from '..';
 
 const onStartMatch =
-  (io: InputOutput, socket: Socket) => async (difficulty: DIFFICULTY) => {
+  (_: InputOutput, socket: Socket) => async (difficulty: DIFFICULTY) => {
     const waitRooms = (await WaitRoomModel.findAll({
       where: {
         difficulty,
