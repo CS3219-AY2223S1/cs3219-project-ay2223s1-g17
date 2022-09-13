@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material/';
 import { useState } from 'react';
-import { DIFFICULTY } from 'util/enums';
+import { DIFFICULTY } from 'utils/enums';
 
 const DifficultySelect = () => {
   const [difficulty, setDifficulty] = useState('');

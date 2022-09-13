@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
-import { HTTP_METHOD, SERVICE } from 'util/enums';
-import { apiCall } from 'util/helpers';
+import { HTTP_METHOD, SERVICE } from 'utils/enums';
+import { apiCall } from 'utils/helpers';
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
