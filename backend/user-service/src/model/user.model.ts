@@ -75,7 +75,7 @@ userSchema.static(
    * @returns Verified user if verification is successful
    * @throws Error if verification is unsuccessful
    */
-  async function getVerifiedUser(username: string, password: string) {
+  async function findVerifiedUser(username: string, password: string) {
     if (!username) throw new Error('Username is required');
     if (!password) throw new Error('Password is required');
 
