@@ -4,7 +4,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
-  Box,
   Button,
   IconButton,
   InputAdornment,
@@ -60,91 +59,82 @@ const AuthForm = () => {
 
   const onSuccess = () => {
     toast.success(
-      `Successfully ${isLogin ? 'logged in!' : 'crreated new account!'}`
+      `Successfully ${isLogin ? 'logged in!' : 'created new account!'}`
     );
     handleReset();
     return isLogin ? router.push('/') : setIsLogin(true);
   };
 
   return (
-    <Box
+    <Stack
       sx={{
+        borderRadius: '13px',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundImage: 'linear-gradient(to right, #3275c4, #1c2d50)',
+        bgcolor: 'white',
+        flexDirection: 'row',
+        columnGap: 8,
+        paddingY: 4,
+        paddingX: 8,
       }}
     >
-      <Stack
-        sx={{
-          borderRadius: '13px',
-          display: 'flex',
-          bgcolor: 'white',
-          flexDirection: 'row',
-          columnGap: 8,
-          paddingY: 4,
-          paddingX: 8,
-        }}
-      >
-        <img
-          src="/assets/login-illustration.png"
-          alt="auth"
-          style={{ objectFit: 'contain' }}
-        />
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={2}>
-            <Typography
-              variant="h6"
-              align="center"
-              color="black"
-              fontWeight="bold"
-              sx={{ marginBottom: 2 }}
-            >
-              PeerPrep {isLogin ? 'Login' : 'Sign Up'}
-            </Typography>
-            <TextField
-              name="username"
-              label="Username"
-              value={username}
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) => setUsername(e.target.value)}
-              variant="outlined"
-            />
+      <img
+        src="/assets/login-illustration.png"
+        alt="auth"
+        style={{ objectFit: 'contain' }}
+      />
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={2}>
+          <Typography
+            variant="h6"
+            align="center"
+            color="black"
+            fontWeight="bold"
+            sx={{ marginBottom: 2 }}
+          >
+            PeerPrep {isLogin ? 'Login' : 'Sign Up'}
+          </Typography>
+          <TextField
+            name="username"
+            label="Username"
+            value={username}
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={(e) => setUsername(e.target.value)}
+            variant="outlined"
+          />
+          <PasswordInput
+            showPassword={showPassword}
+            handleSwitchVisibility={handleSwitchVisibility}
+            value={password}
+            label="Password"
+            handleChange={setPassword}
+          />
+          {isLogin ? (
+            <></>
+          ) : (
             <PasswordInput
               showPassword={showPassword}
               handleSwitchVisibility={handleSwitchVisibility}
-              value={password}
-              label="Password"
-              handleChange={setPassword}
+              value={confirmPassword}
+              label="Confirm Password"
+              handleChange={setConfirmPassword}
             />
-            {isLogin ? (
-              <></>
-            ) : (
-              <PasswordInput
-                showPassword={showPassword}
-                handleSwitchVisibility={handleSwitchVisibility}
-                value={confirmPassword}
-                label="Confirm Password"
-                handleChange={setConfirmPassword}
-              />
-            )}
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              style={{ backgroundColor: '#8AA0D2' }}
-            >
-              {isLogin ? 'Login' : 'Register'}
-            </Button>
-            {/* <Button
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            style={{ backgroundColor: '#8AA0D2' }}
+          >
+            {isLogin ? 'Login' : 'Register'}
+          </Button>
+          {/* <Button
               variant="text"
               size="small"
               sx={{
@@ -154,23 +144,22 @@ const AuthForm = () => {
             >
               Forgot Username/ Password?
             </Button> */}
-            <Button
-              variant="text"
-              size="small"
-              endIcon={<ArrowRightAltOutlinedIcon />}
-              style={{
-                color: 'black',
-                textTransform: 'none',
-                marginTop: '32px',
-              }}
-              onClick={handleSwitchMode}
-            >
-              {isLogin ? 'Create account' : 'Sign in instead'}
-            </Button>
-          </Stack>
-        </form>
-      </Stack>
-    </Box>
+          <Button
+            variant="text"
+            size="small"
+            endIcon={<ArrowRightAltOutlinedIcon />}
+            style={{
+              color: 'black',
+              textTransform: 'none',
+              marginTop: '32px',
+            }}
+            onClick={handleSwitchMode}
+          >
+            {isLogin ? 'Create account' : 'Sign in instead'}
+          </Button>
+        </Stack>
+      </form>
+    </Stack>
   );
 };
 
