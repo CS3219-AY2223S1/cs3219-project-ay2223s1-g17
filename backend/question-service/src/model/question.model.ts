@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { DIFFICULTY } from '../../../utils';
 import { IQuestion, IQuestionModel } from './question.type';
 
 const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
@@ -8,6 +9,7 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
   },
   difficulty: {
     type: String,
+    enum: DIFFICULTY,
     required: true,
   },
   description: {
@@ -31,13 +33,19 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
       },
     ],
   },
-  template: {
-    type: {
-      python: {
-        type: String,
-        required: true,
+  templates: {
+    type: [
+      {
+        language: {
+          type: String,
+          required: true,
+        },
+        starterCode: {
+          type: String,
+          required: true,
+        },
       },
-    },
+    ],
   },
   link: {
     type: String,

@@ -1,15 +1,12 @@
 import { Document, Model, Types } from 'mongoose';
 import { DIFFICULTY, LANGUAGE } from '../../../utils';
 
-type Difficulty = DIFFICULTY;
-type Language = LANGUAGE;
-
 export interface IQuestion {
   title: string;
-  difficulty: Difficulty;
+  difficulty: DIFFICULTY;
   description: string;
   examples: IExample[];
-  template: Record<Language, string>;
+  templates: ITemplate[];
   link: string;
 }
 
@@ -17,6 +14,11 @@ interface IExample {
   input: string;
   output: string;
   explanation?: string;
+}
+
+interface ITemplate {
+  language: LANGUAGE;
+  starterCode: string;
 }
 
 export type QuestionDocument = Document<unknown, any, IQuestion> &
