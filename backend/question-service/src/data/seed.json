@@ -18,9 +18,12 @@
                 "output": "Output: [0,1]"
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def twoSum(self, nums: List[int], target: int) -> List[int]:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def twoSum(self, nums: List[int], target: int) -> List[int]:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/two-sum/"
     },
     {
@@ -41,9 +44,12 @@
                 "output": "Output: []"
             }
         ],
-        "template": {
-            "PYTHON": "# Definition for singly-linked list.<br /># class ListNode:<br />#&emsp;&ensp;def __init__(self, val=0, next=None):<br />#&emsp;self.val = val<br />#&emsp;&emsp;self.next = next<br />class Solution:<br />&emsp;def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "# Definition for singly-linked list.<br /># class ListNode:<br />#&emsp;&ensp;def __init__(self, val=0, next=None):<br />#&emsp;self.val = val<br />#&emsp;&emsp;self.next = next<br />class Solution:<br />&emsp;def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/reverse-linked-list/"
     },
     {
@@ -64,9 +70,12 @@
                 "output": "Output: [0]"
             }
         ],
-        "template": {
-            "PYTHON": "# Definition for singly-linked list.<br /># class ListNode:<br />#&emsp;&nbsp;def __init__(self, val=0, next=None):<br />#&emsp;&emsp;&ensp;self.val = val<br />#&emsp;&emsp;self.next = next<br />class Solution:<br />&emsp;def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "# Definition for singly-linked list.<br /># class ListNode:<br />#&emsp;&nbsp;def __init__(self, val=0, next=None):<br />#&emsp;&emsp;&ensp;self.val = val<br />#&emsp;&emsp;self.next = next<br />class Solution:<br />&emsp;def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/merge-two-sorted-lists/"
     },
     {
@@ -87,9 +96,12 @@
                 "output": "Output: false"
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def isValid(self, s: str) -> bool:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def isValid(self, s: str) -> bool:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/valid-parentheses/"
     },
     {
@@ -108,9 +120,12 @@
                 "explanation": "Explanation: There are three ways to climb to the top.<br />1. 1 step + 1 step + 1 step<br />2. 1 step + 2 steps<br />3. 2 steps + 1 step"
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def climbStairs(self, n: int) -> int:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def climbStairs(self, n: int) -> int:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/climbing-stairs/"
     },
     {
@@ -127,9 +142,12 @@
                 "output": "Output: [[5,17,4,1,52,7],[11,11,25,45,8,69],[14,23,25,44,58,15],[22,27,31,36,50,66],[84,28,75,33,55,68]]"
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/sort-the-matrix-diagonally/"
     },
     {
@@ -147,9 +165,12 @@
                 "output": "Output: \"bb\""
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def longestPalindrome(self, s: str) -> str:<br />"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def longestPalindrome(self, s: str) -> str:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/longest-palindromic-substring/"
     },
     {
@@ -173,9 +194,12 @@
                 "explanation": "Explanation: The only possible triplet sums up to 0."
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def threeSum(self, nums: List[int]) -> List[List[int]]:"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def threeSum(self, nums: List[int]) -> List[List[int]]:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/3sum/"
     },
     {
@@ -198,9 +222,12 @@
                 "output": "Output: 0"
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def longestValidParentheses(self, s: str) -> int:"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def longestValidParentheses(self, s: str) -> int:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/longest-valid-parentheses/"
     },
     {
@@ -219,9 +246,12 @@
                 "explanation": "Explanation: You can allocate to the first, second and third child with 1, 2, 1 candies respectively.<br />The third child gets 1 candy because it satisfies the above two conditions."
             }
         ],
-        "template": {
-            "PYTHON": "class Solution:<br />&emsp;def candy(self, ratings: List[int]) -> int:"
-        },
+        "template": [
+            {
+                "language": "PYTHON",
+                "starterCode": "class Solution:<br />&emsp;def candy(self, ratings: List[int]) -> int:<br />"
+            }
+        ],
         "link": "https://leetcode.com/problems/candy/"
     }
 ]
