@@ -7,6 +7,7 @@ type ApiCallOptions = {
   method: HTTP_METHOD;
   requiresCredentials?: boolean;
   body?: any;
+  allowError?: boolean;
   onSuccess?: () => void;
 };
 
@@ -21,6 +22,7 @@ export const apiCall = async ({
   method,
   requiresCredentials,
   body,
+  allowError,
   onSuccess,
 }: ApiCallOptions) => {
   const apiUrl = `http://localhost:${servicePortMap[service]}${path}`;
@@ -35,7 +37,7 @@ export const apiCall = async ({
       body: JSON.stringify(body),
     });
 
-    if (!res.ok) {
+    if (!res.ok && !allowError) {
       const { error } = await res.json();
       return handleErrorWithToast(error);
     }
