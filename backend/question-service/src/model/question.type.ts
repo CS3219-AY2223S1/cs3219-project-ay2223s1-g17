@@ -3,7 +3,7 @@ import { Document, Model, Types } from 'mongoose';
 export interface IQuestion {
   title: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
-  descrption: string;
+  description: string;
   examples: IExample[];
   link: string;
 }
