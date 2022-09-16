@@ -1,8 +1,9 @@
 import { Document, Model, Types } from 'mongoose';
+import { DIFFICULTY } from '../../../utils';
 
 export interface IQuestion {
   title: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  difficulty: DIFFICULTY;
   description: string;
   examples: IExample[];
   link: string;
