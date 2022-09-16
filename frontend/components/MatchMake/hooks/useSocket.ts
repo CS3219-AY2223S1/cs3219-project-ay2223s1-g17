@@ -1,44 +1,45 @@
-import { SocketAddress } from 'net';
 import { useState, useEffect } from 'react';
-import io from 'socket.io-client';
-
-const socket = io(process.env.NEXT_PUBLIC_MATCHING_SERVICE_URL || '');
-
-export enum DIFFICULTY {
-  EASY = 'EASY',
-  MEDIUM = 'MEDIUM',
-  HARD = 'HARD',
-}
+import { toast } from 'react-toastify';
+import io, { Socket } from 'socket.io-client';
+import { DIFFICULTY } from 'utils/enums';
 
 const useSocket = () => {
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [isMatching, setIsMatching] = useState(false);
   const [count, setCount] = useState(null);
 
   useEffect(() => {
+    const socket = io(
+      `http://localhost:${process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT ?? ''}`
+    );
+    setSocket(socket);
+
     socket.on('connect', () => {
-      setIsConnected(true);
+      console.log('socket connected');
     });
 
     socket.on('disconnect', () => {
-      setIsConnected(false);
+      console.log('socket disconnected');
     });
 
     socket.on('matchCountdown', (counter) => {
       console.log(counter);
+
+      // match fail
       if (counter === 0) {
         setCount(null);
         setIsMatching(false);
-        return;
+        return toast('Cannot find a match right now :( Please try again later');
       }
+
       setCount(counter);
     });
 
     socket.on('matchSuccess', () => {
-      alert('match success');
+      console.log('match success');
     });
     socket.on('matchLeave', () => {
-      alert('the other user has left the room');
+      console.log('the other user has left the room');
     });
 
     return () => {
@@ -51,12 +52,11 @@ const useSocket = () => {
   }, []);
 
   const startMatch = (difficulty: DIFFICULTY) => {
-    socket.emit('matchStart', difficulty);
+    socket?.emit('matchStart', difficulty);
     setIsMatching(true);
   };
 
   return {
-    isConnected,
     startMatch,
     count,
     isMatching,

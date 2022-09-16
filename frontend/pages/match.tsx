@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
+import PageWrapper from 'components/PageWrapper';
 
 const DynamicMatchMake = dynamic(
   () => import('../components/MatchMake/MatchMake'),
@@ -14,12 +15,14 @@ const MatchPage: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Create Next App</title>
+        <title>Find a Match</title>
         <meta name="PeerPrep" content="Leetcode with friends uwu" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Suspense fallback={`Loading...`}>
-        <DynamicMatchMake />
+        <PageWrapper>
+          <DynamicMatchMake />
+        </PageWrapper>
       </Suspense>
     </div>
   );

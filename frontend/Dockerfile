@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /app/client
+WORKDIR /app/frontend
 
 COPY package.json ./
 COPY yarn.lock ./

@@ -9,6 +9,7 @@ services:
       context: ./frontend
     volumes:
       - ./frontend:/app/frontend
+      - /app/frontend/node_modules
     ports:
       - "3000:3000"
     environment:
@@ -22,10 +23,11 @@ services:
     depends_on:
       - mongo_db
     build:
-      context: ./backend/user-service
+      context: ./backend
+      dockerfile: Dockerfile.user
     volumes:
-      - ./user-service:/app/backend/user
-      - /app/backend/user/node_modules
+      - ./backend/user-service:/app/backend/user-service
+      - /app/backend/user-service/node_modules
     ports:
       - "8001:8001"
     environment:
@@ -37,9 +39,11 @@ services:
   matching-service:
     container_name: matching-service
     build:
-      context: ./backend/matching-service
+      context: ./backend
+      dockerfile: Dockerfile.matching
     volumes:
-      - ./matching-service:/app/backend/matching
+      - ./backend/matching-service:/app/backend/matching-service
+      - /app/backend/matching-service/node_modules
     ports:
       - "8002:8002"
     networks:

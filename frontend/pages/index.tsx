@@ -1,4 +1,3 @@
-import AuthForm from 'components/AuthForm';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
@@ -10,7 +9,7 @@ const Home: NextPage = () => {
         <meta name="PeerPrep" content="Leetcode with friends uwu" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <AuthForm />
+      <p>Welcome to PeerPrep!</p>
     </div>
   );
 };

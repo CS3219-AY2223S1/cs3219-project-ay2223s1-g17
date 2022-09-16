@@ -6,8 +6,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { HTTP_METHOD, SERVICE } from 'util/enums';
-import { apiCall } from 'util/helpers';
+import { HTTP_METHOD, SERVICE } from 'utils/enums';
+import { apiCall } from 'utils/helpers';
 
 type User = {
   _id: string;
@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
       requiresCredentials: true,
+      allowError: true,
     });
 
     setUser(res as User);

@@ -4,9 +4,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
-  Box,
   Button,
-  Container,
   IconButton,
   InputAdornment,
   Stack,
@@ -15,8 +13,9 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
-import { HTTP_METHOD, SERVICE } from 'util/enums';
-import { apiCall } from 'util/helpers';
+import { toast } from 'react-toastify';
+import { HTTP_METHOD, SERVICE } from 'utils/enums';
+import { apiCall, handleErrorWithToast } from 'utils/helpers';
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
@@ -29,9 +28,8 @@ const AuthForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: error handling with toast
-    if (password !== confirmPassword)
-      return console.error('Passwords do not match!');
+    if (!isLogin && password !== confirmPassword)
+      handleErrorWithToast('Passwords do not match');
 
     await apiCall({
       method: HTTP_METHOD.POST,
@@ -39,17 +37,12 @@ const AuthForm = () => {
       body: { username, password },
       requiresCredentials: isLogin,
       path: isLogin ? '/login' : '/register',
+      onSuccess,
     });
-
-    setPassword('');
-    setUsername('');
-    setIsLogin(true);
-    setShowPassword(false);
-
-    if (isLogin) router.push('/');
   };
 
   const handleSwitchMode = () => {
+    handleReset();
     setIsLogin((prev) => !prev);
   };
 
@@ -57,85 +50,91 @@ const AuthForm = () => {
     setShowPassword((prev) => !prev);
   };
 
+  const handleReset = () => {
+    setPassword('');
+    setUsername('');
+    setConfirmPassword('');
+    setShowPassword(false);
+  };
+
+  const onSuccess = () => {
+    toast.success(
+      `Successfully ${isLogin ? 'logged in!' : 'created new account!'}`
+    );
+    handleReset();
+    return isLogin ? router.push('/') : setIsLogin(true);
+  };
+
   return (
-    <Box
+    <Stack
       sx={{
+        borderRadius: '13px',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundImage: 'linear-gradient(to right, #3275c4, #1c2d50)',
+        bgcolor: 'white',
+        flexDirection: 'row',
+        columnGap: 8,
+        paddingY: 4,
+        paddingX: 8,
       }}
     >
-      <Stack
-        sx={{
-          borderRadius: '13px',
-          display: 'flex',
-          bgcolor: 'white',
-          flexDirection: 'row',
-          columnGap: 8,
-          paddingY: 4,
-          paddingX: 8,
-        }}
-      >
-        <img
-          src="/assets/login-illustration.png"
-          alt="auth"
-          style={{ objectFit: 'contain' }}
-        />
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={2}>
-            <Typography
-              variant="h6"
-              align="center"
-              color="black"
-              fontWeight="bold"
-              sx={{ marginBottom: 2 }}
-            >
-              PeerPrep {isLogin ? 'Login' : 'Sign Up'}
-            </Typography>
-            <TextField
-              name="username"
-              label="Username"
-              value={username}
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) => setUsername(e.target.value)}
-              variant="outlined"
-            />
+      <img
+        src="/assets/login-illustration.png"
+        alt="auth"
+        style={{ objectFit: 'contain' }}
+      />
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={2}>
+          <Typography
+            variant="h6"
+            align="center"
+            color="black"
+            fontWeight="bold"
+            sx={{ marginBottom: 2 }}
+          >
+            PeerPrep {isLogin ? 'Login' : 'Sign Up'}
+          </Typography>
+          <TextField
+            name="username"
+            label="Username"
+            value={username}
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={(e) => setUsername(e.target.value)}
+            variant="outlined"
+          />
+          <PasswordInput
+            showPassword={showPassword}
+            handleSwitchVisibility={handleSwitchVisibility}
+            value={password}
+            label="Password"
+            handleChange={setPassword}
+          />
+          {isLogin ? (
+            <></>
+          ) : (
             <PasswordInput
               showPassword={showPassword}
               handleSwitchVisibility={handleSwitchVisibility}
-              value={password}
-              label="Password"
-              handleChange={setPassword}
+              value={confirmPassword}
+              label="Confirm Password"
+              handleChange={setConfirmPassword}
             />
-            {isLogin ? (
-              <></>
-            ) : (
-              <PasswordInput
-                showPassword={showPassword}
-                handleSwitchVisibility={handleSwitchVisibility}
-                value={confirmPassword}
-                label="Confirm Password"
-                handleChange={setConfirmPassword}
-              />
-            )}
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              style={{ backgroundColor: '#8AA0D2' }}
-            >
-              {isLogin ? 'Login' : 'Register'}
-            </Button>
-            {/* <Button
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            style={{ backgroundColor: '#8AA0D2' }}
+          >
+            {isLogin ? 'Login' : 'Register'}
+          </Button>
+          {/* <Button
               variant="text"
               size="small"
               sx={{
@@ -145,23 +144,22 @@ const AuthForm = () => {
             >
               Forgot Username/ Password?
             </Button> */}
-            <Button
-              variant="text"
-              size="small"
-              endIcon={<ArrowRightAltOutlinedIcon />}
-              style={{
-                color: 'black',
-                textTransform: 'none',
-                marginTop: '32px',
-              }}
-              onClick={handleSwitchMode}
-            >
-              {isLogin ? 'Create account' : 'Sign in instead'}
-            </Button>
-          </Stack>
-        </form>
-      </Stack>
-    </Box>
+          <Button
+            variant="text"
+            size="small"
+            endIcon={<ArrowRightAltOutlinedIcon />}
+            style={{
+              color: 'black',
+              textTransform: 'none',
+              marginTop: '32px',
+            }}
+            onClick={handleSwitchMode}
+          >
+            {isLogin ? 'Create account' : 'Sign in instead'}
+          </Button>
+        </Stack>
+      </form>
+    </Stack>
   );
 };
 
