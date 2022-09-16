@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
       requiresCredentials: true,
+      allowError: true,
     });
 
     setUser(res as User);
