@@ -44,7 +44,7 @@ questionSchema.static(
    *
    * @param difficulty Difficulty of a Question
    */
-  async (difficulty: string) => {
+  async function findQuestionByDifficulty(difficulty: string) {
     if (!difficulty) throw new Error('Difficulty is required');
 
     const query = {
