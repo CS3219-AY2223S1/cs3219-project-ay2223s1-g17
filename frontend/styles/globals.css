@@ -24,3 +24,22 @@ a {
     background: black;
   }
 }
+
+@font-face {
+  font-family: 'digital-7';
+  src: url(../fonts/digital-7.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
