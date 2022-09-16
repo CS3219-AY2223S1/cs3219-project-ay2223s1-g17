@@ -31,6 +31,14 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
       },
     ],
   },
+  template: {
+    type: {
+      python: {
+        type: String,
+        required: true,
+      },
+    },
+  },
   link: {
     type: String,
     required: true,

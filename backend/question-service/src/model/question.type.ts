@@ -6,6 +6,7 @@ export interface IQuestion {
   difficulty: DIFFICULTY;
   description: string;
   examples: IExample[];
+  template: ITemplate;
   link: string;
 }
 
@@ -13,6 +14,10 @@ interface IExample {
   input: string;
   output: string;
   explanation?: string;
+}
+
+interface ITemplate {
+  python: string;
 }
 
 export type QuestionDocument = Document<unknown, any, IQuestion> &
