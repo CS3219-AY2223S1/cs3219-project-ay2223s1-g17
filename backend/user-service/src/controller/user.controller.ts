@@ -58,28 +58,8 @@ export const logout = async (_: Request, res: Response) => {
 export const refreshUserInfoByToken = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
-    const { _id } = await User.findUserById(userId, {
-      onlySelectIdentifiers: true,
-    });
-    successHandler(res, { _id });
-  } catch (error) {
-    errorHandler(res, error);
-  }
-};
-
-/**
- * Fetches the friends list of a user via the user's jwt token
- *
- * @param req Incoming HTTP request with the user's jwt token
- * @param res Outgoing HTTP response containing the user's friends list
- */
-export const fetchFriendsListByToken = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.body;
-    const { friends } = await User.findUserById(userId, {
-      onlySelectFriends: true,
-    });
-    successHandler(res, friends);
+    const user = await User.findUserById(userId);
+    successHandler(res, user);
   } catch (error) {
     errorHandler(res, error);
   }

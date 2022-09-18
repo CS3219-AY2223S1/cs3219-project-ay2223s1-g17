@@ -1,11 +1,5 @@
 import { Request, Response, Router } from 'express';
-import {
-  fetchFriendsListByToken,
-  login,
-  logout,
-  refreshUserInfoByToken,
-  register,
-} from '../controller';
+import { login, logout, refreshUserInfoByToken, register } from '../controller';
 import { authenticate } from '../middleware';
 import { HttpStatusCode } from '../../../utils';
 
@@ -17,8 +11,7 @@ router.get('/', (_: Request, res: Response) => {
 // user service routes
 router.route('/register').post(register);
 router.route('/login').post(login);
-router.route('/logout').post(authenticate, logout);
+router.route('/logout').post(logout);
 router.route('/refresh').post(authenticate, refreshUserInfoByToken);
-router.route('/friends').post(authenticate, fetchFriendsListByToken);
 
 export default router;
