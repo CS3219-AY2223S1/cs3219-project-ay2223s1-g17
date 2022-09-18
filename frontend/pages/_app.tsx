@@ -2,12 +2,12 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import type { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
-import { AuthProvider } from 'contexts/useAuth';
 import Navbar from 'components/Navbar';
+import AppContext from 'contexts/AppContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
+    <AppContext>
       <Navbar />
       <Component {...pageProps} />
       <ToastContainer
@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         pauseOnHover={false}
         theme="colored"
       />
-    </AuthProvider>
+    </AppContext>
   );
 }
 

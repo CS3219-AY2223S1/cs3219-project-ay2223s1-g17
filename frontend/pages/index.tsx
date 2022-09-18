@@ -6,7 +6,7 @@ import Head from 'next/head';
 
 const Home: NextPage = () => {
   const { user } = useAuth();
-  console.log(user);
+  // console.log(user);
   return (
     <div>
       <Head>

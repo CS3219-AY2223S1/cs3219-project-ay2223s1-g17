@@ -1,12 +1,13 @@
-import useSocket from 'components/MatchMake/hooks/useSocket';
 import { Box, Button, Stack, Typography } from '@mui/material/';
 import { DIFFICULTY } from 'utils/enums';
 import Countdown from 'components/Countdown';
+import { useMatchingContext } from 'contexts/MatchingContext';
 
 const MatchMake = () => {
-  const { startMatch, isMatching, count } = useSocket();
+  const { startMatch, count } = useMatchingContext();
+  const isMatching = count !== undefined;
 
-  return isMatching && count ? (
+  return isMatching ? (
     <Countdown count={count} />
   ) : (
     <Box sx={{ width: '50%', margin: 'auto', paddingTop: '20%' }}>

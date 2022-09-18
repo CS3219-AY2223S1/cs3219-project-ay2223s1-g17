@@ -99,11 +99,15 @@ const onStartMatch =
   };
 
 const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
-  const { socketId: disconnectingUserId, isMatched } =
-    (await UserModel.findByPk(socket.id)) as unknown as User;
-
+  
+    
+  const user = (await UserModel.findByPk(socket.id)) as unknown as User;
+  if (!user) return
+  
+  const { socketId: disconnectingUserId, isMatched } = user;
+  
   if (isMatched) {
-    // if user is in a matched room,
+    // if user is in a matched room
     const {
       id: roomId,
       user1_id,
@@ -119,7 +123,7 @@ const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
 
     const otherUserId = user1_id === socket.id ? user2_id : user1_id;
 
-    // notify 2nd user, change isMatched status, leave socket room
+    // notify 2nd user
     await UserModel.update(
       { isMatched: false },
       {
@@ -128,16 +132,27 @@ const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
         },
       }
     );
-    const user2Socket = io.of('/').sockets.get(otherUserId);
-    socket.broadcast.to(roomId).emit('matchLeave');
-    user2Socket?.leave(roomId);
 
-    // delete matched room,
+    socket.broadcast.to(roomId).emit('matchLeave');
+    
+    const user2Socket = io.of('/').sockets.get(otherUserId);  
+    if (user2Socket) {
+      user2Socket.leave(roomId);
+    }
+
+    // delete db matched room, and other user 
+    await UserModel.destroy({
+      where: {
+        socketId: otherUserId,
+      },
+    });
+
     await RoomModel.destroy({
       where: {
         id: roomId,
       },
     });
+    
   } else {
     // if user is not matched yet, destroy wait room
     await WaitRoomModel.destroy({
@@ -147,6 +162,7 @@ const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
     });
   }
 
+  // delete user from db
   await UserModel.destroy({
     where: {
       socketId: disconnectingUserId,
