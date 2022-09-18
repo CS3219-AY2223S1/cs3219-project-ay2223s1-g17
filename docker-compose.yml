@@ -11,7 +11,7 @@ services:
       - ./frontend:/app/frontend
       - /app/frontend/node_modules
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       NEXT_PUBLIC_USER_SERVICE_PORT: 8001
       NEXT_PUBLIC_MATCHING_SERVICE_PORT: 8002
@@ -29,7 +29,7 @@ services:
       - ./backend/user-service:/app/backend/user-service
       - /app/backend/user-service/node_modules
     ports:
-      - "8001:8001"
+      - '8001:8001'
     environment:
       JWT_SECRET: jwt-secret
       DB_LOCAL_URI: mongodb://mongo_db:27017/user
@@ -45,7 +45,7 @@ services:
       - ./backend/matching-service:/app/backend/matching-service
       - /app/backend/matching-service/node_modules
     ports:
-      - "8002:8002"
+      - '8002:8002'
     networks:
       - cs3219-project-network
 
@@ -54,7 +54,7 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongo_db:/data/db
     networks:
