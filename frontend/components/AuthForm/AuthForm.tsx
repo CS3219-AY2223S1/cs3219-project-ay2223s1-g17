@@ -4,6 +4,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
+  Box,
   Button,
   IconButton,
   InputAdornment,
@@ -11,11 +12,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import useAuth from 'contexts/useAuth';
 import { useRouter } from 'next/router';
 import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
 import { toast } from 'react-toastify';
-import { HTTP_METHOD, SERVICE } from 'utils/enums';
-import { apiCall, handleErrorWithToast } from 'utils/helpers';
+import { handleErrorWithToast } from 'utils/helpers';
 
 const AuthForm = () => {
   const [username, setUsername] = useState('');
@@ -24,6 +25,7 @@ const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { register, login } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,14 +33,9 @@ const AuthForm = () => {
     if (!isLogin && password !== confirmPassword)
       handleErrorWithToast('Passwords do not match');
 
-    await apiCall({
-      method: HTTP_METHOD.POST,
-      service: SERVICE.USER,
-      body: { username, password },
-      requiresCredentials: isLogin,
-      path: isLogin ? '/login' : '/register',
-      onSuccess,
-    });
+    isLogin
+      ? await login(username, password, onSuccess)
+      : await register(username, password, onSuccess);
   };
 
   const handleSwitchMode = () => {
@@ -67,22 +64,19 @@ const AuthForm = () => {
 
   return (
     <Stack
-      sx={{
-        borderRadius: '13px',
-        display: 'flex',
-        bgcolor: 'white',
-        flexDirection: 'row',
-        columnGap: 8,
-        paddingY: 4,
-        paddingX: 8,
-      }}
+      sx={{ alignItems: 'center', columnGap: 8, height: '100%' }}
+      flexDirection="row"
     >
-      <img
-        src="/assets/login-illustration.png"
+      <Box
+        component="img"
+        src="/assets/login.png"
         alt="auth"
-        style={{ objectFit: 'contain' }}
+        sx={{
+          width: '50%',
+          objectFit: 'contain',
+        }}
       />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ width: '40%' }}>
         <Stack spacing={2}>
           <Typography
             variant="h6"
@@ -90,23 +84,28 @@ const AuthForm = () => {
             color="black"
             fontWeight="bold"
             sx={{ marginBottom: 2 }}
+            fontSize={24}
           >
             PeerPrep {isLogin ? 'Login' : 'Sign Up'}
           </Typography>
           <TextField
             name="username"
-            label="Username"
+            placeholder="Username"
             value={username}
             size="small"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <PersonIcon />
+                  <PersonIcon sx={{ color: 'black' }} fontSize="small" />
                 </InputAdornment>
               ),
+              sx: { borderRadius: '12px', fontSize: 12 },
             }}
             onChange={(e) => setUsername(e.target.value)}
-            variant="outlined"
+            sx={{
+              backgroundColor: '#E7E7E7',
+              borderRadius: '12px',
+            }}
           />
           <PasswordInput
             showPassword={showPassword}
@@ -130,20 +129,25 @@ const AuthForm = () => {
             type="submit"
             variant="contained"
             size="large"
-            style={{ backgroundColor: '#8AA0D2' }}
+            sx={{
+              backgroundColor: '#8AA0D2',
+              borderRadius: '12px',
+              filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+            }}
           >
             {isLogin ? 'Login' : 'Register'}
           </Button>
           {/* <Button
-              variant="text"
-              size="small"
-              sx={{
-                color: 'black',
-                textTransform: 'none',
-              }}
-            >
-              Forgot Username/ Password?
-            </Button> */}
+            variant="text"
+            size="small"
+            style={{
+              color: 'black',
+              textTransform: 'none',
+              marginTop: '2px',
+            }}
+          >
+            Forgot Username/Password?
+          </Button> */}
           <Button
             variant="text"
             size="small"
@@ -152,10 +156,11 @@ const AuthForm = () => {
               color: 'black',
               textTransform: 'none',
               marginTop: '32px',
+              fontWeight: 'bold',
             }}
             onClick={handleSwitchMode}
           >
-            {isLogin ? 'Create account' : 'Sign in instead'}
+            {isLogin ? 'Create your account' : 'Sign in instead'}
           </Button>
         </Stack>
       </form>
@@ -180,26 +185,31 @@ const PasswordInput: FC<Props> = ({
 }) => (
   <TextField
     name="password"
-    label={label}
+    placeholder={label}
     type={showPassword ? 'text' : 'password'}
     size="small"
     value={value}
     InputProps={{
       startAdornment: (
         <InputAdornment position="start">
-          <LockIcon />
+          <LockIcon sx={{ color: 'black' }} fontSize="small" />
         </InputAdornment>
       ),
       endAdornment: (
         <InputAdornment position="end">
           <IconButton onClick={handleSwitchVisibility}>
-            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            {showPassword ? (
+              <VisibilityOffIcon sx={{ color: 'black' }} fontSize="small" />
+            ) : (
+              <VisibilityIcon sx={{ color: 'black' }} fontSize="small" />
+            )}
           </IconButton>
         </InputAdornment>
       ),
+      sx: { borderRadius: '12px', fontSize: 12 },
     }}
     onChange={(e) => handleChange(e.target.value)}
-    variant="outlined"
+    sx={{ backgroundColor: '#E7E7E7', borderRadius: '12px' }}
   />
 );
 
