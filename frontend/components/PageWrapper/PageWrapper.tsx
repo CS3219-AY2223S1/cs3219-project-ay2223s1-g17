@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 
 type Props = {
@@ -9,18 +9,17 @@ const PageWrapper: FC<Props> = ({ children }) => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: 'calc(100vh - 64px)',
-        backgroundImage: 'linear-gradient(to right, #3275c4, #1c2d50)',
+        height: 'calc(100vh - 64px)',
+        backgroundColor: 'white',
         position: 'absolute',
         top: '64px',
         left: 0,
         width: '100%',
       }}
     >
-      {children}
+      <Container maxWidth="sm" sx={{ height: '100%' }}>
+        {children}
+      </Container>
     </Box>
   );
 };
