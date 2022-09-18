@@ -33,16 +33,6 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
 
     setSocket(socket);
 
-    socket.on('connect', () => {
-      // nth to do here for now, can store session Id in the future to maintain session through page reload
-    });
-
-    socket.on('disconnect', () => {
-      // TODO
-    });
-
-    socket.on('matchLeave', () => {});
-
     socket.on('matchCountdown', (counter) => {
       // timeout
       if (counter === 0) {
@@ -57,33 +47,34 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on('matchSuccess', () => {
+      toast.success('A match has been found!');
       setCount(undefined);
-
       router.push('/room');
     });
 
     socket.on('matchLeave', () => {
-      console.log('the other user has left the room');
+      router.push('/match');
+      toast.warn('The other user has left!');
     });
 
     return () => {
-      socket.off('connect');
-      socket.off('disconnect');
       socket.off('matchSuccess');
       socket.off('matchCountdown');
       socket.off('matchLeave');
+      socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startMatch = (difficulty: DIFFICULTY) => {
     if (!socket) return;
-    socket.connect();
+    if (!socket.connected) socket.connect();
     socket.emit('matchStart', difficulty);
     setCount(30);
   };
 
   const leaveRoom = () => {
-    socket?.disconnect();
+    socket?.emit('matchLeave');
     router.push('/match');
   };
 
