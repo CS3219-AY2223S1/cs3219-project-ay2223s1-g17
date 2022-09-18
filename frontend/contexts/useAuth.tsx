@@ -17,13 +17,23 @@ type User = {
 interface IAuthContext {
   user: User | undefined;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    password: string,
+    onSuccess: () => void
+  ) => Promise<void>;
+  login: (
+    username: string,
+    password: string,
+    onSuccess: () => void
+  ) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<IAuthContext>({
   user: undefined,
   isLoading: true,
+  register: async () => {},
   login: async () => {},
   logout: async () => {},
 });
@@ -50,16 +60,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) refreshUserInfobyToken();
   }, [user]);
 
-  const login = async (username: string, password: string) => {
+  const register = async (
+    username: string,
+    password: string,
+    onSuccess: () => void
+  ) => {
     await apiCall({
+      path: '/register',
+      service: SERVICE.USER,
+      method: HTTP_METHOD.POST,
+      body: { username, password },
+      onSuccess,
+    });
+  };
+
+  const login = async (
+    username: string,
+    password: string,
+    onSuccess: () => void
+  ) => {
+    apiCall({
       path: '/login',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
       requiresCredentials: true,
       body: { username, password },
+      onSuccess: () => {
+        refreshUserInfobyToken();
+        onSuccess();
+      },
     });
-
-    refreshUserInfobyToken();
   };
 
   const logout = async () => {
@@ -68,6 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
       requiresCredentials: true,
+      onSuccess: () => setUser(undefined),
     });
   };
 
@@ -75,6 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       user,
       isLoading,
+      register,
       login,
       logout,
     }),

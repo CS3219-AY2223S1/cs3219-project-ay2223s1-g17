@@ -1,18 +1,10 @@
 {
-	"env": {
-		"browser": true
-	},
-	"plugins": ["@typescript-eslint", "prettier", "react"],
-	"extends": [
-		"plugin:react/recommended",
-		"airbnb",
-		"next",
-		"plugin:@typescript-eslint/recommended"
-	],
-	"rules": {
-		"@typescript-eslint/no-unused-vars": "error",
-		"@typescript-eslint/no-explicit-any": "error",
-		"react/jsx-props-no-spreading": "off",
-		"react/prop-types": "off"
-	}
+  "env": {
+    "browser": true
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": ["plugin:@typescript-eslint/recommended", "next", "prettier"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error"
+  }
 }

@@ -1,11 +1,6 @@
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
-import {
-  IUser,
-  IUserModel,
-  UserDocument,
-  UserQueryOptions,
-} from './user.types';
+import { IUser, IUserModel, UserDocument } from './user.types';
 import jwt from 'jsonwebtoken';
 
 const userSchema = new mongoose.Schema<IUser, IUserModel>({
@@ -85,7 +80,7 @@ userSchema.static(
     const isVerified = await bcrypt.compare(password, user.password);
     if (!isVerified) throw new Error('Password is incorrect');
 
-    return User.findUserByUsername(username, { onlySelectIdentifiers: true });
+    return User.findUserByUsername(username);
   }
 );
 
@@ -99,16 +94,10 @@ userSchema.static(
    * @returns User matching the specified username
    * @throws Error if no user is found
    */
-  async function findUserByUsername(
-    username: string,
-    options: UserQueryOptions
-  ) {
+  async function findUserByUsername(username: string) {
     if (!username) throw new Error('Username is required');
 
-    const query = User.findOne({ username });
-    const user = options?.onlySelectIdentifiers
-      ? await query.select('-friends -__v').exec()
-      : await query.exec();
+    const user = await User.findOne({ username }).exec();
 
     if (!user) throw new Error(`User ${username} not found`);
     return user;
@@ -125,13 +114,10 @@ userSchema.static(
    * @returns User matching the specified id
    * @throws Error if no user is found
    */
-  async function findUserById(id: string, options?: UserQueryOptions) {
+  async function findUserById(id: string) {
     if (!id) throw new Error('User id is required');
 
-    const query = User.findById(id);
-    const user = options?.onlySelectFriends
-      ? await query.select('friends').exec()
-      : await query.exec();
+    const user = await User.findById(id).exec();
 
     if (!user) throw new Error('User not found');
     return user;

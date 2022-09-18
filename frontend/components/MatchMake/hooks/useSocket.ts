@@ -29,7 +29,9 @@ const useSocket = () => {
       if (counter === 0) {
         setCount(null);
         setIsMatching(false);
-        return toast('Cannot find a match right now :( Please try again later');
+        return toast.info(
+          'Cannot find a match right now 😅 Please try again later'
+        );
       }
 
       setCount(counter);

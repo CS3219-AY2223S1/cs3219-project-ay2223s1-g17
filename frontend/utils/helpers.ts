@@ -37,7 +37,9 @@ export const apiCall = async ({
       body: JSON.stringify(body),
     });
 
-    if (!res.ok && !allowError) {
+    if (!res.ok) {
+      if (allowError) return;
+
       const { error } = await res.json();
       return handleErrorWithToast(error);
     }

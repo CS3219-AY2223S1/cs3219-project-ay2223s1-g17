@@ -10,7 +10,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <AuthProvider>
       <Navbar />
       <Component {...pageProps} />
-      <ToastContainer position="top-center" />
+      <ToastContainer
+        position="top-center"
+        pauseOnHover={false}
+        theme="colored"
+      />
     </AuthProvider>
   );
 }

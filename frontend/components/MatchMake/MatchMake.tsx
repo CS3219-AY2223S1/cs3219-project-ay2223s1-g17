@@ -1,5 +1,5 @@
 import useSocket from 'components/MatchMake/hooks/useSocket';
-import { Button, Stack, Typography } from '@mui/material/';
+import { Box, Button, Stack, Typography } from '@mui/material/';
 import { DIFFICULTY } from 'utils/enums';
 import Countdown from 'components/Countdown';
 
@@ -9,24 +9,14 @@ const MatchMake = () => {
   return isMatching && count ? (
     <Countdown count={count} />
   ) : (
-    <Stack
-      sx={{
-        borderRadius: '13px',
-        width: '55vh',
-        bgcolor: 'white',
-        alignItems: 'center',
-        columnGap: 8,
-        paddingY: 4,
-        paddingX: 8,
-      }}
-    >
-      <Stack
-        spacing={2}
-        sx={{
-          width: '40vh',
-        }}
-      >
-        <Typography variant="h5" align="center" color="black" fontWeight="bold">
+    <Box sx={{ width: '50%', margin: 'auto', paddingTop: '20%' }}>
+      <Stack spacing={2}>
+        <Typography
+          align="center"
+          color="black"
+          fontWeight="bold"
+          fontSize={24}
+        >
           Select Difficulty
         </Typography>
         <p></p>
@@ -38,12 +28,12 @@ const MatchMake = () => {
             backgroundColor: '#93DB9A',
             fontSize: '20px',
             fontWeight: 'bold',
-            textTransform: 'none',
+            textTransform: 'capitalize',
           }}
           disabled={isMatching}
           onClick={() => startMatch(DIFFICULTY.EASY)}
         >
-          {DIFFICULTY.EASY}
+          {DIFFICULTY.EASY.toLowerCase()}
         </Button>
         <Button
           type="submit"
@@ -53,12 +43,12 @@ const MatchMake = () => {
             backgroundColor: '#F8B06E',
             fontSize: '20px',
             fontWeight: 'bold',
-            textTransform: 'none',
+            textTransform: 'capitalize',
           }}
           disabled={isMatching}
           onClick={() => startMatch(DIFFICULTY.MEDIUM)}
         >
-          {DIFFICULTY.MEDIUM}
+          {DIFFICULTY.MEDIUM.toLowerCase()}
         </Button>
         <Button
           type="submit"
@@ -68,15 +58,15 @@ const MatchMake = () => {
             backgroundColor: '#ED8D8D',
             fontSize: '20px',
             fontWeight: 'bold',
-            textTransform: 'none',
+            textTransform: 'capitalize',
           }}
           disabled={isMatching}
           onClick={() => startMatch(DIFFICULTY.HARD)}
         >
-          {DIFFICULTY.HARD}
+          {DIFFICULTY.HARD.toLowerCase()}
         </Button>
       </Stack>
-    </Stack>
+    </Box>
   );
 };
 

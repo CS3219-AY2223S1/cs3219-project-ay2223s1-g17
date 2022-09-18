@@ -15,17 +15,9 @@ export interface IUserMethods {
   generateJwtToken(): string;
 }
 
-export type UserQueryOptions = {
-  onlySelectIdentifiers?: boolean;
-  onlySelectFriends?: boolean;
-};
-
 export interface IUserModel extends Model<IUser, {}, IUserMethods> {
   createUser(username: string, password: string): Promise<void>;
   findVerifiedUser(username: string, password: string): Promise<UserDocument>;
-  findUserByUsername(
-    username: string,
-    options?: UserQueryOptions
-  ): Promise<UserDocument>;
-  findUserById(id: string, options?: UserQueryOptions): Promise<UserDocument>;
+  findUserByUsername(username: string): Promise<UserDocument>;
+  findUserById(id: string): Promise<UserDocument>;
 }

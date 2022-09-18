@@ -11,7 +11,7 @@ export enum HTTP_METHOD {
 }
 
 export enum DIFFICULTY {
-	EASY = "EASY",
-	MEDIUM = "MEDIUM",
-	HARD = "HARD"
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
 }
