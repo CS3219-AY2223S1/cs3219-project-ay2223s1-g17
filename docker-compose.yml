@@ -49,6 +49,23 @@ services:
     networks:
       - cs3219-project-network
 
+  question-service:
+    container_name: question-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.question
+    volumes:
+      - ./backend/question-service:/app/backend/question-service
+      - /app/backend/question-service/node_modules
+    ports:
+      - "8003:8003"
+    environment:
+      DB_LOCAL_URI: mongodb://mongo_db:27017/question
+    networks:
+      - cs3219-project-network
+
   mongo_db:
     container_name: mongo_db
     image: mongo:latest
