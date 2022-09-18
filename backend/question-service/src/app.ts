@@ -5,7 +5,7 @@ import express, { Express } from 'express';
 import router from './routes';
 import mongoose from 'mongoose';
 
-const port = process.env.PORT || '8001';
+const port = process.env.PORT || '8003';
 // initialize express app
 const app: Express = express();
 
@@ -19,9 +19,6 @@ mongoose.connect(mongoDbUrl ?? '');
 
 const database = mongoose.connection;
 database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
-
-// middleware
-// TODO: add hosted frontend domain here
 
 const allowedOrigins = ['http://localhost:3000'];
 // only allows requests coming in from allowed origins
@@ -40,9 +37,6 @@ app.use(
     },
   })
 );
-
-// enabled parsing of http only cookies
-app.use(cookieParser());
 
 // middlewares for mongoose
 app.use(bodyParser.json());
