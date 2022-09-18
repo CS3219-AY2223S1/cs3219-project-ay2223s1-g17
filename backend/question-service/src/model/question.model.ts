@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { DIFFICULTY } from '../../../utils';
+import { QUESTIONS } from '../data';
 import { IQuestion, IQuestionModel } from './question.type';
 
 const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({

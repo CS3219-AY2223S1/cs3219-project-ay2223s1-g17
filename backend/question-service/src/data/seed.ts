@@ -1,7 +1,7 @@
 export default [
   {
     title: 'Two Sum',
-    difficulty: 'Easy',
+    difficulty: 'EASY',
     description:
       'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.<br />You may assume that each input would have exactly one solution, and you may not use the same element twice.<br />You can return the answer in any order.',
     examples: [
@@ -30,7 +30,7 @@ export default [
   },
   {
     title: 'Reverse Linked List',
-    difficulty: 'Easy',
+    difficulty: 'EASY',
     description:
       'Given the head of a singly linked list, reverse the list, and return the reversed list.',
     examples: [
@@ -58,7 +58,7 @@ export default [
   },
   {
     title: 'Merge Two Sorted Lists',
-    difficulty: 'Easy',
+    difficulty: 'EASY',
     description:
       'You are given the heads of two sorted linked lists list1 and list2.<br />Merge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.<br />Return the head of the merged linked list.',
     examples: [
@@ -86,7 +86,7 @@ export default [
   },
   {
     title: 'Valid Parentheses',
-    difficulty: 'Easy',
+    difficulty: 'EASY',
     description:
       "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.<br />An input string is valid if:<br />1. Open brackets must be closed by the same type of brackets.<br />2. Open brackets must be closed in the correct order.<br />3. Every close bracket has a corresponding open bracket of the same type.",
     examples: [
@@ -114,7 +114,7 @@ export default [
   },
   {
     title: 'Climbing Stairs',
-    difficulty: 'Easy',
+    difficulty: 'EASY',
     description:
       'You are climbing a staircase. It takes n steps to reach the top.<br />Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?',
     examples: [
@@ -142,7 +142,7 @@ export default [
   },
   {
     title: 'Sort the Matrix Diagonally',
-    difficulty: 'Medium',
+    difficulty: 'MEDIUM',
     description:
       "A matrix diagonal is a diagonal line of cells starting from some cell in either the topmost row or leftmost column and going in the bottom-right direction until reaching the matrix's end. For example, the matrix diagonal starting from mat[2][0], where mat is a 6 x 3 matrix, includes cells mat[2][0], mat[3][1], and mat[4][2].<br />Given an m x n matrix mat of integers, sort each matrix diagonal in ascending order and return the resulting matrix.",
     examples: [
@@ -168,7 +168,7 @@ export default [
   },
   {
     title: 'Longest Palindromic Substring',
-    difficulty: 'Medium',
+    difficulty: 'MEDIUM',
     description:
       'Given a string s, return the longest palindromic substring in s.<br />A string is called a palindrome string if the reverse of that string is the same as the original string.',
     examples: [
@@ -193,7 +193,7 @@ export default [
   },
   {
     title: '3Sum',
-    difficulty: 'Medium',
+    difficulty: 'MEDIUM',
     description:
       'Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.<br />Notice that the solution set must not contain duplicate triplets.',
     examples: [
@@ -226,7 +226,7 @@ export default [
   },
   {
     title: 'Longest Valid Parentheses',
-    difficulty: 'Hard',
+    difficulty: 'HARD',
     description:
       "Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.",
     examples: [
@@ -258,7 +258,7 @@ export default [
   },
   {
     title: 'Candy',
-    difficulty: 'Hard',
+    difficulty: 'HARD',
     description:
       'There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.<br />You are giving candies to these children subjected to the following requirements:<br />Each child must have at least one candy.<br />Children with a higher rating get more candies than their neighbors.<br />Return the minimum number of candies you need to have to distribute the candies to the children.',
     examples: [
