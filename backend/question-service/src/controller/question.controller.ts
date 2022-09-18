@@ -10,7 +10,7 @@ import Question from '../model';
  */
 export const getQuestion = async (req: Request, res: Response) => {
   try {
-    const { difficulty } = req.body;
+    const { difficulty } = req.params;
     const question = await Question.findQuestionByDifficulty(difficulty);
 
     successHandler(res, question);

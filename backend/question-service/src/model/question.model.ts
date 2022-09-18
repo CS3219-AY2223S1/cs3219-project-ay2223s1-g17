@@ -64,12 +64,12 @@ questionSchema.static(
     if (!difficulty) throw new Error('Difficulty is required');
 
     const query = {
-      difficulty: difficulty,
+      difficulty: difficulty.toUpperCase(),
     };
 
     const count = await Question.countDocuments(query);
 
-    if (count === 0) throw new Error('No Questions available, seed questions');
+    if (count === 0) throw new Error('No question found, seed questions');
 
     const randomSkip = Math.floor(Math.random() * count);
 
