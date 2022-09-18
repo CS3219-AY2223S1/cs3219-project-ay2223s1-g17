@@ -14,11 +14,12 @@ const Countdown: FC<Props> = ({ count }) => {
         alignItems: 'center',
         rowGap: 4,
         width: '100%',
+        paddingTop: '20%',
       }}
     >
       <Stack
         sx={{
-          width: '20%',
+          width: '50%',
           aspectRatio: '1 / 1',
           backgroundColor: '#8EACE8',
           borderRadius: '100%',
@@ -31,7 +32,7 @@ const Countdown: FC<Props> = ({ count }) => {
         <Typography
           sx={{
             display: 'inline-block',
-            fontFamily: 'digital-7',
+            fontFamily: 'Digital !important',
             fontSize: 160,
           }}
         >
@@ -52,7 +53,7 @@ const Countdown: FC<Props> = ({ count }) => {
           }}
         ></Box>
       </Stack>
-      <Typography color="white">
+      <Typography color="black" fontWeight="bold" fontSize={20}>
         Please wait while we find you a match
       </Typography>
     </Stack>
