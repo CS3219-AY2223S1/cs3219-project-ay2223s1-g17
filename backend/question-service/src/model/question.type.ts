@@ -31,5 +31,6 @@ export interface IQuestionModel extends Model<IQuestion, {}, IQuestionMethods> {
   findQuestionByDifficulty(difficulty: string): Promise<QuestionDocument>;
   findQuestionById(id: string): Promise<QuestionDocument>;
   findAllQuestions(): Promise<QuestionDocument[]>;
+  findNumberOfQuestions(): Promise<Number>;
   seedQuestions(): Promise<QuestionDocument[]>;
 }

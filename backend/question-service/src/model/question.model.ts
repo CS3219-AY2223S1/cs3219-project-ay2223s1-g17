@@ -58,6 +58,15 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
   },
 });
 
+/**
+ * Gets number of documents in Question collection
+ *
+ * @returns Number of questions
+ */
+const getQuestionsCount = async () => {
+  return await Question.countDocuments();
+};
+
 questionSchema.static(
   'findQuestionByDifficulty',
   /**
@@ -121,6 +130,8 @@ questionSchema.static(
   }
 );
 
+questionSchema.static('findNumberOfQuestions', getQuestionsCount);
+
 questionSchema.static(
   'seedQuestions',
   /**
@@ -134,15 +145,6 @@ questionSchema.static(
     return res;
   }
 );
-
-/**
- * Gets number of documents in Question collection
- *
- * @returns Number of questions
- */
-const getQuestionsCount = async () => {
-  return await Question.countDocuments();
-};
 
 const Question = mongoose.model<IQuestion, IQuestionModel>(
   'Question',
