@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {
   createContext,
   ReactNode,
@@ -55,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     setUser(res as User);
   };
-
   useEffect(() => {
     if (!user) refreshUserInfobyToken();
   }, [user]);

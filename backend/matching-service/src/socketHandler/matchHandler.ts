@@ -1,125 +1,38 @@
 import { Op } from 'sequelize';
 import { Socket } from 'socket.io';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  DIFFICULTY,
-  Room,
-  RoomModel,
-  User,
-  UserModel,
-  WaitRoom,
-  WaitRoomModel,
-} from '../model';
-import { timers } from '../timers';
+import { Room, RoomModel, User, UserModel, WaitRoomModel } from '../model';
 
 import { InputOutput } from '..';
+import onMatchStart from './onMatchStart';
 
-const onStartMatch =
-  (_: InputOutput, socket: Socket) => async (difficulty: DIFFICULTY) => {
-    const waitRooms = (await WaitRoomModel.findAll({
-      where: {
-        difficulty,
-      },
-      // can be removed as there will only ever be one waitRoom for every difficulty
-      order: [['createdAt', 'ASC']],
-      limit: 1,
-    })) as unknown as WaitRoom[];
+const handleLeave = async (io: InputOutput, socket: Socket) => {
+  const user = (await UserModel.findByPk(socket.id)) as unknown as User;
+  if (!user) return;
 
-    if (waitRooms.length) {
-      const { id: waitRoomId, waitingSocketId } = waitRooms[0];
-
-      clearInterval(timers[waitRoomId]);
-
-      // delete waitRoom
-      await WaitRoomModel.destroy({
-        where: {
-          id: waitRoomId,
-        },
-      });
-
-      // add new room
-      await RoomModel.create({
-        id: waitRoomId,
-        user1_id: waitingSocketId,
-        user2_id: socket.id,
-      });
-
-      // update users isMatched attribute
-      await UserModel.update(
-        { isMatched: true },
-        {
-          where: {
-            socketId: {
-              [Op.or]: [waitingSocketId, socket.id],
-            },
-          },
-        }
-      );
-
-      // clear countdown interval
-
-      // second user will join the wait room to form a full room
-      socket.join(waitRoomId);
-
-      socket.to(waitingSocketId).emit('matchSuccess');
-      socket.emit('matchSuccess');
-      return;
-    }
-
-    let counter = 3;
-    const waitRoomId = uuidv4();
-
-    socket.emit('matchCountdown', counter);
-    counter--;
-    const countdown = setInterval(async () => {
-      socket.emit('matchCountdown', counter);
-      if (counter === 0) {
-        // clear interval
-        clearInterval(timers[waitRoomId]);
-
-        // remove waiting room and user if timeout
-        await WaitRoomModel.destroy({
-          where: {
-            id: waitRoomId,
-          },
-        });
-        // leave the socket.io room
-        socket.leave(waitRoomId);
-      }
-      counter--;
-    }, 1000);
-
-    timers[waitRoomId] = countdown;
-    socket.join(waitRoomId);
-    await WaitRoomModel.create({
-      id: waitRoomId,
-      waitingSocketId: socket.id,
-      difficulty,
-    });
-  };
-
-const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
-  const { socketId: disconnectingUserId, isMatched } =
-    (await UserModel.findByPk(socket.id)) as unknown as User;
+  const { isMatched } = user;
+  const leavingUserId = socket.id;
 
   if (isMatched) {
-    // if user is in a matched room,
+    // if user is in a matched room
     const {
       id: roomId,
       user1_id,
       user2_id,
     } = (await RoomModel.findOne({
       where: {
-        [Op.or]: [
-          { user1_id: disconnectingUserId },
-          { user2_id: disconnectingUserId },
-        ],
+        [Op.or]: [{ user1_id: leavingUserId }, { user2_id: leavingUserId }],
       },
     })) as unknown as Room;
 
     const otherUserId = user1_id === socket.id ? user2_id : user1_id;
 
-    // notify 2nd user, change isMatched status, leave socket room
+    // notify 2nd user
+    socket.broadcast.to(roomId).emit('matchLeave');
+    const user2Socket = io.of('/').sockets.get(otherUserId);
+    if (user2Socket) {
+      user2Socket.leave(roomId);
+    }
+
     await UserModel.update(
       { isMatched: false },
       {
@@ -128,11 +41,7 @@ const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
         },
       }
     );
-    const user2Socket = io.of('/').sockets.get(otherUserId);
-    socket.broadcast.to(roomId).emit('matchLeave');
-    user2Socket?.leave(roomId);
 
-    // delete matched room,
     await RoomModel.destroy({
       where: {
         id: roomId,
@@ -142,19 +51,28 @@ const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
     // if user is not matched yet, destroy wait room
     await WaitRoomModel.destroy({
       where: {
-        waitingSocketId: disconnectingUserId,
+        waitingSocketId: leavingUserId,
       },
     });
   }
+};
 
+const onMatchLeave = (io: InputOutput, socket: Socket) => () => {
+  handleLeave(io, socket);
+};
+
+const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
+  console.log(`disconnecting ${socket.id}`);
+  await handleLeave(io, socket);
   await UserModel.destroy({
     where: {
-      socketId: disconnectingUserId,
+      socketId: socket.id,
     },
   });
 };
 
 export const registerMatchHandler = (io: InputOutput, socket: Socket) => {
-  socket.on('matchStart', onStartMatch(io, socket));
+  socket.on('matchStart', onMatchStart(io, socket));
+  socket.on('matchLeave', onMatchLeave(io, socket));
   socket.on('disconnect', onDisconnect(io, socket));
 };

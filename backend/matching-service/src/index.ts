@@ -35,11 +35,17 @@ io.on('connection', onConnection);
 
 // for debugging
 setInterval(async () => {
-  const { count: numRooms } = await RoomModel.findAndCountAll({});
-  const { count: numWaitRooms } = await WaitRoomModel.findAndCountAll({});
-  const { count: numUsers } = await UserModel.findAndCountAll({});
+  const { count: numRooms } = await RoomModel.findAndCountAll({
+    logging: false,
+  });
+  const { count: numWaitRooms } = await WaitRoomModel.findAndCountAll({
+    logging: false,
+  });
+  const { count: numUsers } = await UserModel.findAndCountAll({
+    logging: false,
+  });
   console.log({ numRooms, numUsers, numWaitRooms });
-}, 2000);
+}, 5000);
 
 const port = process.env.PORT || 8002;
 

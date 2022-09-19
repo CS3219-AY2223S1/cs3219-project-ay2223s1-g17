@@ -6,7 +6,7 @@ import useAuth from 'contexts/useAuth';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  console.log('user: ', user);
+
   const router = useRouter();
   return (
     <nav
