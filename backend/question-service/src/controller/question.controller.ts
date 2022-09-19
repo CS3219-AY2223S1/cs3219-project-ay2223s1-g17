@@ -37,6 +37,21 @@ export const getQuestion = async (req: Request, res: Response) => {
 };
 
 /**
+ * Gets all questions
+ *
+ * @param res Outgoing HTTP response indicating success of questions retrieval
+ */
+export const getQuestions = async (_: Request, res: Response) => {
+  try {
+    const questions = await Question.findAllQuestions();
+
+    successHandler(res, questions);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+/**
  * Seeds preloaded questions
  *
  * @param res Outgoing HTTP response indicating success of the seed

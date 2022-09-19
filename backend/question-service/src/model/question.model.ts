@@ -106,6 +106,22 @@ questionSchema.static(
 );
 
 questionSchema.static(
+  'findAllQuestions',
+  /**
+   * Attempts to find all questions
+   */
+  async function findAllQuestions() {
+    const count = await getQuestionsCount();
+
+    if (count === 0) throw new Error('No question found, seed questions');
+
+    const questions = await Question.find({});
+
+    return questions;
+  }
+);
+
+questionSchema.static(
   'seedQuestions',
   /**
    * Attempts to seed Question documents
