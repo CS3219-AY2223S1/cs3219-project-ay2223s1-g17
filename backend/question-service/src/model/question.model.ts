@@ -68,7 +68,7 @@ questionSchema.static(
   async function findQuestionByDifficulty(difficulty: string) {
     if (!difficulty) throw new Error('Difficulty is required');
 
-    const count = await Question.estimatedDocumentCount();
+    const count = await getQuestionsCount();
 
     if (count === 0) throw new Error('No question found, seed questions');
 
@@ -93,7 +93,7 @@ questionSchema.static(
   async function findQuestionById(id: string) {
     if (!id) throw new Error('Question id is required');
 
-    const count = await Question.estimatedDocumentCount();
+    const count = await getQuestionsCount();
 
     if (count === 0) throw new Error('No question found, seed questions');
 
@@ -116,6 +116,15 @@ questionSchema.static(
     return res;
   }
 );
+
+/**
+ * Gets number of documents in Question collection
+ *
+ * @returns Number of questions
+ */
+const getQuestionsCount = async () => {
+  return await Question.countDocuments();
+};
 
 const Question = mongoose.model<IQuestion, IQuestionModel>(
   'Question',
