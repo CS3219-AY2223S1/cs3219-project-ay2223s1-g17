@@ -68,9 +68,20 @@ questionSchema.static(
   async function findQuestionByDifficulty(difficulty: string) {
     if (!difficulty) throw new Error('Difficulty is required');
 
-    const query = {
-      difficulty: difficulty.toUpperCase(),
-    };
+    const count = await Question.estimatedDocumentCount();
+
+    if (count === 0) throw new Error('No question found, seed questions');
+
+    const query = { difficulty: difficulty.toUpperCase() };
+
+    const question = await Question.aggregate([
+      { $match: query },
+      { $sample: { size: 1 } },
+    ]);
+
+    return question;
+  }
+);
 
     const count = await Question.countDocuments(query);
 
