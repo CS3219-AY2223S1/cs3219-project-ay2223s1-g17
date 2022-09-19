@@ -8,7 +8,7 @@ import Question from '../model';
  * @param req Incoming HTTP request with difficulty
  * @param res Outgoing HTTP response indicating success of question retrieval
  */
-export const getQuestion = async (req: Request, res: Response) => {
+export const getQuestionByDifficulty = async (req: Request, res: Response) => {
   try {
     const { difficulty } = req.params;
     const question = await Question.findQuestionByDifficulty(difficulty);
