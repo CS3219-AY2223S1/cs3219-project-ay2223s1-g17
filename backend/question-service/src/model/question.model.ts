@@ -83,13 +83,21 @@ questionSchema.static(
   }
 );
 
-    const count = await Question.countDocuments(query);
+questionSchema.static(
+  'findQuestionById',
+  /**
+   * Attempts to find a Question by ID
+   *
+   * @param id id of a Question
+   */
+  async function findQuestionById(id: string) {
+    if (!id) throw new Error('Question id is required');
+
+    const count = await Question.estimatedDocumentCount();
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const randomSkip = Math.floor(Math.random() * count);
-
-    const question = await Question.findOne().skip(randomSkip);
+    const question = await Question.findById(id);
 
     return question;
   }
