@@ -11,6 +11,7 @@ export interface IQuestion {
 }
 
 interface IExample {
+  index: number;
   input: string;
   output: string;
   explanation?: string;

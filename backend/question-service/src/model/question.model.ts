@@ -20,6 +20,10 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
   examples: {
     type: [
       {
+        index: {
+          type: Number,
+          required: true,
+        },
         input: {
           type: String,
           required: true,
