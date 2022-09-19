@@ -97,9 +97,9 @@ questionSchema.static(
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const question = await Question.findById(id).catch((_) => {
-      throw new Error(`No question with id ${id} found`);
-    });
+    const question = await Question.findById(id);
+
+    if (!question) throw new Error(`No question with id ${id} found`);
 
     return question;
   }
