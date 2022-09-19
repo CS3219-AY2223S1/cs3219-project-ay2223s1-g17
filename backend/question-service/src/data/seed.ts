@@ -19,7 +19,7 @@ export default [
         output: 'Output: [0,1]',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -47,7 +47,7 @@ export default [
         output: 'Output: []',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -75,7 +75,7 @@ export default [
         output: 'Output: [0]',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -103,7 +103,7 @@ export default [
         output: 'Output: false',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -131,7 +131,7 @@ export default [
           'Explanation: There are three ways to climb to the top.<br />1. 1 step + 1 step + 1 step<br />2. 1 step + 2 steps<br />3. 2 steps + 1 step',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -157,7 +157,7 @@ export default [
           'Output: [[5,17,4,1,52,7],[11,11,25,45,8,69],[14,23,25,44,58,15],[22,27,31,36,50,66],[84,28,75,33,55,68]]',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -182,7 +182,7 @@ export default [
         output: 'Output: "bb"',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -215,7 +215,7 @@ export default [
         explanation: 'Explanation: The only possible triplet sums up to 0.',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -247,7 +247,7 @@ export default [
         output: 'Output: 0',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
@@ -275,7 +275,7 @@ export default [
           'Explanation: You can allocate to the first, second and third child with 1, 2, 1 candies respectively.<br />The third child gets 1 candy because it satisfies the above two conditions.',
       },
     ],
-    template: [
+    templates: [
       {
         language: 'PYTHON',
         starterCode:
