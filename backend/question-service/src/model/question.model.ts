@@ -80,6 +80,20 @@ questionSchema.static(
   }
 );
 
+questionSchema.static(
+  'seedQuestions',
+  /**
+   * Attempts to seed Question documents
+   */
+  async function seedQuestions() {
+    await Question.deleteMany({});
+
+    const res = await Question.create(QUESTIONS);
+
+    return res;
+  }
+);
+
 const Question = mongoose.model<IQuestion, IQuestionModel>(
   'Question',
   questionSchema

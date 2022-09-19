@@ -18,3 +18,18 @@ export const getQuestion = async (req: Request, res: Response) => {
     errorHandler(res, error);
   }
 };
+
+/**
+ * Seeds preloaded questions
+ *
+ * @param res Outgoing HTTP response indicating success of the seed
+ */
+export const loadQuestions = async (_: Request, res: Response) => {
+  try {
+    const questions = await Question.seedQuestions();
+
+    successHandler(res, questions);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
