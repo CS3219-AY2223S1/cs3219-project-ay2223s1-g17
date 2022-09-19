@@ -13,7 +13,7 @@ router.get('/', (_: Request, res: Response) => {
 
 router.route('/:id').get(getQuestion);
 
-router.route('/get/:difficulty').get(getQuestionByDifficulty);
+router.route('/get/difficulty/:difficulty').get(getQuestionByDifficulty);
 
 router.route('/seed').post(loadQuestions);
 
