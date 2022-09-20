@@ -63,6 +63,7 @@ services:
       - "8003:8003"
     environment:
       DB_LOCAL_URI: mongodb://mongo_db:27017/question
+      REDIS_HOST: redis
     networks:
       - cs3219-project-network
 
@@ -77,9 +78,21 @@ services:
     networks:
       - cs3219-project-network
 
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - cs3219-project-network
+
 networks:
   cs3219-project-network:
     driver: bridge
 
 volumes:
   mongo_db: {}
+  redisdata: {}
