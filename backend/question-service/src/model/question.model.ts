@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { DIFFICULTY } from '../../../utils';
 import { QUESTIONS } from '../data';
+import { cacheQuestions, fetchQuestionsFromCache } from '../redis';
 import { IQuestion, IQuestionModel } from './question.type';
 
 const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
@@ -12,6 +13,7 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
     type: String,
     enum: DIFFICULTY,
     required: true,
+    index: true,
   },
   description: {
     type: String,
@@ -74,17 +76,15 @@ questionSchema.static(
    *
    * @param difficulty Difficulty of a Question
    */
-  async function findQuestionByDifficulty(difficulty: string) {
+  async function findQuestionByDifficulty(difficulty: DIFFICULTY) {
     if (!difficulty) throw new Error('Difficulty is required');
 
     const count = await getQuestionsCount();
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const query = { difficulty: difficulty.toUpperCase() };
-
     const question = await Question.aggregate([
-      { $match: query },
+      { $match: { difficulty } },
       { $sample: { size: 1 } },
     ]);
 
@@ -124,8 +124,11 @@ questionSchema.static(
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const questions = await Question.find({});
+    const cachedQuestions = await fetchQuestionsFromCache();
+    if (cachedQuestions) return cachedQuestions;
 
+    const questions = await Question.find({});
+    await cacheQuestions(questions);
     return questions;
   }
 );
@@ -140,9 +143,10 @@ questionSchema.static(
   async function seedQuestions() {
     await Question.deleteMany({});
 
-    const res = await Question.create(QUESTIONS);
+    const questions = await Question.create(QUESTIONS);
+    await cacheQuestions(questions);
 
-    return res;
+    return questions;
   }
 );
 
