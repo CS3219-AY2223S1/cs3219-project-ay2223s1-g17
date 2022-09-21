@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
-import { DIFFICULTY } from '../../../utils';
+import { DIFFICULTY, LANGUAGE } from '../../../utils';
 import { QUESTIONS } from '../data';
-import { IQuestion, IQuestionModel } from './question.type';
+import {
+  FormattedQuestionedDocument,
+  IQuestion,
+  IQuestionModel,
+  QuestionDocument,
+} from './question.type';
 
 const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
   title: {
@@ -20,10 +25,6 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
   examples: {
     type: [
       {
-        index: {
-          type: Number,
-          required: true,
-        },
         input: {
           type: String,
           required: true,
@@ -74,21 +75,19 @@ questionSchema.static(
    *
    * @param difficulty Difficulty of a Question
    */
-  async function findQuestionByDifficulty(difficulty: string) {
+  async function findQuestionByDifficulty(difficulty: DIFFICULTY) {
     if (!difficulty) throw new Error('Difficulty is required');
 
     const count = await getQuestionsCount();
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const query = { difficulty: difficulty.toUpperCase() };
-
-    const question = await Question.aggregate([
-      { $match: query },
+    const questions = await Question.aggregate([
+      { $match: { difficulty } },
       { $sample: { size: 1 } },
     ]);
 
-    return question;
+    return formatQuestion(questions[0]);
   }
 );
 
@@ -110,7 +109,7 @@ questionSchema.static(
 
     if (!question) throw new Error(`No question with id ${id} found`);
 
-    return question;
+    return formatQuestion(question);
   }
 );
 
@@ -145,6 +144,17 @@ questionSchema.static(
     return res;
   }
 );
+
+const formatQuestion = (
+  question: QuestionDocument
+): FormattedQuestionedDocument => {
+  const templatesMap = new Map<LANGUAGE, string>();
+  question.templates.forEach((template) =>
+    templatesMap.set(template.language, template.starterCode)
+  );
+  const templates = Object.fromEntries(templatesMap);
+  return { ...question, templates };
+};
 
 const Question = mongoose.model<IQuestion, IQuestionModel>(
   'Question',
