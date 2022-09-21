@@ -3,9 +3,10 @@ import React, { FC, ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
+  fullWidth?: boolean;
 };
 
-const PageWrapper: FC<Props> = ({ children }) => {
+const PageWrapper: FC<Props> = ({ children, fullWidth }) => {
   return (
     <Box
       sx={{
@@ -17,7 +18,7 @@ const PageWrapper: FC<Props> = ({ children }) => {
         width: '100%',
       }}
     >
-      <Container maxWidth="sm" sx={{ height: '100%' }}>
+      <Container maxWidth={fullWidth ? false : 'sm'} sx={{ height: '100%' }}>
         {children}
       </Container>
     </Box>
