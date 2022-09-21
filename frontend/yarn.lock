@@ -213,6 +213,21 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@monaco-editor/loader@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.3.2.tgz#04effbb87052d19cd7d3c9d81c0635490f9bb6d8"
+  integrity sha512-BTDbpHl3e47r3AAtpfVFTlAi7WXv4UQ/xZmz8atKl4q7epQV5e7+JbigFDViWF71VBi4IIBdcWP57Hj+OWuc9g==
+  dependencies:
+    state-local "^1.0.6"
+
+"@monaco-editor/react@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-4.4.5.tgz#beabe491efeb2457441a00d1c7651c653697f65b"
+  integrity sha512-IImtzU7sRc66OOaQVCG+5PFHkSWnnhrUWGBuH6zNmH2h0YgmAhcjHZQc/6MY9JWEbUtVF1WPBMJ9u1XuFbRrVA==
+  dependencies:
+    "@monaco-editor/loader" "^1.3.2"
+    prop-types "^15.7.2"
+
 "@mui/base@5.0.0-alpha.95":
   version "5.0.0-alpha.95"
   resolved "https://registry.npmjs.org/@mui/base/-/base-5.0.0-alpha.95.tgz"
@@ -1917,7 +1932,7 @@ prelude-ls@^1.2.1:
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
-prop-types@^15.6.2, prop-types@^15.8.1:
+prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -2116,6 +2131,11 @@ source-map@^0.5.7:
   version "0.5.7"
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz"
   integrity sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==
+
+state-local@^1.0.6:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
+  integrity sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==
 
 string.prototype.matchall@^4.0.7:
   version "4.0.7"
