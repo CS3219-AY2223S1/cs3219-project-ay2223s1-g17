@@ -15,6 +15,7 @@ services:
     environment:
       NEXT_PUBLIC_USER_SERVICE_PORT: 8001
       NEXT_PUBLIC_MATCHING_SERVICE_PORT: 8002
+      NEXT_PUBLIC_QUESTION_SERVICE_PORT: 8003
     networks:
       - cs3219-project-network
 
