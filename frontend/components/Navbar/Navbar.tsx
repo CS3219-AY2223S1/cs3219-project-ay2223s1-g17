@@ -35,6 +35,10 @@ const Navbar = () => {
             label="Find Match"
           />
           <NavBarOption
+            onClick={() => router.push('/editor')}
+            label="Try Code Editor"
+          />
+          <NavBarOption
             onClick={logout}
             label="Log Out"
             styles={{ backgroundColor: '#ED8D8D' }}

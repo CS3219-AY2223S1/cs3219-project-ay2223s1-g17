@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { errorHandler, successHandler } from '../../../utils';
+import { DIFFICULTY, errorHandler, successHandler } from '../../../utils';
 import Question from '../model';
 
 /**
@@ -11,7 +11,9 @@ import Question from '../model';
 export const getQuestionByDifficulty = async (req: Request, res: Response) => {
   try {
     const { difficulty } = req.params;
-    const question = await Question.findQuestionByDifficulty(difficulty);
+    const question = await Question.findQuestionByDifficulty(
+      difficulty as DIFFICULTY
+    );
 
     successHandler(res, question);
   } catch (error) {
