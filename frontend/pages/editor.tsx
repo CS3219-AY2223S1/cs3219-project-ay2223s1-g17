@@ -12,7 +12,7 @@ const Editor = () => {
     const fetchQuestion = async () => {
       const question = await apiCall({
         service: SERVICE.QUESTION,
-        path: '/question/get/difficulty/easy',
+        path: '/question/get/difficulty/EASY',
         method: HTTP_METHOD.GET,
       });
       setQuestion(question);

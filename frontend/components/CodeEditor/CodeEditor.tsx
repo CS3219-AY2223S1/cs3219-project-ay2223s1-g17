@@ -123,6 +123,7 @@ const CodeEditor: FC<Question> = ({
               maxWidth: view === VIEW.HYBRID ? '67vw' : 'auto',
               position: 'relative',
               margin: view === VIEW.QUESTION ? 'auto' : 'none',
+              borderRight: '1px solid rgba(0, 0, 0, 0.12)',
             }}
           >
             <Box
@@ -213,11 +214,11 @@ const CodeEditor: FC<Question> = ({
             {view === VIEW.HYBRID ? (
               <Typography
                 sx={{
-                  color: 'black',
                   position: 'absolute',
                   bottom: 0,
                   right: 12,
                 }}
+                color="rgba(0,0,0,0.7)"
                 fontSize={12}
               >
                 drag horizontally to resize
