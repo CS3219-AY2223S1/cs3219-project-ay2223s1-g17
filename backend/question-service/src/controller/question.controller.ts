@@ -75,7 +75,6 @@ export const getQuestionsCount = async (_: Request, res: Response) => {
  */
 export const loadQuestions = async (_: Request, res: Response) => {
   try {
-    await Question.deleteMany({});
     const questions = await Question.seedQuestions();
 
     successHandler(res, questions);
