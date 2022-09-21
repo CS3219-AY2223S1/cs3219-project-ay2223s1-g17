@@ -23,7 +23,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef twoSum(self, nums: List[int], target: int) -> List[int]:\n',
+          'class Solution:\n\n\tdef twoSum(self, nums: List[int], target: int) -> List[int]:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/two-sum/',
@@ -51,7 +51,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          '# Definition for singly-linked list.\n\n# class ListNode:\n\n#\tdef __init__(self, val=0, next=None):\n\n#\tself.val = val\n#\nself.next = next\n\nclass Solution:\n\n\tdef reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n',
+          '# Definition for singly-linked list.\n\n# class ListNode:\n\n#\tdef __init__(self, val=0, next=None):\n\n#\tself.val = val\n#\tself.next = next\n\nclass Solution:\n\n\tdef reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/reverse-linked-list/',
@@ -79,7 +79,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          '# Definition for singly-linked list.\n# class ListNode:\n#\tdef __init__(self, val=0, next=None):\n#\nself.val = val\n#\nself.next = next\n\nclass Solution:\n\n\tdef mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n',
+          '# Definition for singly-linked list.\n\n# class ListNode:\n\n#\tdef __init__(self, val=0, next=None):\n\n#\tself.val = val\n#\tself.next = next\n\nclass Solution:\n\n\tdef mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/merge-two-sorted-lists/',
@@ -107,7 +107,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef isValid(self, s: str) -> bool:\n',
+          'class Solution:\n\n\tdef isValid(self, s: str) -> bool:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/valid-parentheses/',
@@ -135,7 +135,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef climbStairs(self, n: int) -> int:\n',
+          'class Solution:\n\n\tdef climbStairs(self, n: int) -> int:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/climbing-stairs/',
@@ -161,7 +161,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:\n',
+          'class Solution:\n\n\tdef diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/sort-the-matrix-diagonally/',
@@ -186,7 +186,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef longestPalindrome(self, s: str) -> str:\n',
+          'class Solution:\n\n\tdef longestPalindrome(self, s: str) -> str:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/longest-palindromic-substring/',
@@ -218,7 +218,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef threeSum(self, nums: List[int]) -> List[List[int]]:\n',
+          'class Solution:\n\n\tdef threeSum(self, nums: List[int]) -> List[List[int]]:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/3sum/',
@@ -248,7 +248,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef longestValidParentheses(self, s: str) -> int:\n',
+          'class Solution:\n\n\tdef longestValidParentheses(self, s: str) -> int:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/longest-valid-parentheses/',
@@ -276,7 +276,7 @@ export default [
       {
         language: 'PYTHON',
         starterCode:
-          'class Solution:\n\n\tdef candy(self, ratings: List[int]) -> int:\n',
+          'class Solution:\n\n\tdef candy(self, ratings: List[int]) -> int:\n\t\t',
       },
     ],
     link: 'https://leetcode.com/problems/candy/',
