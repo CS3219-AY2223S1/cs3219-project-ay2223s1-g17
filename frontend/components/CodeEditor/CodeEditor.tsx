@@ -14,6 +14,7 @@ import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
 import DescriptionIcon from '@mui/icons-material/Description';
 import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
 import CodeIcon from '@mui/icons-material/Code';
+import ActualEditor from 'components/CodeEditor/ActualEditor';
 
 const ViewButtonMap: Record<VIEW, ReactNode> = {
   QUESTION: <DescriptionIcon />,
@@ -36,6 +37,7 @@ export type Question = {
   templates: Record<LANGUAGE, string>;
 };
 
+// TODO: refactor this, this should be named something else
 const CodeEditor: FC<Question> = ({
   title,
   difficulty,
@@ -46,9 +48,6 @@ const CodeEditor: FC<Question> = ({
 }) => {
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [view, setView] = useState<VIEW>(VIEW.HYBRID);
-  const [editorContent, setEditorContent] = useState(
-    templates[language] ?? '// start coding here'
-  );
 
   return (
     <Box
@@ -238,19 +237,7 @@ const CodeEditor: FC<Question> = ({
               gridArea: 'right',
             }}
           >
-            <Editor
-              defaultLanguage={language.toLowerCase()}
-              value={editorContent}
-              width="auto"
-              options={{
-                fontSize: '18px',
-                scrollBeyondLastLine: false,
-                minimap: { enabled: false },
-              }}
-              onChange={(newEditorContent) =>
-                setEditorContent(newEditorContent ?? '')
-              }
-            />
+            <ActualEditor language={language} templates={templates} />
           </Box>
         ) : (
           <></>
