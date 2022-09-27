@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import 'dotenv/config';
-import express, { Express } from 'express';
+// sets up in-memory db
+import './db';
 
 const port = process.env.PORT || '8004';
 // initialize express app
