@@ -1,0 +1,23 @@
+FROM node:alpine
+
+WORKDIR /app/backend
+
+COPY ./utils/package.json ./
+COPY ./utils/yarn.lock ./
+
+RUN yarn install
+
+COPY ./utils ./utils
+
+WORKDIR /app/backend/collaboration-service
+
+COPY ./collaboration-service/package.json ./
+COPY ./collaboration-service/yarn.lock ./
+
+RUN yarn install
+
+COPY ./collaboration-service ./
+
+EXPOSE 8004
+
+CMD ["yarn", "dev"]
