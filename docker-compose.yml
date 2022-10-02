@@ -57,7 +57,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.collaboration
     volumes:
-      - ./backend/collaboration-service:/app/backend/matching-service
+      - ./backend/collaboration-service:/app/backend/collaboration-service
       - /app/backend/collaboration-service/node_modules
     ports:
       - '8004:8004'

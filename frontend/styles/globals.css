@@ -42,3 +42,12 @@ a {
     transform: rotate(360deg);
   }
 }
+
+.user1one {
+  background-color: orange !important;
+  width: 2px !important;
+}
+
+.user1 {
+  background-color: orange !important;
+}

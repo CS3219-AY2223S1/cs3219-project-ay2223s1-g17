@@ -9,12 +9,12 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { FC, useState, ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
 import DescriptionIcon from '@mui/icons-material/Description';
 import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
 import CodeIcon from '@mui/icons-material/Code';
-import ActualEditor from 'components/room/CodeEditor';
+import CodeEditor from 'components/room/CodeEditor';
 import useQuestion from 'components/room/hooks/useQuestion';
 
 const ViewButtonMap: Record<VIEW, ReactNode> = {
@@ -29,15 +29,6 @@ const DifficultyColorMap: Record<DIFFICULTY, string> = {
   HARD: '#ED8D8D',
 };
 
-// TODO: refactor this, this should be named something else
-// const Room: FC<Question> = ({
-//   title,
-//   difficulty,
-//   description,
-//   examples,
-//   constraints,
-//   templates,
-// }) => {
 const Room = () => {
   const { title, difficulty, description, examples, constraints, templates } =
     useQuestion();
@@ -141,12 +132,12 @@ const Room = () => {
               </Typography>
               <Typography
                 variant="h6"
-                color={DifficultyColorMap[difficulty]}
+                color={DifficultyColorMap[difficulty || DIFFICULTY.HARD]}
                 sx={{ textTransform: 'capitalize', mb: 1 }}
                 fontWeight="bold"
                 fontSize={24}
               >
-                {difficulty.toLowerCase()}
+                {difficulty?.toLowerCase()}
               </Typography>
             </Box>
             <Divider orientation="horizontal" flexItem />
@@ -232,7 +223,7 @@ const Room = () => {
               gridArea: 'right',
             }}
           >
-            <ActualEditor language={language} templates={templates} />
+            <CodeEditor language={language} templates={templates} />
           </Box>
         ) : (
           <></>

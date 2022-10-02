@@ -20,6 +20,7 @@ const MatchingContext = createContext<IMatchingContextValue>({
 export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket>();
   const [count, setCount] = useState<number>();
+  const [roomId, setRoomId] = useState<number>();
 
   const router = useRouter();
 
@@ -46,9 +47,10 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       setCount(counter);
     });
 
-    socket.on('matchSuccess', () => {
+    socket.on('matchSuccess', (roomId) => {
       toast.success('A match has been found!');
       setCount(undefined);
+      setRoomId(roomId);
       router.push('/room');
     });
 
@@ -83,6 +85,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       startMatch,
       count,
       leaveRoom,
+      roomId,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, socket]
@@ -103,4 +106,5 @@ interface IMatchingContextValue {
   startMatch: (difficulty: DIFFICULTY) => void;
   count?: number;
   leaveRoom: () => void;
+  roomId?: number;
 }

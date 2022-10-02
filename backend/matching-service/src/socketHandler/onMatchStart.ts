@@ -57,8 +57,8 @@ const onMatchStart =
       socket.join(waitRoomId);
 
       // notify both users
-      socket.to(waitingSocketId).emit('matchSuccess');
-      socket.emit('matchSuccess');
+      socket.to(waitingSocketId).emit('matchSuccess', waitRoomId);
+      socket.emit('matchSuccess', waitRoomId);
       return;
     }
 

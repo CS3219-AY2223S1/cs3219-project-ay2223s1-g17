@@ -12,17 +12,34 @@ const io = new Server(server, {
   },
 });
 
-let i = 1;
+type ISocket = Socket & {
+  roomId?: string;
+};
 
-io.on('connection', (socket: Socket) => {
-  socket.emit(`socket ${i} has joined`);
-  i++;
+io.use((socket: ISocket, next) => {
+  const roomId = socket.handshake.auth.roomId;
+  if (!roomId) {
+    return console.log('ERROR: no room ID!');
+  }
+  socket.roomId = roomId;
+  next();
+});
+
+io.on('connection', (socket: ISocket) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const roomId = socket.roomId!;
+  socket.join(roomId);
+
   socket.on('editorChange', (event) => {
-    socket.broadcast.emit('editorChange', event);
+    socket.to(roomId).emit('editorChange', event);
+  });
+
+  socket.on('selection', (event) => {
+    socket.to(roomId).emit('selection', event);
   });
 });
 
 const port = process.env.PORT || 8004;
 server.listen(port, () => {
-  console.log(`Socket.io Server is running at https://localhost:${port}`);
+  console.log(`Collaboration Service is running at https://localhost:${port}`);
 });
