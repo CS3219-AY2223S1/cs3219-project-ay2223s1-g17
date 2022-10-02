@@ -2,7 +2,6 @@ import express, { Express } from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
 
-// initialize express app
 const app: Express = express();
 
 const server = http.createServer(app);

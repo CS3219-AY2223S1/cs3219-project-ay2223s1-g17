@@ -1,4 +1,7 @@
-import Editor from '@monaco-editor/react';
+// packages
+import CodeIcon from '@mui/icons-material/Code';
+import DescriptionIcon from '@mui/icons-material/Description';
+import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
 import {
   Box,
   Divider,
@@ -9,13 +12,12 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { useState, ReactNode } from 'react';
-import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
-import DescriptionIcon from '@mui/icons-material/Description';
-import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
-import CodeIcon from '@mui/icons-material/Code';
+import { ReactNode, useState } from 'react';
+
+// code
 import CodeEditor from 'components/room/CodeEditor';
 import useQuestion from 'components/room/hooks/useQuestion';
+import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
 
 const ViewButtonMap: Record<VIEW, ReactNode> = {
   QUESTION: <DescriptionIcon />,

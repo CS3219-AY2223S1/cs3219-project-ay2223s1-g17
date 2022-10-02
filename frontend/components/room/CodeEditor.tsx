@@ -1,106 +1,103 @@
+// packages
 import Editor from '@monaco-editor/react';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { LANGUAGE } from 'utils/enums';
 
-interface Props {
-  language: LANGUAGE;
-  templates?: Record<LANGUAGE, string>;
-}
+// code
+import { useMatchingContext } from 'contexts/MatchingContext';
+import { LANGUAGE } from 'utils/enums';
 
 const CodeEditor = ({ language, templates }: Props) => {
   const { roomId } = useMatchingContext();
-  const [editorContent, setEditorContent] = useState(
-    (templates && templates[language]) ?? '// start coding here'
+  const [editorContent] = useState(
+    (templates && templates[language]) ?? '# start coding here'
   );
-  const editorRef = useRef(null);
+  const editorRef = useRef<editor.IStandaloneCodeEditor>();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
-  const [options, setOptions] = useState({
-    fontSize: '18px',
+  const [options] = useState<editor.IStandaloneEditorConstructionOptions>({
+    fontSize: 16,
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
   });
-  const otherDecoration = useRef([]);
+  const otherDecoration = useRef<string[]>([]);
 
   useEffect(() => {
-    const port = process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT;
-    const sock = io((port && `localhost:${port}`) || '', {
-      autoConnect: false,
-    });
+    const sock = io(
+      `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
+      {
+        autoConnect: false,
+      }
+    );
+
+    if (!roomId) {
+      alert('Room not found, redirecting');
+      window.location.replace('/');
+    }
+
     sock.auth = { roomId };
     sock.connect();
     setSocket(sock);
 
-    sock.on('connect', () => console.log('connected'));
-
     sock.on('editorChange', (event) => {
-      try {
-        isIncoming.current = true;
-        editorRef.current?.getModel().applyEdits(event.changes);
-      } catch (e) {
-        alert('INTERNAL ERROR');
-      }
+      isIncoming.current = true;
+      editorRef.current?.getModel()?.applyEdits(event.changes);
     });
 
-    sock.on('selection', (e) => {
-      let selectionArray = [];
+    sock.on('selection', (event) => {
+      if (!editorRef.current) {
+        return;
+      }
+
+      const selectionArray = [];
       if (
-        e.selection.startColumn == e.selection.endColumn &&
-        e.selection.startLineNumber == e.selection.endLineNumber
+        event.selection.startColumn == event.selection.endColumn &&
+        event.selection.startLineNumber == event.selection.endLineNumber
       ) {
-        e.selection.endColumn++;
+        event.selection.endColumn++;
         selectionArray.push({
-          range: e.selection,
+          range: event.selection,
           options: {
-            // className: `${e.user}one`,
-            className: `user1one`,
-            hoverMessage: {
-              value: 'user1',
-            },
+            className: `otherUserCursor`,
           },
         });
       } else {
         selectionArray.push({
-          range: e.selection,
+          range: event.selection,
           options: {
-            className: 'user1',
-            hoverMessage: {
-              value: 'user1',
-            },
+            className: 'otherUserSelection',
           },
         });
       }
+      // this API is deprecated, but the new api createDecorationsCollection is not working
       otherDecoration.current = editorRef.current.deltaDecorations(
         otherDecoration.current,
         selectionArray
       );
-      // console.log({ selectionEvent: event });
     });
 
     return () => {
       sock.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!editorRef.current) {
-      return;
-    }
-
-    editorRef.current.onDidChangeCursorSelection((e) => {
-      console.log('cursor changed');
-      socket?.emit('selection', e);
-    });
-  }, [editorRef.current]);
-
-  // IStandaloneCodeEditor
-  function handleEditorDidMount(editor: any, monaco: any) {
+  function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
+    editor.onDidChangeCursorSelection(
+      (e: editor.ICursorSelectionChangedEvent) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        socket!.emit('selection', e);
+      }
+    );
   }
 
-  const handleChange = (value = '', event: any) => {
+  const handleChange = (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    value = '',
+    event: editor.IModelContentChangedEvent
+  ) => {
     // if it is incoming change, it is handled by socket listeners, we need to turn isIncoming flag off
     if (isIncoming.current) {
       isIncoming.current = false;
@@ -110,7 +107,7 @@ const CodeEditor = ({ language, templates }: Props) => {
     socket?.emit('editorChange', event);
   };
 
-  return (
+  return socket ? (
     <Editor
       defaultLanguage={language.toLowerCase()}
       defaultValue={editorContent}
@@ -119,7 +116,14 @@ const CodeEditor = ({ language, templates }: Props) => {
       onMount={handleEditorDidMount}
       onChange={handleChange}
     />
+  ) : (
+    <></>
   );
 };
 
 export default CodeEditor;
+
+interface Props {
+  language: LANGUAGE;
+  templates?: Record<LANGUAGE, string>;
+}

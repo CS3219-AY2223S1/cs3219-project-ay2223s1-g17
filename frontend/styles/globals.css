@@ -43,11 +43,11 @@ a {
   }
 }
 
-.user1one {
-  background-color: orange !important;
+.otherUserCursor {
+  background-color: orange;
   width: 2px !important;
 }
 
-.user1 {
-  background-color: orange !important;
+.otherUserSelection {
+  background-color: orange;
 }
