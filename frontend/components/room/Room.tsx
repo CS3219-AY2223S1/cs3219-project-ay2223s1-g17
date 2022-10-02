@@ -14,7 +14,8 @@ import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
 import DescriptionIcon from '@mui/icons-material/Description';
 import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
 import CodeIcon from '@mui/icons-material/Code';
-import ActualEditor from 'components/CodeEditor/ActualEditor';
+import ActualEditor from 'components/room/CodeEditor';
+import useQuestion from 'components/room/hooks/useQuestion';
 
 const ViewButtonMap: Record<VIEW, ReactNode> = {
   QUESTION: <DescriptionIcon />,
@@ -28,24 +29,18 @@ const DifficultyColorMap: Record<DIFFICULTY, string> = {
   HARD: '#ED8D8D',
 };
 
-export type Question = {
-  title: string;
-  difficulty: DIFFICULTY;
-  description: string;
-  examples: { input: string; output: string; explanation: string }[];
-  constraints: string[];
-  templates: Record<LANGUAGE, string>;
-};
-
 // TODO: refactor this, this should be named something else
-const CodeEditor: FC<Question> = ({
-  title,
-  difficulty,
-  description,
-  examples,
-  constraints,
-  templates,
-}) => {
+// const Room: FC<Question> = ({
+//   title,
+//   difficulty,
+//   description,
+//   examples,
+//   constraints,
+//   templates,
+// }) => {
+const Room = () => {
+  const { title, difficulty, description, examples, constraints, templates } =
+    useQuestion();
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [view, setView] = useState<VIEW>(VIEW.HYBRID);
 
@@ -247,4 +242,4 @@ const CodeEditor: FC<Question> = ({
   );
 };
 
-export default CodeEditor;
+export default Room;

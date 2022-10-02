@@ -23,7 +23,7 @@ const ActualEditor = ({ language, templates }: Props) => {
 
   useEffect(() => {
     console.log('mounting');
-    const sock = io('http://localhost:8004');
+    const sock = io(process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT || '');
     setSocket(sock);
 
     sock.on('connect', () => console.log('connected'));

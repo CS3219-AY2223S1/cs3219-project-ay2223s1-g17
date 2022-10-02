@@ -1,0 +1,11 @@
+FROM node:16
+
+WORKDIR /app/backend/collaboration
+
+COPY ./collaboration-service ./
+
+RUN yarn install
+
+EXPOSE 8004
+
+CMD ["yarn", "dev"]
