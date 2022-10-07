@@ -5,6 +5,7 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { LANGUAGE, VIEW } from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
@@ -27,7 +28,16 @@ const RoomOptions: FC<Props> = ({ view, language, setView, setLanguage }) => {
 
   return (
     <Stack
-      sx={{ width: '100%', px: 4, py: 2 }}
+      sx={{
+        p: 2,
+        position: 'fixed',
+        top: '64px',
+        height: '64px',
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        backgroundColor: 'white',
+      }}
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
@@ -43,8 +53,10 @@ const RoomOptions: FC<Props> = ({ view, language, setView, setLanguage }) => {
             key={viewType}
             value={viewType}
             disabled={view === viewType}
+            sx={{ display: 'flex', columnGap: 1, alignItems: 'center' }}
           >
             {ViewButtonMap[viewType]}
+            <Typography variant="caption">{viewType}</Typography>
           </ToggleButton>
         ))}
       </ToggleButtonGroup>

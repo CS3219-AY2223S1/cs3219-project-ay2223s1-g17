@@ -4,7 +4,7 @@ import type { NextPage } from 'next';
 
 const PeerPrepRoom: NextPage = () => {
   return (
-    <PageWrapper fullWidth>
+    <PageWrapper fullWidth fixedHeight>
       <Room />
     </PageWrapper>
   );

@@ -51,3 +51,23 @@ a {
 .otherUserSelection {
   background-color: orange;
 }
+
+#question-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+#question-panel::-webkit-scrollbar-track {
+  background: #fffffe;
+}
+
+#question-panel::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.4);
+}
+
+#question-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.7);
+}
+
+#question-panel::-webkit-scrollbar-thumb:active {
+  background: rgba(100, 100, 100, 0.9);
+}

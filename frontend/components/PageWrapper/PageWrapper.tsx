@@ -4,9 +4,10 @@ import React, { FC, ReactNode } from 'react';
 type Props = {
   children: ReactNode;
   fullWidth?: boolean;
+  fixedHeight?: boolean;
 };
 
-const PageWrapper: FC<Props> = ({ children, fullWidth }) => {
+const PageWrapper: FC<Props> = ({ children, fullWidth, fixedHeight }) => {
   return (
     <Box
       sx={{
@@ -15,10 +16,13 @@ const PageWrapper: FC<Props> = ({ children, fullWidth }) => {
         position: 'absolute',
         top: '64px',
         left: 0,
-        width: '100%',
+        right: 0,
       }}
     >
-      <Container maxWidth={fullWidth ? false : 'sm'} sx={{ height: '100%' }}>
+      <Container
+        maxWidth={fullWidth ? false : 'sm'}
+        sx={{ height: fixedHeight ? 'auto' : '100%' }}
+      >
         {children}
       </Container>
     </Box>

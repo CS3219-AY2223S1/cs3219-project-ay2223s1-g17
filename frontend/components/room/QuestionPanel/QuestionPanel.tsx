@@ -1,16 +1,14 @@
 import { FC } from 'react';
-import { Box, Divider, Typography } from '@mui/material';
-import { DIFFICULTY, VIEW } from 'utils/enums';
+import { Box, Stack, Divider, Typography } from '@mui/material';
+import { DIFFICULTY } from 'utils/enums';
 import { Question } from 'contexts/MatchingContext';
 
 type Props = {
   question: Question;
-  view: VIEW;
 };
 
 const QuestionPanel: FC<Props> = ({
   question: { title, difficulty, description, examples, constraints },
-  view,
 }) => {
   const DifficultyColorMap: Record<DIFFICULTY, string> = {
     EASY: '#93DB9A',
@@ -20,15 +18,14 @@ const QuestionPanel: FC<Props> = ({
 
   return (
     <>
-      <Box
+      <Stack
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           px: 1,
           pt: 1,
         }}
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
       >
         <Typography
           variant="h6"
@@ -48,7 +45,7 @@ const QuestionPanel: FC<Props> = ({
         >
           {difficulty?.toLowerCase()}
         </Typography>
-      </Box>
+      </Stack>
       <Divider orientation="horizontal" flexItem />
       <Typography color="black" sx={{ px: 2, my: 4 }} fontSize={18}>
         {description}
@@ -105,21 +102,6 @@ const QuestionPanel: FC<Props> = ({
           {constraint}
         </Typography>
       ))}
-      {view === VIEW.HYBRID ? (
-        <Typography
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            right: 12,
-          }}
-          color="rgba(0,0,0,0.7)"
-          fontSize={12}
-        >
-          drag horizontally to resize
-        </Typography>
-      ) : (
-        <></>
-      )}
     </>
   );
 };

@@ -20,6 +20,17 @@ const CodeEditor = ({ language, templates }: Props) => {
     fontSize: 16,
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
+    lineNumbersMinChars: 3,
+    // readOnly: isReadOnly ?? false,
+    scrollbar: {
+      useShadows: false,
+      verticalHasArrows: false,
+      horizontalHasArrows: false,
+      vertical: 'visible',
+      horizontal: 'visible',
+      verticalScrollbarSize: 10,
+      horizontalScrollbarSize: 10,
+    },
   });
   const otherDecoration = useRef<string[]>([]);
 
