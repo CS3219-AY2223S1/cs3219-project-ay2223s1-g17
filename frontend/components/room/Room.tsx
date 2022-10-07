@@ -16,7 +16,7 @@ import { ReactNode, useState } from 'react';
 
 // code
 import CodeEditor from 'components/room/CodeEditor';
-import useQuestion from 'components/room/hooks/useQuestion';
+import { useMatchingContext } from 'contexts/MatchingContext';
 import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
 
 const ViewButtonMap: Record<VIEW, ReactNode> = {
@@ -32,8 +32,9 @@ const DifficultyColorMap: Record<DIFFICULTY, string> = {
 };
 
 const Room = () => {
+  const { question } = useMatchingContext();
   const { title, difficulty, description, examples, constraints, templates } =
-    useQuestion();
+    question;
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [view, setView] = useState<VIEW>(VIEW.HYBRID);
 

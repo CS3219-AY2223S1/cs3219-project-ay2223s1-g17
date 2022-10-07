@@ -10,6 +10,7 @@ import {
   WaitRoomModel,
 } from '../model';
 import { timers } from '../timers';
+import fetch from 'node-fetch';
 
 const onMatchStart =
   (_: InputOutput, socket: Socket) => async (difficulty: DIFFICULTY) => {
@@ -56,16 +57,17 @@ const onMatchStart =
       // second user will join the wait room to form a full room
       socket.join(waitRoomId);
 
-      const question = await fetch(
-        'localhost:8003/question/get/difficulty/EASY'
+      // TODO: Make use of env variable when deployed to prod
+      const res = await fetch(
+        `http://question-service:8003/question/get/difficulty/${difficulty}`
       );
-      console.log(question);
+      const question = await res.json();
 
       // notify both users
       socket
         .to(waitingSocketId)
         .emit('matchSuccess', { id: waitRoomId, question: question });
-      socket.emit('matchSuccess', waitRoomId);
+      socket.emit('matchSuccess', { id: waitRoomId, question: question });
       return;
     }
 
