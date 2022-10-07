@@ -1,0 +1,23 @@
+FROM node:alpine
+
+WORKDIR /app/backend
+
+COPY ./utils/package.json ./
+COPY ./utils/yarn.lock ./
+
+RUN yarn install
+
+COPY ./utils ./utils
+
+WORKDIR /app/backend/history-service
+
+COPY ./history-service/package.json ./
+COPY ./history-service/yarn.lock ./
+
+RUN yarn install
+
+COPY ./history-service ./
+
+EXPOSE 8005
+
+CMD ["yarn", "dev"]
