@@ -20,7 +20,7 @@ mongoose.connect(mongoDbUrl ?? '');
 const database = mongoose.connection;
 database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:8003'];
 // only allows requests coming in from allowed origins
 app.use(
   cors({

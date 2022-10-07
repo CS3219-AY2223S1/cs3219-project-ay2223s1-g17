@@ -56,8 +56,15 @@ const onMatchStart =
       // second user will join the wait room to form a full room
       socket.join(waitRoomId);
 
+      const question = await fetch(
+        'localhost:8003/question/get/difficulty/EASY'
+      );
+      console.log(question);
+
       // notify both users
-      socket.to(waitingSocketId).emit('matchSuccess', waitRoomId);
+      socket
+        .to(waitingSocketId)
+        .emit('matchSuccess', { id: waitRoomId, question: question });
       socket.emit('matchSuccess', waitRoomId);
       return;
     }
