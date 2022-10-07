@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 import { DIFFICULTY, LANGUAGE } from 'utils/enums';
 
-type Question = {
+export type Question = {
   title?: string;
   difficulty?: DIFFICULTY;
   description?: string;

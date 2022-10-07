@@ -1,40 +1,18 @@
 // packages
-import CodeIcon from '@mui/icons-material/Code';
-import DescriptionIcon from '@mui/icons-material/Description';
-import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
-import {
-  Box,
-  Divider,
-  MenuItem,
-  Select,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
-import { ReactNode, useState } from 'react';
+
+import { Box, Stack } from '@mui/material';
+import { useState } from 'react';
 
 // code
 import CodeEditor from 'components/room/CodeEditor';
 import { useMatchingContext } from 'contexts/MatchingContext';
-import { DIFFICULTY, LANGUAGE, VIEW } from 'utils/enums';
-
-const ViewButtonMap: Record<VIEW, ReactNode> = {
-  QUESTION: <DescriptionIcon />,
-  HYBRID: <VerticalSplitIcon sx={{ transform: 'rotate(180deg)' }} />,
-  EDITOR: <CodeIcon />,
-};
-
-const DifficultyColorMap: Record<DIFFICULTY, string> = {
-  EASY: '#93DB9A',
-  MEDIUM: '#F8B06E',
-  HARD: '#ED8D8D',
-};
+import { LANGUAGE, VIEW } from 'utils/enums';
+import QuestionPanel from './QuestionPanel';
+import RoomOptions from './RoomOptions';
 
 const Room = () => {
   const { question } = useMatchingContext();
-  const { title, difficulty, description, examples, constraints, templates } =
-    question;
+  const { templates } = question;
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [view, setView] = useState<VIEW>(VIEW.HYBRID);
 
@@ -51,46 +29,12 @@ const Room = () => {
         pb: 2,
       }}
     >
-      <Stack
-        sx={{ width: '100%', px: 4, py: 2 }}
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <ToggleButtonGroup
-          value={view}
-          onChange={(_, newView: VIEW) => setView(newView)}
-          color="primary"
-          exclusive
-        >
-          {Object.values(VIEW).map((viewType) => (
-            <ToggleButton
-              key={viewType}
-              value={viewType}
-              disabled={view === viewType}
-            >
-              {ViewButtonMap[viewType]}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-
-        <Select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
-          sx={{ textTransform: 'capitalize' }}
-          SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
-        >
-          {Object.values(LANGUAGE).map((languageOption) => (
-            <MenuItem
-              key={languageOption}
-              value={languageOption}
-              sx={{ textTransform: 'capitalize' }}
-            >
-              {languageOption.toLowerCase()}
-            </MenuItem>
-          ))}
-        </Select>
-      </Stack>
+      <RoomOptions
+        view={view}
+        language={language}
+        setView={setView}
+        setLanguage={setLanguage}
+      />
       <Stack
         direction="row"
         sx={{
@@ -118,106 +62,7 @@ const Room = () => {
             display: view === VIEW.EDITOR ? 'none' : 'inline',
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              px: 1,
-              pt: 1,
-            }}
-          >
-            <Typography
-              variant="h6"
-              color="black"
-              fontWeight="bold"
-              sx={{ mb: 1, textTransform: 'capitalize' }}
-              fontSize={24}
-            >
-              {title}
-            </Typography>
-            <Typography
-              variant="h6"
-              color={DifficultyColorMap[difficulty || DIFFICULTY.HARD]}
-              sx={{ textTransform: 'capitalize', mb: 1 }}
-              fontWeight="bold"
-              fontSize={24}
-            >
-              {difficulty?.toLowerCase()}
-            </Typography>
-          </Box>
-          <Divider orientation="horizontal" flexItem />
-          <Typography color="black" sx={{ px: 2, my: 4 }} fontSize={18}>
-            {description}
-          </Typography>
-          {(examples ?? []).map(({ input, output, explanation }, index) => (
-            <Box
-              key={`example-${index}`}
-              sx={{
-                px: 2,
-                my: 4,
-              }}
-            >
-              <Typography fontWeight="bold" color="black">
-                Example {index + 1}
-              </Typography>
-              <Box
-                color="black"
-                sx={{
-                  backgroundColor: '#EEEDE7',
-                  borderRadius: '5px',
-                  px: 2,
-                  py: 0.5,
-                  my: 1,
-                }}
-              >
-                <p>
-                  <strong>Input: </strong>
-                  {input}
-                </p>
-                <p>
-                  <strong>Ouput: </strong>
-                  {output}
-                </p>
-                {explanation ? (
-                  <p>
-                    <strong>Explanation: </strong>
-                    {explanation}
-                  </p>
-                ) : (
-                  <></>
-                )}
-              </Box>
-            </Box>
-          ))}
-          {constraints && constraints.length ? (
-            <Typography fontWeight="bold" color="black">
-              Constraints
-            </Typography>
-          ) : (
-            <></>
-          )}
-          {(constraints ?? []).map((constraint, index) => (
-            <Typography key={`constraint-${index}`} color="black">
-              {constraint}
-            </Typography>
-          ))}
-          {view === VIEW.HYBRID ? (
-            <Typography
-              sx={{
-                position: 'absolute',
-                bottom: 0,
-                right: 12,
-              }}
-              color="rgba(0,0,0,0.7)"
-              fontSize={12}
-            >
-              drag horizontally to resize
-            </Typography>
-          ) : (
-            <></>
-          )}
+          <QuestionPanel question={question} view={view} />
         </Box>
         <Box
           sx={{
