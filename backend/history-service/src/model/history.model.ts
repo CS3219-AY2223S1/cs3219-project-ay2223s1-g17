@@ -46,7 +46,7 @@ historySchema.static(
 
     const res = await History.create(history);
 
-    return res.id;
+    return { id: res._id };
   }
 );
 
