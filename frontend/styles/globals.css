@@ -42,3 +42,12 @@ a {
     transform: rotate(360deg);
   }
 }
+
+.otherUserCursor {
+  background-color: orange;
+  width: 2px !important;
+}
+
+.otherUserSelection {
+  background-color: orange;
+}

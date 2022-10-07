@@ -10,16 +10,28 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
-import { DIFFICULTY } from 'utils/enums';
+import { DIFFICULTY, LANGUAGE } from 'utils/enums';
+
+type Question = {
+  title?: string;
+  difficulty?: DIFFICULTY;
+  description?: string;
+  examples?: { input: string; output: string; explanation: string }[];
+  constraints?: string[];
+  templates?: Record<LANGUAGE, string>;
+};
 
 const MatchingContext = createContext<IMatchingContextValue>({
   startMatch: () => {},
   leaveRoom: () => {},
+  question: {},
 });
 
 export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket>();
   const [count, setCount] = useState<number>();
+  const [roomId, setRoomId] = useState<number>();
+  const [question, setQuestion] = useState<Question>();
 
   const router = useRouter();
 
@@ -46,9 +58,11 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       setCount(counter);
     });
 
-    socket.on('matchSuccess', () => {
+    socket.on('matchSuccess', ({ id, question }) => {
       toast.success('A match has been found!');
       setCount(undefined);
+      setRoomId(id);
+      setQuestion(question);
       router.push('/room');
     });
 
@@ -83,6 +97,8 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       startMatch,
       count,
       leaveRoom,
+      roomId,
+      question: question || {},
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, socket]
@@ -103,4 +119,6 @@ interface IMatchingContextValue {
   startMatch: (difficulty: DIFFICULTY) => void;
   count?: number;
   leaveRoom: () => void;
+  roomId?: number;
+  question: Question;
 }

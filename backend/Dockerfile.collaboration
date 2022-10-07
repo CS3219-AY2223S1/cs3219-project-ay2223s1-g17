@@ -1,0 +1,15 @@
+FROM node:16
+
+WORKDIR /app/backend/collaboration
+
+COPY ./collaboration-service/package.json ./
+COPY ./collaboration-service/yarn.lock ./
+
+RUN yarn install
+
+COPY ./collaboration-service ./
+
+
+EXPOSE 8004
+
+CMD ["yarn", "dev"]
