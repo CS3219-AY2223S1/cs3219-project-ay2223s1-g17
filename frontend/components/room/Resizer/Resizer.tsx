@@ -1,35 +1,48 @@
-import React from 'react';
-import { Box, Stack } from '@mui/material';
+import { FC } from 'react';
+import { Stack, Box } from '@mui/material';
+import { VIEW } from 'utils/enums';
+import { RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
 
-const Resizer = () => {
+type Props = {
+  view: VIEW;
+  backgroundColor: string;
+  id: string;
+  isVertical?: boolean;
+};
+
+const Resizer: FC<Props> = ({ view, backgroundColor, id, isVertical }) => {
   return (
     <Stack
-      id="resizer"
+      id={id}
       sx={{
-        height: '100%',
-        width: '14px',
-        backgroundColor: 'rgba(0,0,0,0.1)',
-        cursor: 'col-resize',
-        zIndex: 1,
+        display: view === VIEW.HYBRID ? 'flex' : 'none',
+        height: isVertical ? '100%' : `${RESIZER_HEIGHT_WIDTH_PX}px`,
+        width: isVertical ? `${RESIZER_HEIGHT_WIDTH_PX}px` : '100%',
+        cursor: isVertical ? 'col-resize' : 'row-resize',
+        backgroundColor,
+        transitionProperty: 'background-color',
+        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        transitionDuration: '300ms',
       }}
+      flexDirection={isVertical ? 'column' : 'row'}
       alignItems="center"
       justifyContent="center"
-      rowGap={1}
+      gap={1}
     >
       {Array.from(Array(3).keys()).map((index) => (
-        <Dot key={index} />
+        <ResizerDot key={index} />
       ))}
     </Stack>
   );
 };
 
-const Dot = () => (
+const ResizerDot = () => (
   <Box
     sx={{
       backgroundColor: 'white',
       borderRadius: '100%',
       border: '1px solid gray',
-      width: '50%',
+      width: `${RESIZER_HEIGHT_WIDTH_PX / 2}px`,
       aspectRatio: '1/1',
     }}
   />

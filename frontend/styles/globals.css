@@ -52,6 +52,11 @@ a {
   background-color: orange;
 }
 
+#vertical-resizer:hover,
+#horizontal-resizer:hover {
+  background-color: #1976d2 !important;
+}
+
 #question-panel::-webkit-scrollbar {
   width: 10px;
 }
