@@ -1,5 +1,6 @@
 import { Box, Container } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
+import { NAVBAR_HEIGHT_PX } from 'utils/constants';
 
 type Props = {
   children: ReactNode;
@@ -11,10 +12,10 @@ const PageWrapper: FC<Props> = ({ children, fullWidth, fixedHeight }) => {
   return (
     <Box
       sx={{
-        height: 'calc(100vh - 64px)',
+        height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`,
         backgroundColor: 'white',
         position: 'absolute',
-        top: '64px',
+        top: `${NAVBAR_HEIGHT_PX}px`,
         left: 0,
         right: 0,
       }}

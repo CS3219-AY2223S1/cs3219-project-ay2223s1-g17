@@ -1,2 +1,1 @@
-import Resizer from './Resizer';
-export default Resizer;
+export { default as Resizer } from './Resizer';

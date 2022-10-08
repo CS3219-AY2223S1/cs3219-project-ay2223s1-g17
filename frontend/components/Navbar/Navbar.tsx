@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { FC, MouseEventHandler, ReactElement } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import useAuth from 'contexts/useAuth';
+import { NAVBAR_HEIGHT_PX } from 'utils/constants';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -12,7 +13,7 @@ const Navbar = () => {
     <nav
       style={{
         width: '100%',
-        height: '64px',
+        height: `${NAVBAR_HEIGHT_PX}px`,
         position: 'fixed',
         backgroundColor: 'white',
         top: 0,
