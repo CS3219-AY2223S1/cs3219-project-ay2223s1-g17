@@ -11,6 +11,7 @@ import { LANGUAGE, VIEW } from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
+import Stopwatch from 'components/Stopwatch';
 
 type Props = {
   view: VIEW;
@@ -34,6 +35,7 @@ const RoomOptions: FC<Props> = ({ view, language, setView, setLanguage }) => {
         top: '64px',
         height: '64px',
         left: 0,
+
         right: 0,
         zIndex: 10,
         backgroundColor: 'white',
@@ -61,22 +63,26 @@ const RoomOptions: FC<Props> = ({ view, language, setView, setLanguage }) => {
         ))}
       </ToggleButtonGroup>
 
-      <Select
-        value={language}
-        onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
-        sx={{ textTransform: 'capitalize' }}
-        SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
-      >
-        {Object.values(LANGUAGE).map((languageOption) => (
-          <MenuItem
-            key={languageOption}
-            value={languageOption}
-            sx={{ textTransform: 'capitalize' }}
-          >
-            {languageOption.toLowerCase()}
-          </MenuItem>
-        ))}
-      </Select>
+      <Stack flexDirection="row" columnGap={2}>
+        <Stopwatch />
+
+        <Select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
+          sx={{ textTransform: 'capitalize' }}
+          SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
+        >
+          {Object.values(LANGUAGE).map((languageOption) => (
+            <MenuItem
+              key={languageOption}
+              value={languageOption}
+              sx={{ textTransform: 'capitalize' }}
+            >
+              {languageOption.toLowerCase()}
+            </MenuItem>
+          ))}
+        </Select>
+      </Stack>
     </Stack>
   );
 };
