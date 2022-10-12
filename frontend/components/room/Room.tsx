@@ -4,19 +4,25 @@ import { Box, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 // code
-import CodeEditor from 'components/room/CodeEditor';
+import CodeEditor from 'components/Room/CodeEditor';
 import { useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE, VIEW } from 'utils/enums';
-import QuestionPanel from './QuestionPanel';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
-import { Resizer } from './Resizer';
+import ChatPanel from './ChatPanel';
+import QuestionPanel from './QuestionPanel';
+import Resizer from './Resizer';
+
+export type View = {
+  showQuestion: boolean;
+  showEditor: boolean;
+  showChat: boolean;
+};
 
 const Room = () => {
   const { question } = useMatchingContext();
   const { templates } = question;
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
-  const [view, setView] = useState<VIEW>(VIEW.HYBRID);
   const [width, setWidth] = useState('33%');
   const [height, setHeight] = useState('33%');
   const [cursor, setCursor] = useState('auto');
@@ -24,9 +30,50 @@ const Room = () => {
   const [horizontalColor, setHorizontalColor] = useState('rgba(0,0,0,0.1)');
   const [userSelect, setUserSelect] = useState('auto');
   const [pointerEvents, setPointerEvents] = useState('auto');
+  const [view, setView] = useState<VIEW[]>([
+    VIEW.EDITOR,
+    VIEW.QUESTION,
+    VIEW.CHAT,
+  ]);
+
+  const showQuestion = view.includes(VIEW.QUESTION);
+  const showEditor = view.includes(VIEW.EDITOR);
+  const showChat = view.includes(VIEW.CHAT);
 
   const roomOptionsProps = { view, language, setView, setLanguage };
-  const codeEditorProps = { language, templates };
+  const codeEditorProps = {
+    language,
+    templates,
+    minHeight: `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) / 2)`,
+    maxHeight: showChat
+      ? `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) * 3 / 4)`
+      : '100%',
+    minWidth: '50vw',
+    maxWidth: showQuestion ? '75vw' : '100%',
+    userSelect,
+    pointerEvents,
+    shouldDisplay: showEditor,
+  };
+  const chatBoxProps = {
+    id: 'chat-panel',
+    height: showEditor ? height : '100%',
+    userSelect,
+    pointerEvents,
+    shouldDisplay: showChat,
+  };
+  const questionPanelProps = {
+    id: 'question-panel',
+    question,
+    width,
+    cursor,
+    pointerEvents,
+    userSelect,
+    minWidth: '25vw',
+    maxWidth: '50vw',
+    overflowY: 'auto',
+    mx: 'auto',
+    shouldDisplay: showQuestion,
+  };
 
   useEffect(() => {
     const verticalResizer = document.getElementById('vertical-resizer');
@@ -131,68 +178,33 @@ const Room = () => {
     <Box sx={{ cursor }}>
       <RoomOptions {...roomOptionsProps} />
       <Stack
-        id="collab-room"
         sx={{
           mt: `${NAVBAR_HEIGHT_PX}px`,
           height: `calc(100vh - ${NAVBAR_HEIGHT_PX * 2}px)`,
         }}
         flexDirection="row"
       >
-        <Stack
-          id="question-panel"
-          sx={{
-            width,
-            cursor,
-            pointerEvents,
-            userSelect,
-            minWidth: '25vw',
-            maxWidth: '50vw',
-            overflowY: 'auto',
-            mx: 'auto',
-            display: view === VIEW.EDITOR ? 'none' : 'flex',
-          }}
-        >
-          <QuestionPanel question={question} />
-        </Stack>
+        <QuestionPanel {...questionPanelProps} />
         <Resizer
           id="vertical-resizer"
-          view={view}
+          shouldDisplay={showQuestion && (showEditor || showChat)}
           backgroundColor={verticalColor}
           isVertical
         />
-        <Stack sx={{ minWidth: '50vw', maxWidth: '75vw', flexGrow: 1 }}>
-          <Box
-            sx={{
-              minHeight: `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) / 2)`,
-              maxHeight: `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) * 3 / 4) `,
-              minWidth: '50vw',
-              maxWidth: '75vw',
-              flexGrow: 1,
-              userSelect,
-              pointerEvents,
-              ml: view === VIEW.EDITOR ? 'auto' : 0,
-              mr: view === VIEW.EDITOR ? 'auto' : 0,
-              display: view === VIEW.QUESTION ? 'none' : 'block',
-            }}
-          >
-            <CodeEditor {...codeEditorProps} />
-          </Box>
+        <Stack
+          sx={{
+            minWidth: '50vw',
+            maxWidth: showQuestion ? '75vw' : '100%',
+            flexGrow: 1,
+          }}
+        >
+          <CodeEditor {...codeEditorProps} />
           <Resizer
             id="horizontal-resizer"
-            view={view}
-            backgroundColor={verticalColor}
+            shouldDisplay={showEditor && showChat}
+            backgroundColor={horizontalColor}
           />
-
-          <Box
-            id="chat-panel"
-            sx={{
-              backgroundColor: 'gray',
-              border: '2px solid orange',
-              height,
-              userSelect,
-              pointerEvents,
-            }}
-          ></Box>
+          <ChatPanel {...chatBoxProps} />
         </Stack>
       </Stack>
     </Box>

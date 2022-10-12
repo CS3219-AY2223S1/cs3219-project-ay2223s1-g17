@@ -21,37 +21,11 @@ export type Question = {
   templates?: Record<LANGUAGE, string>;
 };
 
-type Stopwatch = {
-  time: Time;
-  isActive: boolean;
-  isPaused: boolean;
-};
-
-export type Time = {
-  hours: number;
-  minutes: number;
-  seconds: number;
-};
-
 const emptyCallBack = () => {};
-const initialTime = {
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
-};
 
 const MatchingContext = createContext<IMatchingContextValue>({
   startMatch: emptyCallBack,
   leaveRoom: emptyCallBack,
-  startTimer: emptyCallBack,
-  pauseTimer: emptyCallBack,
-  resumeTimer: emptyCallBack,
-  stopTimer: emptyCallBack,
-  stopwatch: {
-    time: initialTime,
-    isActive: false,
-    isPaused: false,
-  },
   question: {},
 });
 
@@ -60,11 +34,6 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const [count, setCount] = useState<number>();
   const [roomId, setRoomId] = useState<number>();
   const [question, setQuestion] = useState<Question>();
-  const [stopwatch, setStopwatch] = useState<Stopwatch>({
-    time: initialTime,
-    isActive: false,
-    isPaused: false,
-  });
 
   const router = useRouter();
 
@@ -105,10 +74,6 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       toast.warn('The other user has left!');
     });
 
-    socket.on('timerTick', (newStopwatch: Stopwatch) =>
-      setStopwatch(newStopwatch)
-    );
-
     return () => {
       socket.off('matchSuccess');
       socket.off('matchCountdown');
@@ -131,39 +96,16 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     router.push('/match');
   };
 
-  const startTimer = () => {
-    console.log('starting timer! in matching context');
-    console.log('s: ', socket);
-    socket?.emit('timerStart');
-  };
-
-  const stopTimer = () => {
-    socket?.emit('timerStop');
-  };
-
-  const pauseTimer = () => {
-    socket?.emit('timerPause');
-  };
-
-  const resumeTimer = () => {
-    socket?.emit('timerResume');
-  };
-
   const memoedValue = useMemo(
     () => ({
       startMatch,
       count,
       leaveRoom,
-      stopwatch,
-      startTimer,
-      stopTimer,
-      pauseTimer,
-      resumeTimer,
       roomId,
       question: question || {},
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [count, stopwatch, socket]
+    [count, socket]
   );
 
   return (
@@ -181,11 +123,6 @@ interface IMatchingContextValue {
   startMatch: (difficulty: DIFFICULTY) => void;
   count?: number;
   leaveRoom: () => void;
-  stopwatch: Stopwatch;
-  startTimer: () => void;
-  pauseTimer: () => void;
-  resumeTimer: () => void;
-  stopTimer: () => void;
   roomId?: number;
   question: Question;
 }

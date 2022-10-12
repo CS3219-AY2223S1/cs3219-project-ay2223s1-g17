@@ -10,20 +10,20 @@ import {
 import { LANGUAGE, VIEW } from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
-import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
+import ChatIcon from '@mui/icons-material/Chat';
 import Stopwatch from 'components/Stopwatch';
 
 type Props = {
-  view: VIEW;
+  view: VIEW[];
   language: LANGUAGE;
-  setView: Dispatch<SetStateAction<VIEW>>;
+  setView: Dispatch<SetStateAction<VIEW[]>>;
   setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
 };
 
 const RoomOptions: FC<Props> = ({ view, language, setView, setLanguage }) => {
   const ViewButtonMap: Record<VIEW, ReactNode> = {
     QUESTION: <DescriptionIcon />,
-    HYBRID: <VerticalSplitIcon sx={{ transform: 'rotate(180deg)' }} />,
+    CHAT: <ChatIcon />,
     EDITOR: <CodeIcon />,
   };
 
@@ -46,15 +46,16 @@ const RoomOptions: FC<Props> = ({ view, language, setView, setLanguage }) => {
     >
       <ToggleButtonGroup
         value={view}
-        onChange={(_, newView: VIEW) => setView(newView)}
+        onChange={(_, newView: VIEW[]) => {
+          console.log(newView);
+          setView(newView);
+        }}
         color="primary"
-        exclusive
       >
         {Object.values(VIEW).map((viewType) => (
           <ToggleButton
             key={viewType}
             value={viewType}
-            disabled={view === viewType}
             sx={{ display: 'flex', columnGap: 1, alignItems: 'center' }}
           >
             {ViewButtonMap[viewType]}

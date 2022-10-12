@@ -1,21 +1,25 @@
 import { FC } from 'react';
 import { Stack, Box } from '@mui/material';
-import { VIEW } from 'utils/enums';
 import { RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
 
 type Props = {
-  view: VIEW;
+  shouldDisplay: boolean;
   backgroundColor: string;
   id: string;
   isVertical?: boolean;
 };
 
-const Resizer: FC<Props> = ({ view, backgroundColor, id, isVertical }) => {
+const Resizer: FC<Props> = ({
+  shouldDisplay,
+  backgroundColor,
+  id,
+  isVertical,
+}) => {
   return (
     <Stack
       id={id}
       sx={{
-        display: view === VIEW.HYBRID ? 'flex' : 'none',
+        display: shouldDisplay ? 'flex' : 'none',
         height: isVertical ? '100%' : `${RESIZER_HEIGHT_WIDTH_PX}px`,
         width: isVertical ? `${RESIZER_HEIGHT_WIDTH_PX}px` : '100%',
         cursor: isVertical ? 'col-resize' : 'row-resize',

@@ -3,12 +3,23 @@ import Editor from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { Box } from '@mui/material';
 
 // code
 import { useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE } from 'utils/enums';
 
-const CodeEditor = ({ language, templates }: Props) => {
+const CodeEditor = ({
+  language,
+  templates,
+  minHeight,
+  maxHeight,
+  minWidth,
+  maxWidth,
+  userSelect,
+  pointerEvents,
+  shouldDisplay,
+}: Props) => {
   const { roomId } = useMatchingContext();
   const [editorContent] = useState(
     (templates && templates[language]) ?? '# start coding here'
@@ -119,14 +130,27 @@ const CodeEditor = ({ language, templates }: Props) => {
   };
 
   return socket ? (
-    <Editor
-      defaultLanguage={language.toLowerCase()}
-      defaultValue={editorContent}
-      width="auto"
-      options={options}
-      onMount={handleEditorDidMount}
-      onChange={handleChange}
-    />
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: shouldDisplay ? 'block' : 'none',
+        minHeight,
+        maxHeight,
+        minWidth,
+        maxWidth,
+        userSelect,
+        pointerEvents,
+      }}
+    >
+      <Editor
+        defaultLanguage={language.toLowerCase()}
+        defaultValue={editorContent}
+        width="auto"
+        options={options}
+        onMount={handleEditorDidMount}
+        onChange={handleChange}
+      />
+    </Box>
   ) : (
     <></>
   );
@@ -137,4 +161,11 @@ export default CodeEditor;
 interface Props {
   language: LANGUAGE;
   templates?: Record<LANGUAGE, string>;
+  minHeight: string;
+  maxHeight: string;
+  minWidth: string;
+  maxWidth: string;
+  userSelect: string;
+  pointerEvents: string;
+  shouldDisplay: boolean;
 }

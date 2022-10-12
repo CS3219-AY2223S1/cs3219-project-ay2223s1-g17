@@ -5,10 +5,30 @@ import { Question } from 'contexts/MatchingContext';
 
 type Props = {
   question: Question;
+  id: string;
+  width: string;
+  cursor: string;
+  pointerEvents: string;
+  userSelect: string;
+  minWidth: string;
+  maxWidth: string;
+  overflowY: string;
+  mx: string;
+  shouldDisplay: boolean;
 };
 
 const QuestionPanel: FC<Props> = ({
   question: { title, difficulty, description, examples, constraints },
+  id,
+  width,
+  cursor,
+  pointerEvents,
+  userSelect,
+  minWidth,
+  maxWidth,
+  overflowY,
+  mx,
+  shouldDisplay,
 }) => {
   const DifficultyColorMap: Record<DIFFICULTY, string> = {
     EASY: '#93DB9A',
@@ -17,7 +37,20 @@ const QuestionPanel: FC<Props> = ({
   };
 
   return (
-    <>
+    <Stack
+      id={id}
+      sx={{
+        width,
+        cursor,
+        pointerEvents,
+        userSelect,
+        minWidth,
+        maxWidth,
+        overflowY,
+        mx,
+        display: shouldDisplay ? 'flex' : 'none',
+      }}
+    >
       <Stack
         sx={{
           px: 1,
@@ -102,7 +135,7 @@ const QuestionPanel: FC<Props> = ({
           {constraint}
         </Typography>
       ))}
-    </>
+    </Stack>
   );
 };
 

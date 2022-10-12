@@ -23,6 +23,6 @@ export enum LANGUAGE {
 
 export enum VIEW {
   QUESTION = 'QUESTION',
-  HYBRID = 'HYBRID',
   EDITOR = 'EDITOR',
+  CHAT = 'CHAT',
 }
