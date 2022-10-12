@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
+import { registerStopwatchHandler } from './socketHandler/stopwatchHandler';
 
 const app: Express = express();
 
@@ -14,6 +15,8 @@ const io = new Server(server, {
 type ISocket = Socket & {
   roomId?: string;
 };
+
+export type InputOutput = typeof io;
 
 io.use((socket: ISocket, next) => {
   const roomId = socket.handshake.auth.roomId;
@@ -36,6 +39,8 @@ io.on('connection', (socket: ISocket) => {
   socket.on('selection', (event) => {
     socket.to(roomId).emit('selection', event);
   });
+
+  registerStopwatchHandler(io, socket, roomId);
 });
 
 const port = process.env.PORT || 8004;
