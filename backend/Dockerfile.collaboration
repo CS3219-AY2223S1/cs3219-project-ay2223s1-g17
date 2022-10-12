@@ -9,7 +9,6 @@ RUN yarn install
 
 COPY ./collaboration-service ./
 
-
 EXPOSE 8004
 
 CMD ["yarn", "dev"]

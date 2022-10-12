@@ -81,6 +81,23 @@ services:
     networks:
       - cs3219-project-network
 
+  history-service:
+    container_name: history-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.history
+    volumes:
+      - ./backend/history-service:/app/backend/history-service
+      - /app/backend/history-service/node_modules
+    ports:
+      - '8005:8005'
+    environment:
+      DB_LOCAL_URI: mongodb://mongo_db:27017/history
+    networks:
+      - cs3219-project-network
+
   mongo_db:
     container_name: mongo_db
     image: mongo:latest
