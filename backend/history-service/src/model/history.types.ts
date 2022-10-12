@@ -7,6 +7,8 @@ export interface IHistory {
   questionId: string;
   code: string;
   chat: Chat[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Add timestamp?
