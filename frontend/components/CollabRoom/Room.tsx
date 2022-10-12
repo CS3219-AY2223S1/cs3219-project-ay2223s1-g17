@@ -4,7 +4,7 @@ import { Box, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 // code
-import CodeEditor from 'components/Room/CodeEditor';
+import CodeEditor from 'components/CollabRoom/CodeEditor';
 import { useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
