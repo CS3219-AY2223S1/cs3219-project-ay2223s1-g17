@@ -17,6 +17,8 @@ services:
       NEXT_PUBLIC_MATCHING_SERVICE_PORT: 8002
       NEXT_PUBLIC_QUESTION_SERVICE_PORT: 8003
       NEXT_PUBLIC_COLLABORATION_SERVICE_PORT: 8004
+      NEXT_PUBLIC_HISTORY_SERVICE_PORT: 8005
+      NEXT_PUBLIC_COMMUNICATION_SERVICE_PORT: 8006
     networks:
       - cs3219-project-network
 
@@ -51,19 +53,6 @@ services:
     networks:
       - cs3219-project-network
 
-  collaboration-service:
-    container_name: collaboration-service
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.collaboration
-    volumes:
-      - ./backend/collaboration-service:/app/backend/collaboration-service
-      - /app/backend/collaboration-service/node_modules
-    ports:
-      - '8004:8004'
-    networks:
-      - cs3219-project-network
-
   question-service:
     container_name: question-service
     depends_on:
@@ -77,7 +66,21 @@ services:
     ports:
       - '8003:8003'
     environment:
+
       DB_LOCAL_URI: mongodb://mongo_db:27017/question
+    networks:
+      - cs3219-project-network
+
+  collaboration-service:
+    container_name: collaboration-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.collaboration
+    volumes:
+      - ./backend/collaboration-service:/app/backend/collaboration-service
+      - /app/backend/collaboration-service/node_modules
+    ports:
+      - '8004:8004'
     networks:
       - cs3219-project-network
 
@@ -95,6 +98,17 @@ services:
       - '8005:8005'
     environment:
       DB_LOCAL_URI: mongodb://mongo_db:27017/history
+
+  communication-service:
+    container_name: communication-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.communication
+    volumes:
+      - ./backend/communication-service:/app/backend/communication-service
+      - /app/backend/communication-service/node_modules
+    ports:
+      - '8006:8006'
     networks:
       - cs3219-project-network
 
