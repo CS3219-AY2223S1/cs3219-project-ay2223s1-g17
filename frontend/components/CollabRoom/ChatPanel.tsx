@@ -113,7 +113,7 @@ const ChatPanel: FC<Props> = ({
             key={`chat-${index}`}
             sx={{
               p: 1,
-              alignSelf: chat.sender === user?._id ? 'flex-start' : 'flex-end',
+              alignSelf: chat.sender === user?._id ? 'flex-end' : 'flex-start',
               order: chats.length - index,
               maxWidth: 'fit-content',
             }}
@@ -132,8 +132,8 @@ const ChatPanel: FC<Props> = ({
               sx={{
                 borderRadius:
                   chat.sender === user?._id
-                    ? '0.5rem 1rem 1rem 0px'
-                    : '1rem 0.5rem 0px 1rem',
+                    ? '1rem 0.5rem 0px 1rem'
+                    : '0.5rem 1rem 1rem 0px',
                 backgroundColor:
                   chat.sender === user?._id ? 'lightgreen' : 'lightblue',
                 p: 1,
