@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       requiresCredentials: true,
       allowError: true,
     });
-
+    console.log('user: ', res);
     setUser(res as User);
   };
   useEffect(() => {

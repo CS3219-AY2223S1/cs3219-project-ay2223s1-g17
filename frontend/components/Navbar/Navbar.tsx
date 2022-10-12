@@ -2,7 +2,7 @@ import { Button, SxProps, Theme } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { FC, MouseEventHandler, ReactElement } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
-import useAuth from 'contexts/useAuth';
+import useAuth from 'contexts/AuthContext';
 import { NAVBAR_HEIGHT_PX } from 'utils/constants';
 
 const Navbar = () => {

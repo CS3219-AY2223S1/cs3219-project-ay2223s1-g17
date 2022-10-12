@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import useAuth from 'contexts/useAuth';
+import useAuth from 'contexts/AuthContext';
 import { useRouter } from 'next/router';
 import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
 import { toast } from 'react-toastify';
