@@ -3,8 +3,8 @@ import { IHistory, IHistoryModel } from './history.types';
 
 const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
   {
-    users: {
-      type: [String],
+    user: {
+      type: String,
       required: true,
     },
     questionId: {

@@ -3,7 +3,7 @@ import { LeanDocument, Model, Types } from 'mongoose';
 // Each user needs to have an array of history IDs associated
 // to them.
 export interface IHistory {
-  users: string[];
+  user: string;
   questionId: string;
   code: string;
   chat: Chat[];
