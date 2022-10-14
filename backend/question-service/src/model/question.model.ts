@@ -69,13 +69,17 @@ const getQuestionsCount = async () => {
 };
 
 questionSchema.static(
-  'findQuestionByDifficulty',
+  'findQuestionsByDifficulty',
   /**
-   * Attempts to find a Question randomly based on difficulty specified
+   * Attempts to find some number of Question(s) randomly based on difficulty specified
    *
    * @param difficulty Difficulty of a Question
+   * @param numQuestions Number of Questions to find, defaults to 2
    */
-  async function findQuestionByDifficulty(difficulty: DIFFICULTY) {
+  async function findQuestionsByDifficulty(
+    difficulty: DIFFICULTY,
+    numQuestions: number = 2
+  ) {
     if (!difficulty) throw new Error('Difficulty is required');
 
     const count = await getQuestionsCount();
@@ -84,10 +88,10 @@ questionSchema.static(
 
     const questions = await Question.aggregate([
       { $match: { difficulty } },
-      { $sample: { size: 1 } },
+      { $sample: { size: numQuestions } },
     ]);
 
-    return formatQuestion(questions[0]);
+    return questions.map((question) => formatQuestion(question));
   }
 );
 

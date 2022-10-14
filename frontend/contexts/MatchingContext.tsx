@@ -12,28 +12,29 @@ import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 import { DIFFICULTY, LANGUAGE } from 'utils/enums';
 
-export type Question = {
-  title?: string;
-  difficulty?: DIFFICULTY;
-  description?: string;
-  examples?: { input: string; output: string; explanation: string }[];
-  constraints?: string[];
-  templates?: Record<LANGUAGE, string>;
-};
+export type Question = Partial<{
+  _id: string;
+  title: string;
+  difficulty: DIFFICULTY;
+  description: string;
+  examples: { input: string; output: string; explanation: string }[];
+  constraints: string[];
+  templates: Record<LANGUAGE, string>;
+}>;
 
 const emptyCallBack = () => {};
 
 const MatchingContext = createContext<IMatchingContextValue>({
   startMatch: emptyCallBack,
   leaveRoom: emptyCallBack,
-  question: {},
+  questions: [{}],
 });
 
 export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket>();
   const [count, setCount] = useState<number>();
   const [roomId, setRoomId] = useState<number>();
-  const [question, setQuestion] = useState<Question>();
+  const [questions, setQuestions] = useState<Question[]>();
 
   const router = useRouter();
 
@@ -61,11 +62,11 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       setCount(counter);
     });
 
-    socket.on('matchSuccess', ({ id, question }) => {
+    socket.on('matchSuccess', ({ id, questions }) => {
       toast.success('A match has been found!');
       setCount(undefined);
       setRoomId(id);
-      setQuestion(question);
+      setQuestions(questions);
       router.push('/room');
     });
 
@@ -102,7 +103,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       count,
       leaveRoom,
       roomId,
-      question: question || {},
+      questions: questions || [{}],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, socket]
@@ -124,5 +125,5 @@ interface IMatchingContextValue {
   count?: number;
   leaveRoom: () => void;
   roomId?: number;
-  question: Question;
+  questions: Question[];
 }
