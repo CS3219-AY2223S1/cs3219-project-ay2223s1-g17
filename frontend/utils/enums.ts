@@ -2,6 +2,7 @@ export enum SERVICE {
   USER = 'USER',
   MATCHING = 'MATCHING',
   QUESTION = 'QUESTION',
+  HISTORY = 'HISTORY',
 }
 
 export enum HTTP_METHOD {

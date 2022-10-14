@@ -6,12 +6,15 @@ import { useEffect, useState } from 'react';
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
 import { useMatchingContext } from 'contexts/MatchingContext';
-import { LANGUAGE, VIEW } from 'utils/enums';
+import { HTTP_METHOD, LANGUAGE, SERVICE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
-import ChatPanel from './ChatPanel';
+import ChatPanel, { Chat } from './ChatPanel';
 import QuestionPanel from './QuestionPanel';
 import Resizer from './Resizer';
+import { apiCall } from 'utils/helpers';
+import useAuth from 'contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 export type View = {
   showQuestion: boolean;
@@ -20,8 +23,9 @@ export type View = {
 };
 
 const Room = () => {
-  const { question } = useMatchingContext();
-  const { templates } = question;
+  const { user } = useAuth();
+  const { questions } = useMatchingContext();
+  const [questionNumber, setQuestionNumber] = useState(0);
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [width, setWidth] = useState('33%');
   const [height, setHeight] = useState('33%');
@@ -35,15 +39,54 @@ const Room = () => {
     VIEW.QUESTION,
     VIEW.CHAT,
   ]);
+  const [chats, setChats] = useState<Chat[]>([]);
 
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
   const showChat = view.includes(VIEW.CHAT);
 
-  const roomOptionsProps = { view, language, setView, setLanguage };
+  const handleSaveHistory = async () => {
+    // await apiCall({
+    //   path: '/',
+    //   service: SERVICE.HISTORY,
+    //   method: HTTP_METHOD.POST,
+    //   requiresCredentials: true,
+    //   body: {
+    //     user,
+    //     questionId: questions[questionNumber]._id,
+    //     code: editorContent,
+    //     chats,
+    //   },
+    //   onSuccess: () => toast.success('Successfully saved to history!'),
+    // });
+    handleNextQuestion();
+    toast.success('we did it bois');
+  };
+
+  const handleNextQuestion = () => {
+    console.log('prompting to save history');
+    if (questionNumber === questions.length - 1) {
+      return console.log('exit');
+    }
+    console.log('prompting to continue to next question');
+    console.log('go to next question');
+    setQuestionNumber((prev) => prev + 1);
+    setChats([]);
+  };
+
+  const roomOptionsProps = {
+    view,
+    language,
+    questionNumber,
+    setView,
+    setLanguage,
+    handleSaveHistory,
+  };
   const codeEditorProps = {
     language,
-    templates,
+    questionNumber,
+    editorContent:
+      questions[questionNumber]?.templates?.[language] ?? '# start coding here',
     minHeight: `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) / 2)`,
     maxHeight: showChat
       ? `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) * 3 / 4)`
@@ -60,10 +103,12 @@ const Room = () => {
     userSelect,
     pointerEvents,
     shouldDisplay: showChat,
+    chats,
+    setChats,
   };
   const questionPanelProps = {
     id: 'question-panel',
-    question,
+    question: questions[questionNumber],
     width,
     cursor,
     pointerEvents,

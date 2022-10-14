@@ -15,7 +15,7 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
       type: String,
       required: true,
     },
-    chat: {
+    chats: {
       type: [
         {
           sender: {

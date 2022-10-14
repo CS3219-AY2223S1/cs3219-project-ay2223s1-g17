@@ -11,7 +11,8 @@ import { LANGUAGE } from 'utils/enums';
 
 const CodeEditor = ({
   language,
-  templates,
+  questionNumber,
+  editorContent,
   minHeight,
   maxHeight,
   minWidth,
@@ -21,9 +22,6 @@ const CodeEditor = ({
   shouldDisplay,
 }: Props) => {
   const { roomId } = useMatchingContext();
-  const [editorContent] = useState(
-    (templates && templates[language]) ?? '# start coding here'
-  );
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
@@ -143,6 +141,7 @@ const CodeEditor = ({
       }}
     >
       <Editor
+        key={questionNumber}
         defaultLanguage={language.toLowerCase()}
         defaultValue={editorContent}
         width="auto"
@@ -160,7 +159,8 @@ export default CodeEditor;
 
 interface Props {
   language: LANGUAGE;
-  templates?: Record<LANGUAGE, string>;
+  questionNumber: number;
+  editorContent: string;
   minHeight: string;
   maxHeight: string;
   minWidth: string;

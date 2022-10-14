@@ -27,29 +27,32 @@ io.use((socket: ISocket, next) => {
 });
 
 type Chat = {
-  sender: string;
+  senderId: string;
+  senderName: string;
   message: string;
+  time: string;
+  isConsecutive?: boolean;
 };
-const chatLogs: Record<string, Chat[]> = {};
+
+type UpdateChatParams = {
+  chats: Chat[];
+  newChat: Chat;
+};
 
 io.on('connection', (socket: ISocket) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const roomId = socket.roomId!;
   socket.join(roomId);
 
-  socket.on('otherUsername', (username: string) =>
-    socket.to(roomId).emit('otherUsername', username)
-  );
-
-  socket.on('message', (chat: Chat) => {
-    console.log('msg: ', chat.message);
-    let chatLog = chatLogs[roomId];
-    if (!chatLog) {
-      chatLog = [];
-      chatLogs[roomId] = [];
-    }
-    chatLog.push(chat);
-    io.to(roomId).emit('message', chatLog);
+  socket.on('message', (params: UpdateChatParams) => {
+    const { chats, newChat } = params;
+    chats.push({
+      ...newChat,
+      isConsecutive:
+        chats.length > 0 &&
+        chats[chats.length - 1].senderId === newChat.senderId,
+    });
+    io.to(roomId).emit('message', chats);
   });
 });
 
