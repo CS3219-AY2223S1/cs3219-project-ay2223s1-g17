@@ -1,7 +1,15 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import { useMatchingContext } from 'contexts/MatchingContext';
 import useAuth from 'contexts/AuthContext';
-import { FC, FormEvent, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  FC,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
+import SendIcon from '@mui/icons-material/Send';
 import { io, Socket } from 'socket.io-client';
 
 type Props = {
@@ -10,11 +18,16 @@ type Props = {
   userSelect: string;
   pointerEvents: string;
   shouldDisplay: boolean;
+  chats: Chat[];
+  setChats: Dispatch<SetStateAction<Chat[]>>;
 };
 
-type Chat = {
-  sender: string;
+export type Chat = {
+  senderId: string;
+  senderName: string;
   message: string;
+  time: string;
+  isConsecutive?: boolean;
 };
 
 const ChatPanel: FC<Props> = ({
@@ -23,13 +36,13 @@ const ChatPanel: FC<Props> = ({
   userSelect,
   pointerEvents,
   shouldDisplay,
+  chats,
+  setChats,
 }) => {
   const { roomId } = useMatchingContext();
   const { user } = useAuth();
-  const [chats, setChats] = useState<Chat[]>([]);
   const [socket, setSocket] = useState<Socket>();
   const [message, setMessage] = useState('');
-  const [otherUsername, setOtherUsername] = useState('');
 
   useEffect(() => {
     const sock = io(
@@ -39,16 +52,9 @@ const ChatPanel: FC<Props> = ({
       }
     );
 
-    if (!roomId) {
-      alert('Room not found, redirecting');
-      window.location.replace('/');
-    }
-
     sock.auth = { roomId };
     sock.connect();
     setSocket(sock);
-
-    sock.emit('otherUsername', user?.username ?? 'Anonymous');
 
     sock.on('message', (newChats: Chat[]) => {
       setChats(newChats);
@@ -60,20 +66,19 @@ const ChatPanel: FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (socket && !otherUsername) {
-      socket.on('otherUsername', (username: string) =>
-        setOtherUsername(username)
-      );
-    }
-  }, [socket, otherUsername]);
-
   const handleChat = (e: FormEvent) => {
     e.preventDefault();
-    socket?.emit('message', {
-      sender: user?._id ?? 'anonymous',
+    const newChat: Chat = {
+      senderId: user?._id ?? 'anonymous',
+      senderName: user?.username ?? 'anonymous',
+      time: new Date().toLocaleTimeString('en-sg', {
+        hour12: false,
+        hour: 'numeric',
+        minute: 'numeric',
+      }),
       message,
-    });
+    };
+    socket?.emit('message', { chats, newChat });
     setMessage('');
   };
 
@@ -89,15 +94,6 @@ const ChatPanel: FC<Props> = ({
       justifyContent="space-between"
     >
       <Stack
-        sx={{
-          borderBottom: '1px solid black',
-          p: 1,
-          width: '100%',
-        }}
-      >
-        <Typography color="black">{otherUsername}</Typography>
-      </Stack>
-      <Stack
         id="chat-box"
         sx={{
           backgroundColor: 'white',
@@ -105,6 +101,7 @@ const ChatPanel: FC<Props> = ({
           wordBreak: 'break-word',
           overflowY: 'auto',
           height: '100%',
+          p: 2,
         }}
         flexDirection="column-reverse"
       >
@@ -112,71 +109,95 @@ const ChatPanel: FC<Props> = ({
           <Stack
             key={`chat-${index}`}
             sx={{
-              p: 1,
-              alignSelf: chat.sender === user?._id ? 'flex-start' : 'flex-end',
+              alignSelf:
+                chat.senderId === user?._id ? 'flex-end' : 'flex-start',
               order: chats.length - index,
+              minWidth: '10%',
               maxWidth: 'fit-content',
+              position: 'relative',
+              ml: chat.senderId === user?._id ? '10%' : 0,
+              mr: chat.senderId === user?._id ? 0 : '10%',
+              mt: chat.isConsecutive ? 0.5 : index === 0 ? 0 : 2,
+              p: 1,
+              borderRadius: '0.5rem',
+              backgroundColor:
+                chat.senderId === user?._id ? 'lightgreen' : 'lightblue',
             }}
           >
-            {/* <Typography
-              variant="caption"
+            <Typography
+              variant="subtitle2"
+              fontSize={18}
               sx={{
                 alignSelf:
-                  chat.sender === user?._id ? 'flex-start' : 'flex-end',
-                px: 1,
+                  chat.senderId === user?._id ? 'flex-end' : 'flex-start',
+                display:
+                  chat.isConsecutive || chat.senderId === user?._id
+                    ? 'none'
+                    : 'inline-block',
+                mb: 0.25,
               }}
             >
-              {chat.sender}
-            </Typography> */}
+              {chat.senderName}
+            </Typography>
+            <Typography variant="body1" color="rgba(0,0,0,0.8)">
+              {chat.message}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                alignSelf: 'flex-end',
+                mt: 0.125,
+              }}
+            >
+              {chat.time}
+            </Typography>
             <Box
               sx={{
-                borderRadius:
-                  chat.sender === user?._id
-                    ? '0.5rem 1rem 1rem 0px'
-                    : '1rem 0.5rem 0px 1rem',
-                backgroundColor:
-                  chat.sender === user?._id ? 'lightgreen' : 'lightblue',
-                p: 1,
-                minWidth: '3rem',
+                position: 'absolute',
+                top: 0,
+                right: chat.senderId === user?._id ? '-8px' : 'auto',
+                left: chat.senderId === user?._id ? 'auto' : '-8px',
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderTop: `8px solid ${
+                  chat.senderId === user?._id ? 'lightgreen' : 'lightblue'
+                }`,
+                height: 0,
+                width: 0,
               }}
-            >
-              <Typography variant="body1" textAlign="center">
-                {chat.message}
-              </Typography>
-            </Box>
+            />
           </Stack>
         ))}
       </Stack>
       <form onSubmit={handleChat}>
         <Stack
+          id="chat-input-container"
           flexDirection="row"
           columnGap={1}
           sx={{
-            p: 2,
+            m: 2,
+            pl: 2,
+            pr: 0.5,
+            borderRadius: '2rem',
+            outline: '1px solid black',
           }}
         >
           <input
             type="text"
             style={{
-              width: '80%',
-              padding: '4px 8px',
-              background: 'lightgray',
-              borderRadius: '4px',
-              border: '1px solid black',
-              display: 'inline-block',
+              flexGrow: 1,
+              backgroundColor: 'inherit',
               color: 'black',
+              border: 'none',
+              outline: 'none',
+              fontSize: 16,
             }}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <Button
-            variant="contained"
-            sx={{ flexGrow: 1 }}
-            disabled={message === ''}
-            type="submit"
-          >
-            Send
-          </Button>
+          <IconButton disabled={message === ''} type="submit">
+            <SendIcon />
+          </IconButton>
         </Stack>
       </form>
     </Stack>
