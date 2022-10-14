@@ -64,20 +64,21 @@ const AuthForm = () => {
 
   return (
     <Stack
-      sx={{ alignItems: 'center', columnGap: 8, height: '100%' }}
-      flexDirection="row"
+      spacing={2}
+      sx={{ justifyContent:'center', alignItems: 'center',  height: '100%' }}
+      
     >
-      <Box
-        component="img"
-        src="/assets/login.png"
-        alt="auth"
-        sx={{
-          width: '50%',
-          objectFit: 'contain',
-        }}
-      />
-      <form onSubmit={handleSubmit} style={{ width: '40%' }}>
-        <Stack spacing={2}>
+      <form onSubmit={handleSubmit} >
+        <Stack spacing={2} sx={{
+          filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+          borderRadius: '12px',
+          bgcolor: 'white',
+          height: '400px',
+          justifyContent:'center',
+          columnGap: 8,
+          paddingY: 4,
+          paddingX: 8,
+        }}>
           <Typography
             variant="h6"
             align="center"
@@ -130,7 +131,7 @@ const AuthForm = () => {
             variant="contained"
             size="large"
             sx={{
-              backgroundColor: '#8AA0D2',
+              backgroundColor: '#2365C8',
               borderRadius: '12px',
               filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
             }}
@@ -156,7 +157,7 @@ const AuthForm = () => {
               color: 'black',
               textTransform: 'none',
               marginTop: '32px',
-              fontWeight: 'bold',
+              fontWeight: 'medium',
             }}
             onClick={handleSwitchMode}
           >
