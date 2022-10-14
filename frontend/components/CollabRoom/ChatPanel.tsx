@@ -121,12 +121,11 @@ const ChatPanel: FC<Props> = ({
               p: 1,
               borderRadius: '0.5rem',
               backgroundColor:
-                chat.senderId === user?._id ? 'lightgreen' : 'lightblue',
+                chat.senderId === user?._id ? '#BFFFBE' : '#2370C8',
             }}
           >
             <Typography
               variant="subtitle2"
-              fontSize={18}
               sx={{
                 alignSelf:
                   chat.senderId === user?._id ? 'flex-end' : 'flex-start',
@@ -135,11 +134,15 @@ const ChatPanel: FC<Props> = ({
                     ? 'none'
                     : 'inline-block',
                 mb: 0.25,
+                color: 'white',
               }}
             >
               {chat.senderName}
             </Typography>
-            <Typography variant="body1" color="rgba(0,0,0,0.8)">
+            <Typography
+              variant="body1"
+              color={chat.senderId === user?._id ? 'rgba(0,0,0,0.8)' : 'white'}
+            >
               {chat.message}
             </Typography>
             <Typography
@@ -147,6 +150,7 @@ const ChatPanel: FC<Props> = ({
               sx={{
                 alignSelf: 'flex-end',
                 mt: 0.125,
+                color: chat.senderId === user?._id ? 'black' : 'white',
               }}
             >
               {chat.time}
@@ -160,7 +164,7 @@ const ChatPanel: FC<Props> = ({
                 borderLeft: '8px solid transparent',
                 borderRight: '8px solid transparent',
                 borderTop: `8px solid ${
-                  chat.senderId === user?._id ? 'lightgreen' : 'lightblue'
+                  chat.senderId === user?._id ? '#BFFFBE' : '#2370C8'
                 }`,
                 height: 0,
                 width: 0,
@@ -195,7 +199,7 @@ const ChatPanel: FC<Props> = ({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <IconButton disabled={message === ''} type="submit">
+          <IconButton disabled={message === ''} type="submit" color="primary">
             <SendIcon />
           </IconButton>
         </Stack>

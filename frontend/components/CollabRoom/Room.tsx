@@ -15,6 +15,8 @@ import Resizer from './Resizer';
 import { apiCall } from 'utils/helpers';
 import useAuth from 'contexts/AuthContext';
 import { toast } from 'react-toastify';
+import { io, Socket } from 'socket.io-client';
+import { useRouter } from 'next/router';
 
 export type View = {
   showQuestion: boolean;
@@ -23,7 +25,10 @@ export type View = {
 };
 
 const Room = () => {
+  const { roomId } = useMatchingContext();
   const { user } = useAuth();
+  const router = useRouter();
+  const [socket, setSocket] = useState<Socket>();
   const { questions } = useMatchingContext();
   const [questionNumber, setQuestionNumber] = useState(0);
   const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
@@ -40,6 +45,10 @@ const Room = () => {
     VIEW.CHAT,
   ]);
   const [chats, setChats] = useState<Chat[]>([]);
+  const [open, setOpen] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [otherConfirm, setOtherConfirm] = useState(false);
+  const [otherReject, setOtherReject] = useState(false);
 
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
@@ -59,28 +68,42 @@ const Room = () => {
     //   },
     //   onSuccess: () => toast.success('Successfully saved to history!'),
     // });
-    handleNextQuestion();
-    toast.success('we did it bois');
   };
 
   const handleNextQuestion = () => {
-    console.log('prompting to save history');
-    if (questionNumber === questions.length - 1) {
-      return console.log('exit');
-    }
-    console.log('prompting to continue to next question');
-    console.log('go to next question');
-    setQuestionNumber((prev) => prev + 1);
-    setChats([]);
+    socket?.emit('openNextQuestionPrompt');
+  };
+
+  const handleAccept = () => {
+    setConfirm(true);
+    socket?.emit('acceptNextQuestion');
+  };
+
+  const handleReject = () => {
+    setOpen(false);
+    resetConfirmations();
+    socket?.emit('rejectNextQuestion');
+  };
+
+  const resetConfirmations = () => {
+    setConfirm(false);
+    setOtherConfirm(false);
+    setOtherReject(false);
   };
 
   const roomOptionsProps = {
     view,
-    language,
+    // language,
     questionNumber,
+    maxQuestionNumber: questions.length - 1,
     setView,
-    setLanguage,
-    handleSaveHistory,
+    // setLanguage,
+    handleNextQuestion,
+    open,
+    confirm,
+    handleConfirm: handleAccept,
+    otherReject,
+    handleReject,
   };
   const codeEditorProps = {
     language,
@@ -119,6 +142,59 @@ const Room = () => {
     mx: 'auto',
     shouldDisplay: showQuestion,
   };
+
+  useEffect(() => {
+    const sock = io(
+      `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
+      {
+        autoConnect: false,
+      }
+    );
+
+    if (!roomId) {
+      alert('Room not found, redirecting');
+      window.location.replace('/');
+    }
+
+    sock.auth = { roomId };
+    sock.connect();
+    setSocket(sock);
+
+    sock.on('openNextQuestionPrompt', () => setOpen(true));
+
+    sock.on('acceptNextQuestion', () => {
+      setOtherConfirm(true);
+    });
+
+    sock.on('rejectNextQuestion', () => {
+      setOtherReject(true);
+      setTimeout(() => {
+        setOpen(false);
+        resetConfirmations();
+      }, 3000);
+    });
+
+    return () => {
+      sock.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const endSession = async () => {
+      await handleSaveHistory();
+      return router.push('/');
+    };
+
+    if (confirm && otherConfirm) {
+      setOpen(false);
+      if (questionNumber === questions.length - 1) endSession();
+
+      setQuestionNumber((prev) => prev + 1);
+      setChats([]);
+      return resetConfirmations();
+    }
+  }, [confirm, otherConfirm, setOpen, questions, questionNumber, router]);
 
   useEffect(() => {
     const verticalResizer = document.getElementById('vertical-resizer');

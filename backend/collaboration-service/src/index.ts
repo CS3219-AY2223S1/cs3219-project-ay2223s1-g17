@@ -40,6 +40,18 @@ io.on('connection', (socket: ISocket) => {
     socket.to(roomId).emit('selection', event);
   });
 
+  socket.on('openNextQuestionPrompt', () => {
+    io.to(roomId).emit('openNextQuestionPrompt');
+  });
+
+  socket.on('acceptNextQuestion', () => {
+    socket.to(roomId).emit('acceptNextQuestion');
+  });
+
+  socket.on('rejectNextQuestion', () => {
+    socket.to(roomId).emit('rejectNextQuestion');
+  });
+
   registerStopwatchHandler(io, socket, roomId);
 });
 

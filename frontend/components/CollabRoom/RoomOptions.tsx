@@ -1,59 +1,68 @@
-import { FC, Dispatch, SetStateAction, ReactNode, useState } from 'react';
+import { FC, Dispatch, SetStateAction, ReactNode } from 'react';
 import {
+  Button,
   IconButton,
-  MenuItem,
-  Select,
+  // MenuItem,
+  // Select,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { LANGUAGE, VIEW } from 'utils/enums';
+import {
+  // LANGUAGE,
+  VIEW,
+} from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChatIcon from '@mui/icons-material/Chat';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Stopwatch from 'components/Stopwatch';
-import SaveHistoryPrompt from './SaveHistoryPrompt';
+import NextQuestionPrompt from './NextQuestionPrompt';
 
 type Props = {
   view: VIEW[];
-  language: LANGUAGE;
+  // language: LANGUAGE;
   questionNumber: number;
+  maxQuestionNumber: number;
   setView: Dispatch<SetStateAction<VIEW[]>>;
-  setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
-  handleSaveHistory: () => Promise<void>;
+  // setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
+  handleNextQuestion: () => void;
+  open: boolean;
+  confirm: boolean;
+  handleConfirm: () => void;
+  otherReject: boolean;
+  handleReject: () => void;
 };
 
 const RoomOptions: FC<Props> = ({
   view,
-  language,
+  // language,
   questionNumber,
+  maxQuestionNumber,
   setView,
-  setLanguage,
-  handleSaveHistory,
+  // setLanguage,
+  handleNextQuestion,
+  open,
+  confirm,
+  handleConfirm,
+  otherReject,
+  handleReject,
 }) => {
   const ViewButtonMap: Record<VIEW, ReactNode> = {
     QUESTION: <DescriptionIcon />,
     CHAT: <ChatIcon />,
     EDITOR: <CodeIcon />,
   };
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <>
-      <SaveHistoryPrompt
+      <NextQuestionPrompt
+        isLastQuestion={questionNumber === maxQuestionNumber}
         open={open}
-        onClose={handleClose}
-        handleSaveHistory={handleSaveHistory}
+        confirm={confirm}
+        handleConfirm={handleConfirm}
+        otherReject={otherReject}
+        handleClose={handleReject}
       />
       <Stack
         sx={{
@@ -94,13 +103,29 @@ const RoomOptions: FC<Props> = ({
           <Typography color="black" variant="h6">
             Question {questionNumber + 1}
           </Typography>
-          <IconButton onClick={handleOpen} disableRipple>
-            <NavigateNextIcon />
-          </IconButton>
+          {questionNumber < maxQuestionNumber ? (
+            <IconButton onClick={handleNextQuestion} disableRipple>
+              <NavigateNextIcon />
+            </IconButton>
+          ) : (
+            <></>
+          )}
         </Stack>
 
         <Stack flexDirection="row" columnGap={2}>
           <Stopwatch />
+          {questionNumber === maxQuestionNumber ? (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleNextQuestion}
+              disableRipple
+            >
+              End Session
+            </Button>
+          ) : (
+            <></>
+          )}
 
           {/* <Select
             value={language}
