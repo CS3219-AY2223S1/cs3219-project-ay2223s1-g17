@@ -32,6 +32,11 @@ a {
   src: url(../fonts/digital-7.ttf);
 }
 
+@font-face {
+  font-family: 'Raleway';
+  src: url(../fonts/Raleway-VariableFont_wght.ttf);
+}
+
 @keyframes loading {
   0% {
     transform: rotate(0deg);
