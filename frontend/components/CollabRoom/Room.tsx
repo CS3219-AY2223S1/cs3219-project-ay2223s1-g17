@@ -1,7 +1,7 @@
 // packages
 
 import { Box, Stack } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
@@ -17,6 +17,7 @@ import useAuth from 'contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
+import { editor } from 'monaco-editor';
 
 export type View = {
   showQuestion: boolean;
@@ -54,20 +55,24 @@ const Room = () => {
   const showEditor = view.includes(VIEW.EDITOR);
   const showChat = view.includes(VIEW.CHAT);
 
+  const editorContent =
+    questions[questionNumber]?.templates?.[language] ?? '# start coding here';
+  const editorRef = useRef<editor.IStandaloneCodeEditor>();
+
   const handleSaveHistory = async () => {
-    // await apiCall({
-    //   path: '/',
-    //   service: SERVICE.HISTORY,
-    //   method: HTTP_METHOD.POST,
-    //   requiresCredentials: true,
-    //   body: {
-    //     user,
-    //     questionId: questions[questionNumber]._id,
-    //     code: editorContent,
-    //     chats,
-    //   },
-    //   onSuccess: () => toast.success('Successfully saved to history!'),
-    // });
+    await apiCall({
+      path: '/save',
+      service: SERVICE.HISTORY,
+      method: HTTP_METHOD.POST,
+      requiresCredentials: true,
+      body: {
+        user: user?._id,
+        questionId: questions[questionNumber]._id,
+        code: editorRef.current?.getValue() ?? editorContent,
+        chats,
+      },
+      onSuccess: () => toast.success('Successfully saved session to history!'),
+    });
   };
 
   const handleNextQuestion = () => {
@@ -108,8 +113,8 @@ const Room = () => {
   const codeEditorProps = {
     language,
     questionNumber,
-    editorContent:
-      questions[questionNumber]?.templates?.[language] ?? '# start coding here',
+    editorContent,
+    editorRef,
     minHeight: `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) / 2)`,
     maxHeight: showChat
       ? `calc((100vh - ${NAVBAR_HEIGHT_PX * 2}px) * 3 / 4)`
@@ -181,20 +186,24 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
-    const endSession = async () => {
-      await handleSaveHistory();
-      return router.push('/');
-    };
-
-    if (confirm && otherConfirm) {
+    const moveToNextQuestion = async () => {
       setOpen(false);
-      if (questionNumber === questions.length - 1) endSession();
+      await handleSaveHistory();
+
+      if (questionNumber === questions.length - 1) {
+        return router.push('/');
+      }
 
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
-      return resetConfirmations();
+      resetConfirmations();
+    };
+
+    if (confirm && otherConfirm) {
+      moveToNextQuestion();
     }
-  }, [confirm, otherConfirm, setOpen, questions, questionNumber, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirm, otherConfirm]);
 
   useEffect(() => {
     const verticalResizer = document.getElementById('vertical-resizer');

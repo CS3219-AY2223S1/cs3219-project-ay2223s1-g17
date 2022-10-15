@@ -1,7 +1,7 @@
 // packages
 import Editor from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
-import { useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Box } from '@mui/material';
 
@@ -13,6 +13,7 @@ const CodeEditor = ({
   language,
   questionNumber,
   editorContent,
+  editorRef,
   minHeight,
   maxHeight,
   minWidth,
@@ -22,7 +23,6 @@ const CodeEditor = ({
   shouldDisplay,
 }: Props) => {
   const { roomId } = useMatchingContext();
-  const editorRef = useRef<editor.IStandaloneCodeEditor>();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
   const [options] = useState<editor.IStandaloneEditorConstructionOptions>({
@@ -161,6 +161,7 @@ interface Props {
   language: LANGUAGE;
   questionNumber: number;
   editorContent: string;
+  editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
   minHeight: string;
   maxHeight: string;
   minWidth: string;

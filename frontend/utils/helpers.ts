@@ -15,6 +15,9 @@ const servicePortMap: Record<SERVICE, number> = {
   USER: Number(process.env.NEXT_PUBLIC_USER_SERVICE_PORT),
   MATCHING: Number(process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT),
   QUESTION: Number(process.env.NEXT_PUBLIC_QUESTION_SERVICE_PORT),
+  COLLABORATION: Number(process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT),
+  HISTORY: Number(process.env.NEXT_PUBLIC_HISTORY_SERVICE_PORT),
+  COMMUNICATION: Number(process.env.NEXT_PUBLIC_COMMUNICATION_SERVICE_PORT),
 };
 
 export const apiCall = async ({
