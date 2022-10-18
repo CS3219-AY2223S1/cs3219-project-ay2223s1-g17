@@ -13,7 +13,7 @@ import { timers } from '../timers';
 import fetch from 'node-fetch';
 
 const onMatchStart =
-  (_: InputOutput, socket: Socket) => async (difficulty: DIFFICULTY) => {
+  (io: InputOutput, socket: Socket) => async (difficulty: DIFFICULTY) => {
     const waitRooms = (await WaitRoomModel.findAll({
       where: {
         difficulty,
@@ -61,13 +61,13 @@ const onMatchStart =
       const res = await fetch(
         `http://question-service:8003/question/get/difficulty/${difficulty}`
       );
-      const question = await res.json();
+      const questions = await res.json();
 
       // notify both users
       socket
         .to(waitingSocketId)
-        .emit('matchSuccess', { id: waitRoomId, question: question });
-      socket.emit('matchSuccess', { id: waitRoomId, question: question });
+        .emit('matchSuccess', { id: waitRoomId, questions });
+      socket.emit('matchSuccess', { id: waitRoomId, questions });
       return;
     }
 

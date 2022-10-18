@@ -32,8 +32,9 @@ export type FormattedQuestionedDocument = LeanDocument<
 export interface IQuestionMethods {}
 
 export interface IQuestionModel extends Model<IQuestion, {}, IQuestionMethods> {
-  findQuestionByDifficulty(
-    difficulty: DIFFICULTY
+  findQuestionsByDifficulty(
+    difficulty: DIFFICULTY,
+    numQuestions?: number
   ): Promise<FormattedQuestionedDocument>;
   findQuestionById(id: string): Promise<QuestionDocument>;
   findAllQuestions(): Promise<QuestionDocument[]>;

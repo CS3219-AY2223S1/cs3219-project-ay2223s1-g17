@@ -6,18 +6,17 @@ import jwt from 'jsonwebtoken';
 const userSchema = new mongoose.Schema<IUser, IUserModel>({
   username: {
     type: String,
-    required: true,
     unique: true,
-    minLength: 3,
-    maxLength: 12,
+    required: [true, 'Username is required'],
+    minLength: [3, 'Username is too short'],
+    maxLength: [12, 'Username is too long'],
   },
   password: {
     type: String,
-    required: true,
-    minLength: 6,
     select: false,
+    required: [true, 'Password is required'],
+    minLength: [6, 'Password is too short'],
   },
-  friends: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
 });
 
 userSchema.pre('save', async function (callback) {
@@ -52,9 +51,6 @@ userSchema.static(
    * @throws Error if credentials are missing
    */
   async function createUser(username: string, password: string) {
-    if (!username) throw new Error('Username is required');
-    if (!password) throw new Error('Password is required');
-
     await User.create({ username, password });
   }
 );
@@ -71,9 +67,6 @@ userSchema.static(
    * @throws Error if verification is unsuccessful
    */
   async function findVerifiedUser(username: string, password: string) {
-    if (!username) throw new Error('Username is required');
-    if (!password) throw new Error('Password is required');
-
     const user = await User.findOne({ username }).select('password');
     if (!user) throw new Error(`User ${username} not found`);
 
@@ -95,8 +88,6 @@ userSchema.static(
    * @throws Error if no user is found
    */
   async function findUserByUsername(username: string) {
-    if (!username) throw new Error('Username is required');
-
     const user = await User.findOne({ username }).exec();
 
     if (!user) throw new Error(`User ${username} not found`);

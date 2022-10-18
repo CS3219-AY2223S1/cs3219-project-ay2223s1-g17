@@ -15,16 +15,27 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
       type: String,
       required: true,
     },
-    chat: {
+    chats: {
       type: [
         {
-          sender: {
+          senderId: {
+            type: String,
+            required: true,
+          },
+          senderName: {
             type: String,
             required: true,
           },
           message: {
             type: String,
             required: true,
+          },
+          time: {
+            type: String,
+            required: true,
+          },
+          isConsecutive: {
+            type: Boolean,
           },
         },
       ],

@@ -11,9 +11,12 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Navbar />
       <Component {...pageProps} />
       <ToastContainer
-        position="top-center"
+        position="bottom-left"
+        draggable={false}
         pauseOnHover={false}
         theme="colored"
+        newestOnTop
+        closeOnClick
       />
     </AppContext>
   );

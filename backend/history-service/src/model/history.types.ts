@@ -6,7 +6,7 @@ export interface IHistory {
   user: string;
   questionId: string;
   code: string;
-  chat: Chat[];
+  chats: Chat[];
   createdAt: Date;
   updatedAt: Date;
 }

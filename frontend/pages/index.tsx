@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
 import PageWrapper from 'components/PageWrapper';
-import useAuth from 'contexts/useAuth';
+import useAuth from 'contexts/AuthContext';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 

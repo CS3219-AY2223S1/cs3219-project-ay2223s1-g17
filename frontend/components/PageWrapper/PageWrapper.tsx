@@ -1,24 +1,29 @@
 import { Box, Container } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
+import { NAVBAR_HEIGHT_PX } from 'utils/constants';
 
 type Props = {
   children: ReactNode;
   fullWidth?: boolean;
+  fixedHeight?: boolean;
 };
 
-const PageWrapper: FC<Props> = ({ children, fullWidth }) => {
+const PageWrapper: FC<Props> = ({ children, fullWidth, fixedHeight }) => {
   return (
     <Box
       sx={{
-        height: 'calc(100vh - 64px)',
+        height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`,
         backgroundColor: 'white',
         position: 'absolute',
-        top: '64px',
+        top: `${NAVBAR_HEIGHT_PX}px`,
         left: 0,
-        width: '100%',
+        right: 0,
       }}
     >
-      <Container maxWidth={fullWidth ? false : 'sm'} sx={{ height: '100%' }}>
+      <Container
+        maxWidth={fullWidth ? false : 'sm'}
+        sx={{ height: fixedHeight ? 'auto' : '100%' }}
+      >
         {children}
       </Container>
     </Box>

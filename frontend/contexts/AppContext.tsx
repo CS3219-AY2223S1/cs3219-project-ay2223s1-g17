@@ -1,5 +1,5 @@
 import { MatchingProvider } from 'contexts/MatchingContext';
-import { AuthProvider } from 'contexts/useAuth';
+import { AuthProvider } from 'contexts/AuthContext';
 import { ReactNode } from 'react';
 
 const AppContext = ({ children }: { children: ReactNode }) => {

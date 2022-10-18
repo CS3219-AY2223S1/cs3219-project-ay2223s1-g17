@@ -11,11 +11,11 @@ import Question from '../model';
 export const getQuestionByDifficulty = async (req: Request, res: Response) => {
   try {
     const { difficulty } = req.params;
-    const question = await Question.findQuestionByDifficulty(
+    const questions = await Question.findQuestionsByDifficulty(
       difficulty as DIFFICULTY
     );
 
-    successHandler(res, question);
+    successHandler(res, questions);
   } catch (error) {
     errorHandler(res, error);
   }

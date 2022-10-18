@@ -51,3 +51,33 @@ a {
 .otherUserSelection {
   background-color: orange;
 }
+
+#vertical-resizer:hover,
+#horizontal-resizer:hover {
+  background-color: #1976d2 !important;
+}
+
+#question-panel::-webkit-scrollbar,
+#chat-box::-webkit-scrollbar {
+  width: 10px;
+}
+
+#question-panel::-webkit-scrollbar-track,
+#chat-box::-webkit-scrollbar-track {
+  background: #fffffe;
+}
+
+#question-panel::-webkit-scrollbar-thumb,
+#chat-box::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.4);
+}
+
+#question-panel::-webkit-scrollbar-thumb:hover,
+#chat-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.7);
+}
+
+#question-panel::-webkit-scrollbar-thumb:active,
+#chat-box::-webkit-scrollbar-thumb:active {
+  background: rgba(100, 100, 100, 0.9);
+}

@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors()); // config cors so that front-end can use
 // app.options('*', cors());
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.send('Hello World from matching-service');
 });
 

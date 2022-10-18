@@ -1,7 +1,6 @@
 import express, { Express } from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
-import { registerStopwatchHandler } from './socketHandler/stopwatchHandler';
 
 const app: Express = express();
 
@@ -27,35 +26,37 @@ io.use((socket: ISocket, next) => {
   next();
 });
 
+type Chat = {
+  senderId: string;
+  senderName: string;
+  message: string;
+  time: string;
+  isConsecutive?: boolean;
+};
+
+type UpdateChatParams = {
+  chats: Chat[];
+  newChat: Chat;
+};
+
 io.on('connection', (socket: ISocket) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const roomId = socket.roomId!;
   socket.join(roomId);
 
-  socket.on('editorChange', (event) => {
-    socket.to(roomId).emit('editorChange', event);
+  socket.on('message', (params: UpdateChatParams) => {
+    const { chats, newChat } = params;
+    chats.push({
+      ...newChat,
+      isConsecutive:
+        chats.length > 0 &&
+        chats[chats.length - 1].senderId === newChat.senderId,
+    });
+    io.to(roomId).emit('message', chats);
   });
-
-  socket.on('selection', (event) => {
-    socket.to(roomId).emit('selection', event);
-  });
-
-  socket.on('openNextQuestionPrompt', () => {
-    io.to(roomId).emit('openNextQuestionPrompt');
-  });
-
-  socket.on('acceptNextQuestion', () => {
-    socket.to(roomId).emit('acceptNextQuestion');
-  });
-
-  socket.on('rejectNextQuestion', () => {
-    socket.to(roomId).emit('rejectNextQuestion');
-  });
-
-  registerStopwatchHandler(io, socket, roomId);
 });
 
-const port = process.env.PORT || 8004;
+const port = process.env.PORT || 8006;
 server.listen(port, () => {
-  console.log(`Collaboration Service is running at https://localhost:${port}`);
+  console.log(`Communication Service is running at http://localhost:${port}`);
 });

@@ -1,25 +1,45 @@
 // packages
 import Editor from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
-import { useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { Box } from '@mui/material';
 
 // code
 import { useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE } from 'utils/enums';
 
-const CodeEditor = ({ language, templates }: Props) => {
+const CodeEditor = ({
+  language,
+  questionNumber,
+  editorContent,
+  editorRef,
+  minHeight,
+  maxHeight,
+  minWidth,
+  maxWidth,
+  userSelect,
+  pointerEvents,
+  shouldDisplay,
+}: Props) => {
   const { roomId } = useMatchingContext();
-  const [editorContent] = useState(
-    (templates && templates[language]) ?? '# start coding here'
-  );
-  const editorRef = useRef<editor.IStandaloneCodeEditor>();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
   const [options] = useState<editor.IStandaloneEditorConstructionOptions>({
     fontSize: 16,
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
+    lineNumbersMinChars: 3,
+    // readOnly: isReadOnly ?? false,
+    scrollbar: {
+      useShadows: false,
+      verticalHasArrows: false,
+      horizontalHasArrows: false,
+      vertical: 'visible',
+      horizontal: 'visible',
+      verticalScrollbarSize: 10,
+      horizontalScrollbarSize: 10,
+    },
   });
   const otherDecoration = useRef<string[]>([]);
 
@@ -108,14 +128,28 @@ const CodeEditor = ({ language, templates }: Props) => {
   };
 
   return socket ? (
-    <Editor
-      defaultLanguage={language.toLowerCase()}
-      defaultValue={editorContent}
-      width="auto"
-      options={options}
-      onMount={handleEditorDidMount}
-      onChange={handleChange}
-    />
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: shouldDisplay ? 'block' : 'none',
+        minHeight,
+        maxHeight,
+        minWidth,
+        maxWidth,
+        userSelect,
+        pointerEvents,
+      }}
+    >
+      <Editor
+        key={questionNumber}
+        defaultLanguage={language.toLowerCase()}
+        defaultValue={editorContent}
+        width="auto"
+        options={options}
+        onMount={handleEditorDidMount}
+        onChange={handleChange}
+      />
+    </Box>
   ) : (
     <></>
   );
@@ -125,5 +159,14 @@ export default CodeEditor;
 
 interface Props {
   language: LANGUAGE;
-  templates?: Record<LANGUAGE, string>;
+  questionNumber: number;
+  editorContent: string;
+  editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
+  minHeight: string;
+  maxHeight: string;
+  minWidth: string;
+  maxWidth: string;
+  userSelect: string;
+  pointerEvents: string;
+  shouldDisplay: boolean;
 }
