@@ -60,16 +60,20 @@ const Room = () => {
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const handleSaveHistory = async () => {
+    const history = {
+      user: user?._id,
+      questionId: questions[questionNumber]._id,
+      code: editorRef.current?.getValue() ?? editorContent,
+      chats,
+    };
+
     await apiCall({
       path: '/save',
       service: SERVICE.HISTORY,
       method: HTTP_METHOD.POST,
       requiresCredentials: true,
       body: {
-        user: user?._id,
-        questionId: questions[questionNumber]._id,
-        code: editorRef.current?.getValue() ?? editorContent,
-        chats,
+        history: history,
       },
       onSuccess: () => toast.success('Successfully saved session to history!'),
     });
