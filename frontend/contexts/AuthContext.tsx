@@ -29,8 +29,12 @@ interface IAuthContext {
     onSuccess: () => void
   ) => Promise<void>;
   logout: () => Promise<void>;
-  changePassword: (password: string, onSuccess: () => void) => Promise<void>;
-  deleteAccount: () => Promise<void>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+    onSuccess: () => void
+  ) => Promise<void>;
+  deleteAccount: (onSuccess: () => void) => Promise<void>;
 }
 
 const AuthContext = createContext<IAuthContext>({
@@ -105,25 +109,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const changePassword = async (password: string, onSuccess: () => void) => {
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string,
+    onSuccess: () => void
+  ) => {
     await apiCall({
       path: '/',
       service: SERVICE.USER,
       method: HTTP_METHOD.PUT,
       requiresCredentials: true,
-      body: { password },
+      body: { currentPassword, newPassword },
       onSuccess,
     });
   };
 
-  const deleteAccount = async () => {
+  const deleteAccount = async (onSuccess: () => void) => {
     await apiCall({
       path: '/',
       service: SERVICE.USER,
       method: HTTP_METHOD.DELETE,
       requiresCredentials: true,
       onSuccess: () => {
-        () => setUser(undefined);
+        setUser(undefined);
+        onSuccess();
       },
     });
   };

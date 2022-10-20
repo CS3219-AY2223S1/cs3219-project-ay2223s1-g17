@@ -49,6 +49,26 @@ export const logout = async (_: Request, res: Response) => {
   }
 };
 
+export const changePassword = async (req: Request, res: Response) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+    await User.updateUserPasswordById(userId, currentPassword, newPassword);
+    successHandler(res);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+export const deleteAccount = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+    await User.deleteUserById(userId);
+    successHandler(res, null, { clearToken: true });
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
 /**
  * Fetches the data of a user via the user's jwt token
  *

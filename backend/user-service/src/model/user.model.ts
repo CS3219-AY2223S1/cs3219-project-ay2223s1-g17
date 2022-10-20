@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import { IUser, IUserModel, UserDocument } from './user.types';
 import jwt from 'jsonwebtoken';
+import { HttpStatusCode, PeerPrepError } from '../../../utils';
 
 const userSchema = new mongoose.Schema<IUser, IUserModel>({
   username: {
@@ -33,10 +34,7 @@ userSchema.pre('save', async function (callback) {
 userSchema.pre('remove', async function (callback) {
   const user = this;
 
-  await User.updateMany(
-    { friends: { _id: user._id } },
-    { $pull: { friends: { _id: user._id } } }
-  );
+  //TODO: delete history
 
   callback();
 });
@@ -107,11 +105,52 @@ userSchema.static(
    */
   async function findUserById(id: string) {
     if (!id) throw new Error('User id is required');
-
     const user = await User.findById(id).exec();
+    if (!user)
+      throw new PeerPrepError(HttpStatusCode.NOT_FOUND, 'User not found');
 
-    if (!user) throw new Error('User not found');
     return user;
+  }
+);
+
+userSchema.static(
+  'updateUserPasswordById',
+  /**
+   * Attempts to delete a user with a specified id
+   *
+   * @param id Id of the user
+   * @param options Optionally specify user data to select
+   * @throws Error if no user is found
+   */
+  async function updateUserPasswordById(
+    id: string,
+    currentPassword: string,
+    newPassword: string
+  ) {
+    const user = await User.findUserById(id);
+    const verifiedUser = await User.findVerifiedUser(
+      user.username,
+      currentPassword
+    );
+
+    verifiedUser.password = newPassword;
+    await verifiedUser.save();
+  }
+);
+
+userSchema.static(
+  'deleteUserById',
+  /**
+   * Attempts to delete a user with a specified id
+   *
+   * @param id Id of the user
+   * @param options Optionally specify user data to select
+   * @throws Error if no user is found
+   */
+  async function deleteUserById(id: string) {
+    const user = await User.findUserById(id);
+
+    await user.deleteOne();
   }
 );
 
