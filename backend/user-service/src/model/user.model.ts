@@ -34,10 +34,7 @@ userSchema.pre('save', async function (callback) {
 userSchema.pre('remove', async function (callback) {
   const user = this;
 
-  await User.updateMany(
-    { friends: { _id: user._id } },
-    { $pull: { friends: { _id: user._id } } }
-  );
+  //TODO: delete history
 
   callback();
 });
@@ -108,7 +105,6 @@ userSchema.static(
    */
   async function findUserById(id: string) {
     if (!id) throw new Error('User id is required');
-
     const user = await User.findById(id).exec();
     if (!user)
       throw new PeerPrepError(HttpStatusCode.NOT_FOUND, 'User not found');
@@ -137,7 +133,8 @@ userSchema.static(
       currentPassword
     );
 
-    await verifiedUser.updateOne({ password: newPassword }).exec();
+    verifiedUser.password = newPassword;
+    await verifiedUser.save();
   }
 );
 
@@ -153,7 +150,7 @@ userSchema.static(
   async function deleteUserById(id: string) {
     const user = await User.findUserById(id);
 
-    await user.deleteOne().exec();
+    await user.deleteOne();
   }
 );
 
