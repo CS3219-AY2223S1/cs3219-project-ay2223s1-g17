@@ -1,12 +1,9 @@
-import { Stack } from '@mui/material';
-import PageWrapper from 'components/PageWrapper';
-import useAuth from 'contexts/AuthContext';
-import type { NextPage } from 'next';
 import Head from 'next/head';
+import type { NextPage } from 'next';
+import LandingPage from 'components/LandingPage';
+import PageWrapper from 'components/PageWrapper';
 
 const Home: NextPage = () => {
-  const { user } = useAuth();
-
   return (
     <div>
       <Head>
@@ -15,17 +12,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageWrapper>
-        <Stack
-          sx={{
-            height: '100%',
-            color: 'black',
-            textAlign: 'center',
-            paddingTop: '30%',
-            fontSize: 24,
-          }}
-        >
-          {`Welcome to Peer Prep${user ? `, ${user.username}` : ''}`}
-        </Stack>
+        <LandingPage />
       </PageWrapper>
     </div>
   );

@@ -3,8 +3,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import WarningIcon from '@mui/icons-material/Warning';
 import {
-  Box,
   Button,
   IconButton,
   InputAdornment,
@@ -19,11 +19,13 @@ import { toast } from 'react-toastify';
 import { handleErrorWithToast } from 'utils/helpers';
 
 const AuthForm = () => {
+  const { user } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const { register, login } = useAuth();
 
@@ -43,8 +45,12 @@ const AuthForm = () => {
     setIsLogin((prev) => !prev);
   };
 
-  const handleSwitchVisibility = () => {
+  const handleSwitchPasswordVisibility = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const handleSwitchConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
   };
 
   const handleReset = () => {
@@ -64,104 +70,115 @@ const AuthForm = () => {
 
   return (
     <Stack
-      sx={{ alignItems: 'center', columnGap: 8, height: '100%' }}
-      flexDirection="row"
+      spacing={2}
+      sx={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}
     >
-      <Box
-        component="img"
-        src="/assets/login.png"
-        alt="auth"
-        sx={{
-          width: '50%',
-          objectFit: 'contain',
-        }}
-      />
-      <form onSubmit={handleSubmit} style={{ width: '40%' }}>
-        <Stack spacing={2}>
+      <form onSubmit={handleSubmit}>
+        <Stack
+          spacing={2}
+          sx={{
+            filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+            bgcolor: '#fffaf0',
+            borderRadius: '12px',
+            height: '400px',
+            justifyContent: 'center',
+            columnGap: 8,
+            paddingY: 4,
+            paddingX: 8,
+          }}
+        >
           <Typography
             variant="h6"
             align="center"
-            color="black"
+            color="#2365C8"
             fontWeight="bold"
             sx={{ marginBottom: 2 }}
             fontSize={24}
           >
-            PeerPrep {isLogin ? 'Login' : 'Sign Up'}
+            {user
+              ? 'Change Password'
+              : `PeerPrep ${isLogin ? 'Login' : 'Sign Up'}`}
           </Typography>
-          <TextField
-            name="username"
-            placeholder="Username"
-            value={username}
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: 'black' }} fontSize="small" />
-                </InputAdornment>
-              ),
-              sx: { borderRadius: '12px', fontSize: 12 },
-            }}
-            onChange={(e) => setUsername(e.target.value)}
-            sx={{
-              backgroundColor: '#E7E7E7',
-              borderRadius: '12px',
-            }}
-          />
+          {!user ? (
+            <TextField
+              name="username"
+              placeholder="Username"
+              value={username}
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: 'black' }} fontSize="small" />
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: '12px', fontSize: 12 },
+              }}
+              onChange={(e) => setUsername(e.target.value)}
+              sx={{
+                backgroundColor: '#E7E7E7',
+                borderRadius: '12px',
+              }}
+            />
+          ) : (
+            <></>
+          )}
           <PasswordInput
             showPassword={showPassword}
-            handleSwitchVisibility={handleSwitchVisibility}
+            handleSwitchVisibility={handleSwitchPasswordVisibility}
             value={password}
             label="Password"
             handleChange={setPassword}
           />
-          {isLogin ? (
-            <></>
-          ) : (
+          {user || !isLogin ? (
             <PasswordInput
-              showPassword={showPassword}
-              handleSwitchVisibility={handleSwitchVisibility}
+              showPassword={showConfirmPassword}
+              handleSwitchVisibility={handleSwitchConfirmPasswordVisibility}
               value={confirmPassword}
               label="Confirm Password"
               handleChange={setConfirmPassword}
             />
+          ) : (
+            <></>
           )}
           <Button
             type="submit"
             variant="contained"
             size="large"
             sx={{
-              backgroundColor: '#8AA0D2',
+              backgroundColor: '#2365C8',
               borderRadius: '12px',
               filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
             }}
           >
-            {isLogin ? 'Login' : 'Register'}
+            {user ? 'Submit' : isLogin ? 'Login' : 'Register'}
           </Button>
-          {/* <Button
-            variant="text"
-            size="small"
-            style={{
-              color: 'black',
-              textTransform: 'none',
-              marginTop: '2px',
-            }}
-          >
-            Forgot Username/Password?
-          </Button> */}
-          <Button
-            variant="text"
-            size="small"
-            endIcon={<ArrowRightAltOutlinedIcon />}
-            style={{
-              color: 'black',
-              textTransform: 'none',
-              marginTop: '32px',
-              fontWeight: 'bold',
-            }}
-            onClick={handleSwitchMode}
-          >
-            {isLogin ? 'Create your account' : 'Sign in instead'}
-          </Button>
+          {!user ? (
+            <Button
+              variant="text"
+              size="small"
+              endIcon={<ArrowRightAltOutlinedIcon />}
+              style={{
+                color: 'black',
+                textTransform: 'none',
+                marginTop: '32px',
+                fontWeight: 'medium',
+              }}
+              onClick={handleSwitchMode}
+            >
+              {isLogin ? 'Create your account' : 'Sign in instead'}
+            </Button>
+          ) : (
+            <Button
+              variant="text"
+              color="error"
+              startIcon={<WarningIcon color="error" />}
+              style={{
+                marginTop: '32px',
+              }}
+            >
+              Delete Account
+            </Button>
+          )}
         </Stack>
       </form>
     </Stack>
