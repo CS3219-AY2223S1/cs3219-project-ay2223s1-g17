@@ -63,7 +63,7 @@ export const deleteAccount = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
     await User.deleteUserById(userId);
-    successHandler(res);
+    successHandler(res, null, { clearToken: true });
   } catch (error) {
     errorHandler(res, error);
   }
