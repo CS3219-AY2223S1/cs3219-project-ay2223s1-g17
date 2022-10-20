@@ -1,13 +1,9 @@
-import { Stack } from '@mui/material';
+import Head from 'next/head';
+import type { NextPage } from 'next';
 import LandingPage from 'components/LandingPage';
 import PageWrapper from 'components/PageWrapper';
-import useAuth from 'contexts/AuthContext';
-import type { NextPage } from 'next';
-import Head from 'next/head';
 
 const Home: NextPage = () => {
-  const { user } = useAuth();
-
   return (
     <div>
       <Head>
@@ -15,19 +11,8 @@ const Home: NextPage = () => {
         <meta name="PeerPrep" content="Leetcode with friends uwu" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PageWrapper fullWidth>
+      <PageWrapper>
         <LandingPage />
-        {/* <Stack
-          sx={{
-            height: '100%',
-            color: 'black',
-            textAlign: 'center',
-            paddingTop: '30%',
-            fontSize: 24,
-          }}
-        >
-          {`Welcome to Peer Prep${user ? `, ${user.username}` : ''}`}
-        </Stack> */}
       </PageWrapper>
     </div>
   );
