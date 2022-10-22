@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { DIFFICULTY, LANGUAGE } from '../../../utils';
+import { DIFFICULTY, LANGUAGE, SKILL, TOPIC } from '../../../utils';
 import { QUESTIONS } from '../data';
 import {
   FormattedQuestionedDocument,
