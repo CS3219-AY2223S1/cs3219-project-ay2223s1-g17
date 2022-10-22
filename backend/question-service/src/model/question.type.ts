@@ -5,9 +5,15 @@ export interface IQuestion {
   title: string;
   difficulty: DIFFICULTY;
   description: string;
+  topics: ITopic[];
   examples: IExample[];
   templates: ITemplate[];
   link: string;
+}
+
+interface ITopic {
+  skill: string;
+  topics: string[];
 }
 
 interface IExample {

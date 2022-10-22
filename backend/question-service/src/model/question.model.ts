@@ -22,6 +22,18 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
     type: String,
     required: true,
   },
+  topics: {
+    type: [
+      {
+        skill: {
+          type: String,
+          enum: SKILL,
+          required: true,
+        },
+        topics: { type: [String], enum: TOPIC },
+      },
+    ],
+  },
   examples: {
     type: [
       {
