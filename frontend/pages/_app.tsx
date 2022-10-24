@@ -10,7 +10,8 @@ import {
   PaletteColorOptions,
   ThemeProvider,
 } from '@mui/material';
-import { green, amber, red, blue } from '@mui/material/colors';
+import { green, amber, red } from '@mui/material/colors';
+import { useQueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -39,7 +40,7 @@ const theme = createTheme({
       main: green[400], //#93DB9A
     },
     MEDIUM: {
-      main: amber[400], //#F8B06E
+      main: amber[600], //#F8B06E
     },
     HARD: {
       main: red[400], //#ED8D8D
@@ -47,24 +48,39 @@ const theme = createTheme({
     contrastThreshold: 3,
     tonalOffset: 0.2,
   },
+  typography: {
+    fontFamily: 'Raleway',
+    body1: {
+      fontFamily: 'Inter',
+    },
+    body2: {
+      fontFamily: 'Inter',
+    },
+    caption: {
+      fontFamily: 'Inter',
+    },
+  },
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const queryClient = useQueryClient();
   return (
-    <AppContext>
-      <ThemeProvider theme={theme}>
-        <Navbar />
-        <Component {...pageProps} />
-      </ThemeProvider>
-      <ToastContainer
-        position="bottom-left"
-        draggable={false}
-        pauseOnHover={false}
-        theme="colored"
-        newestOnTop
-        closeOnClick
-      />
-    </AppContext>
+    <QueryClientProvider client={queryClient}>
+      <AppContext>
+        <ThemeProvider theme={theme}>
+          <Navbar />
+          <Component {...pageProps} />
+        </ThemeProvider>
+        <ToastContainer
+          position="bottom-left"
+          draggable={false}
+          pauseOnHover={false}
+          theme="colored"
+          newestOnTop
+          closeOnClick
+        />
+      </AppContext>
+    </QueryClientProvider>
   );
 }
 

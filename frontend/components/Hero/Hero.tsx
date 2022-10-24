@@ -1,16 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/alt-text */
-import { Stack, Typography, Paper, Divider, Tooltip } from '@mui/material/';
+import {
+  Stack,
+  Typography,
+  Paper,
+  Divider,
+  Tooltip,
+  Skeleton,
+} from '@mui/material/';
 import { Chat } from 'components/CollabRoom/ChatPanel';
 import useAuth from 'contexts/AuthContext';
 import { FC } from 'react';
 import Completion from './Completion';
-import History, { CompletedQuestion } from './CompletedQuestions';
+import History from './CompletedQuestions';
 import LanguageUsage from './LanguageUsage';
 import CompletedQuestions from './CompletedQuestions';
 import Heatmap from './Heatmap';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import { amber } from '@mui/material/colors';
+import { CompletedQuestion } from './HistoryCard';
 
 export type History = {
   _id: string;
@@ -29,17 +37,20 @@ export type Statistics = {
 };
 
 type Props = {
-  history: History[];
-  statistics: Statistics;
-  addHistory: () => void;
+  history?: History[];
+  statistics?: Statistics;
+  isLoading?: boolean;
 };
 
-const Hero: FC<Props> = ({ history, statistics, addHistory }) => {
+const Hero: FC<Props> = ({ history, statistics, isLoading }) => {
   const { user } = useAuth();
-  if (!user) return <></>;
+  if (!user || !history || !statistics) return <></>;
+  if (isLoading)
+    return <Skeleton variant="rectangular" width="100%" height="20vh" />;
+
   return (
     <Stack flexDirection="row" columnGap={2} sx={{ pt: 8 }}>
-      <Paper sx={{ p: 2 }} elevation={2}>
+      <Paper sx={{ p: 2, flexGrow: 1 }} elevation={2}>
         <Stack justifyContent="center">
           <Stack flexDirection="row" justifyContent="center" columnGap={2}>
             <img
@@ -63,9 +74,9 @@ const Hero: FC<Props> = ({ history, statistics, addHistory }) => {
               </Tooltip>
             </Stack>
           </Stack>
-          <Divider sx={{ my: 2 }} />
+          <Divider sx={{ mt: 2, mb: 0.5 }} />
           <LanguageUsage languagesUsed={statistics.languagesUsed} />
-          <Divider sx={{ my: 2 }} />
+          <Divider sx={{ mt: 2, mb: 0.5 }} />
           <Typography>Topics</Typography>
           <Divider />
         </Stack>

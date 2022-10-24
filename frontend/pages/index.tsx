@@ -4,50 +4,16 @@ import LandingPage from 'components/LandingPage';
 import PageWrapper from 'components/PageWrapper';
 import useAuth from 'contexts/AuthContext';
 import Hero from 'components/Hero';
-import { DIFFICULTY, HTTP_METHOD, LANGUAGE, SERVICE } from 'utils/enums';
-import { History, Statistics } from 'components/Hero/Hero';
-import { useEffect, useState } from 'react';
-import { apiCall } from 'utils/helpers';
+import { useHistory, useStatistics } from 'api/hero';
 
 const Home: NextPage = () => {
   const { user } = useAuth();
-  const [history, setHistory] = useState<History[]>([]);
-  const [statistics, setStatistics] = useState<Statistics>();
 
-  useEffect(() => {
-    const fetchHistoryAndStatistics = async () => {
-      const h = await apiCall({
-        service: SERVICE.HISTORY,
-        method: HTTP_METHOD.POST,
-        path: '/get',
-        body: {
-          userId: user?._id,
-        },
-      });
-      setHistory(h);
-
-      const s = await apiCall({
-        service: SERVICE.HISTORY,
-        method: HTTP_METHOD.POST,
-        path: '/stats',
-        body: {
-          userId: user?._id,
-        },
-      });
-      setStatistics(s);
-    };
-
-    if (user) fetchHistoryAndStatistics();
-  }, [user]);
-
-  const addHistory = () => {
-    const temp = statistics;
-    if (!temp) return;
-    temp.languagesUsed[LANGUAGE.PYTHON] = 1;
-    temp.completedQuestionsByDifficulty[DIFFICULTY.EASY] = 1;
-    temp.completedQuestions.push('new');
-    setStatistics(temp);
-  };
+  const { history, isLoadingHistory, isFetchingHistory } = useHistory(
+    user?._id ?? ''
+  );
+  const { statistics, isLoadingStatistics, isFetchingStatistics } =
+    useStatistics(user?._id ?? '');
 
   return (
     <div>
@@ -61,7 +27,7 @@ const Home: NextPage = () => {
           <Hero
             history={history}
             statistics={statistics}
-            addHistory={addHistory}
+            isLoading={isFetchingHistory || isLoadingHistory}
           />
         ) : (
           <LandingPage />
