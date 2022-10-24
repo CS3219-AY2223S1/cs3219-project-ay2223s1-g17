@@ -4,6 +4,7 @@ export default [
     difficulty: 'EASY',
     description:
       'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.',
+    topics: ['ARRAY', 'HASH TABLE'],
     examples: [
       {
         input: 'nums = [2,7,11,15], target = 9',
@@ -33,6 +34,7 @@ export default [
     difficulty: 'EASY',
     description:
       'Given the head of a singly linked list, reverse the list, and return the reversed list.',
+    topics: ['LINKED LIST', 'RECURSION'],
     examples: [
       {
         input: 'head = [1,2,3,4,5]',
@@ -61,6 +63,7 @@ export default [
     difficulty: 'EASY',
     description:
       'You are given the heads of two sorted linked lists list1 and list2.\n\nMerge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.\n\nReturn the head of the merged linked list.',
+    topics: ['LINKED LIST', 'RECURSION'],
     examples: [
       {
         input: 'list1 = [1,2,4], list2 = [1,3,4]',
@@ -89,6 +92,7 @@ export default [
     difficulty: 'EASY',
     description:
       "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nAn input string is valid if:\n\n1. Open brackets must be closed by the same type of brackets.\n\n2. Open brackets must be closed in the correct order.\n\n3. Every close bracket has a corresponding open bracket of the same type.",
+    topics: ['STACK', 'STRING'],
     examples: [
       {
         input: 's = "()"',
@@ -117,6 +121,7 @@ export default [
     difficulty: 'EASY',
     description:
       'You are climbing a staircase. It takes n steps to reach the top.\n\nEach time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?',
+    topics: ['DYNAMIC PROGRAMMING', 'MATH', 'MEMOIZATION'],
     examples: [
       {
         input: 'n = 2',
@@ -145,6 +150,7 @@ export default [
     difficulty: 'MEDIUM',
     description:
       "A matrix diagonal is a diagonal line of cells starting from some cell in either the topmost row or leftmost column and going in the bottom-right direction until reaching the matrix's end. For example, the matrix diagonal starting from mat[2][0], where mat is a 6 x 3 matrix, includes cells mat[2][0], mat[3][1], and mat[4][2].\n\nGiven an m x n matrix mat of integers, sort each matrix diagonal in ascending order and return the resulting matrix.",
+    topics: ['ARRAY', 'MATRIX', 'SORTING'],
     examples: [
       {
         input: 'mat = [[3,3,1,1],[2,2,1,2],[1,1,1,2]]',
@@ -171,6 +177,7 @@ export default [
     difficulty: 'MEDIUM',
     description:
       'Given a string s, return the longest palindromic substring in s.\n\nA string is called a palindrome string if the reverse of that string is the same as the original string.',
+    topics: ['DYNAMIC PROGRAMMING', 'STRING'],
     examples: [
       {
         input: 's = "babad"',
@@ -196,6 +203,7 @@ export default [
     difficulty: 'MEDIUM',
     description:
       'Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.\n\nNotice that the solution set must not contain duplicate triplets.',
+    topics: ['ARRAY', 'SORTING', 'TWO POINTERS'],
     examples: [
       {
         input: 'nums = [-1,0,1,2,-1,-4]',
@@ -228,6 +236,7 @@ export default [
     difficulty: 'HARD',
     description:
       "Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.",
+    topics: ['DYNAMIC PROGRAMMING', 'STACK', 'STRING'],
     examples: [
       {
         input: 's = "(()"',
@@ -258,6 +267,7 @@ export default [
     difficulty: 'HARD',
     description:
       'There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.\n\nYou are giving candies to these children subjected to the following requirements:\n\nEach child must have at least one candy.\n\nChildren with a higher rating get more candies than their neighbors.\n\nReturn the minimum number of candies you need to have to distribute the candies to the children.',
+    topics: ['ARRAY', 'GREEDY'],
     examples: [
       {
         input: 'ratings = [1,0,2]',

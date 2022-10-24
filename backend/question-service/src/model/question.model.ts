@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { DIFFICULTY, LANGUAGE } from '../../../utils';
+import { DIFFICULTY, LANGUAGE, TOPIC } from '../../../utils';
 import { QUESTIONS } from '../data';
 import {
   FormattedQuestionedDocument,
@@ -21,6 +21,10 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
   description: {
     type: String,
     required: true,
+  },
+  topics: {
+    type: [String],
+    enum: TOPIC,
   },
   examples: {
     type: [
