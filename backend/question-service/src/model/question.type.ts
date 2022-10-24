@@ -26,7 +26,7 @@ interface ITemplate {
 export type QuestionDocument = LeanDocument<IQuestion> &
   IQuestion & { _id: Types.ObjectId } & IQuestionMethods;
 
-export type FormattedQuestionedDocument = LeanDocument<
+export type FormattedQuestionDocument = LeanDocument<
   Omit<IQuestion, 'templates'>
 > & { templates: Record<string, string> };
 
@@ -36,7 +36,7 @@ export interface IQuestionModel extends Model<IQuestion, {}, IQuestionMethods> {
   findQuestionsByDifficulty(
     difficulty: DIFFICULTY,
     numQuestions?: number
-  ): Promise<FormattedQuestionedDocument>;
+  ): Promise<FormattedQuestionDocument>;
   findQuestionById(id: string): Promise<QuestionDocument>;
   findAllQuestions(): Promise<QuestionDocument[]>;
   findNumberOfQuestions(): Promise<Number>;

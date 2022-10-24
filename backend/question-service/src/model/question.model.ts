@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { DIFFICULTY, LANGUAGE, TOPIC } from '../../../utils';
 import { QUESTIONS } from '../data';
 import {
-  FormattedQuestionedDocument,
+  FormattedQuestionDocument,
   IQuestion,
   IQuestionModel,
   QuestionDocument,
@@ -160,7 +160,7 @@ questionSchema.static(
 
 const formatQuestion = (
   question: QuestionDocument
-): FormattedQuestionedDocument => {
+): FormattedQuestionDocument => {
   const templatesMap = new Map<LANGUAGE, string>();
   question.templates.forEach((template) =>
     templatesMap.set(template.language, template.starterCode)
