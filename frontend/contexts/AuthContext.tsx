@@ -13,6 +13,7 @@ import { apiCall } from 'utils/helpers';
 type User = {
   _id: string;
   username: string;
+  avatarImage: string;
 };
 
 interface IAuthContext {
