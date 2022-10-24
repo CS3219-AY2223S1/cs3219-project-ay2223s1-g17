@@ -24,68 +24,82 @@ const Heatmap: FC<Props> = ({ completedQuestionsByDay }) => {
   const thisYear = today.getFullYear();
   let dayCounter = -1;
   return (
-    <Stack flexDirection="row" columnGap={1} width="100%">
-      {months.map((monthIndex) => {
-        const daysInMonth = new Date(thisYear, monthIndex + 1, 0).getDate();
-        const firstDayOfMonth = new Date(thisYear, monthIndex, 1);
-        const emptyDays = firstDayOfMonth.getDay();
-        const monthLabel = firstDayOfMonth.toLocaleDateString('en-sg', {
-          month: 'short',
-        });
+    <Stack>
+      <Stack
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Typography variant="subtitle1">
+          Daily Statistics for Year {thisYear}
+        </Typography>
+        <Typography variant="caption">
+          Total Active Days: {Object.keys(completedQuestionsByDay).length}
+        </Typography>
+      </Stack>
+      <Stack flexDirection="row" columnGap={1} width="100%" sx={{ p: 1 }}>
+        {months.map((monthIndex) => {
+          const daysInMonth = new Date(thisYear, monthIndex + 1, 0).getDate();
+          const firstDayOfMonth = new Date(thisYear, monthIndex, 1);
+          const emptyDays = firstDayOfMonth.getDay();
+          const monthLabel = firstDayOfMonth.toLocaleDateString('en-sg', {
+            month: 'short',
+          });
 
-        return (
-          <Stack
-            key={monthLabel}
-            justifyContent="center"
-            alignItems="center"
-            rowGap={0.5}
-          >
-            <Grid
-              container
-              gap={0.25}
-              sx={{
-                display: 'grid',
-                gridAutoFlow: 'column',
-                gridTemplateRows: 'repeat(7, 1fr)',
-              }}
+          return (
+            <Stack
+              key={monthLabel}
+              justifyContent="center"
+              alignItems="center"
+              rowGap={0.5}
             >
-              {Array.from(Array(daysInMonth + emptyDays).keys()).map(
-                (dayIndex) => {
-                  const emptyDay = dayIndex < emptyDays;
-                  const completedQuestionsToday = emptyDay
-                    ? 0
-                    : completedQuestionsByDay[String(++dayCounter)] ?? 0;
+              <Grid
+                container
+                gap={0.25}
+                sx={{
+                  display: 'grid',
+                  gridAutoFlow: 'column',
+                  gridTemplateRows: 'repeat(7, 1fr)',
+                }}
+              >
+                {Array.from(Array(daysInMonth + emptyDays).keys()).map(
+                  (dayIndex) => {
+                    const emptyDay = dayIndex < emptyDays;
+                    const completedQuestionsToday = emptyDay
+                      ? 0
+                      : completedQuestionsByDay[String(++dayCounter)] ?? 0;
 
-                  return (
-                    <Grid
-                      item
-                      key={`day-${dayCounter}`}
-                      sx={{
-                        width: '8px',
-                        aspectRatio: '1/1',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: '2px',
-                        bgcolor: emptyDay
-                          ? 'white'
-                          : completedQuestionsToday
-                          ? completionGreenPalette[
-                              Math.min(10, completedQuestionsToday)
-                            ]
-                          : 'rgba(0,0,0,0.05)',
-                      }}
-                    />
-                  );
-                }
-              )}
-            </Grid>
-            <Typography variant="caption" fontWeight={300}>
-              {monthLabel}
-            </Typography>
-          </Stack>
-        );
-      })}
+                    return (
+                      <Grid
+                        item
+                        key={`day-${dayCounter}`}
+                        sx={{
+                          width: '9px',
+                          aspectRatio: '1/1',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: '2px',
+                          bgcolor: emptyDay
+                            ? 'white'
+                            : completedQuestionsToday
+                            ? completionGreenPalette[
+                                Math.min(10, completedQuestionsToday)
+                              ]
+                            : 'rgba(0,0,0,0.05)',
+                        }}
+                      />
+                    );
+                  }
+                )}
+              </Grid>
+              <Typography variant="caption" fontWeight={300}>
+                {monthLabel}
+              </Typography>
+            </Stack>
+          );
+        })}
+      </Stack>
     </Stack>
   );
 };

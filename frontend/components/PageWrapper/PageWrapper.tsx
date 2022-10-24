@@ -21,7 +21,7 @@ const PageWrapper: FC<Props> = ({ children, fullWidth, fixedHeight }) => {
       }}
     >
       <Container
-        maxWidth={fullWidth ? false : 'md'}
+        maxWidth={fullWidth ? false : 'lg'}
         sx={{ height: fixedHeight ? 'auto' : '100%' }}
       >
         {children}

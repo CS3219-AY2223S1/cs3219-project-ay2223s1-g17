@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 import { MouseEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import useAuth from 'contexts/AuthContext';
@@ -75,8 +77,12 @@ const Navbar = () => {
         <NavbarOption
           onClick={handleHome}
           label="PeerPrep"
-          // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
-          icon={<img src={'/assets/logo.png'} style={{ height: '44px' }}></img>}
+          icon={
+            <img
+              src={'/assets/logo.png'}
+              style={{ height: `${(NAVBAR_HEIGHT_PX * 3) / 4}px` }}
+            ></img>
+          }
           styles={{
             fontFamily: 'Raleway',
             fontSize: 28,

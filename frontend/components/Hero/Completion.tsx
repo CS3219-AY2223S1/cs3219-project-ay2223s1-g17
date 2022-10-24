@@ -43,8 +43,9 @@ const Completion: FC<Props> = ({
 const CompletionCircle: FC<CompletionCircleProps> = ({
   numCompletedQuestions,
 }) => {
+  const theme = useTheme();
   const completionPercentage =
-    Math.floor(numCompletedQuestions / TOTAL_NUM_QUESTIONS) * 100;
+    (numCompletedQuestions / TOTAL_NUM_QUESTIONS) * 100;
 
   return (
     <Stack
@@ -57,7 +58,7 @@ const CompletionCircle: FC<CompletionCircleProps> = ({
           borderRadius: '50%',
           height: '6.5rem',
           width: '6.5rem',
-          background: `conic-gradient(rgb(3, 133, 255) ${completionPercentage}%,rgb(242,242,242) ${completionPercentage}%)`,
+          background: `conic-gradient(${theme.palette.primary.main} ${completionPercentage}%,rgb(242,242,242) ${completionPercentage}%)`,
         }}
       />
       <Stack
@@ -119,14 +120,13 @@ const CompletionByDifficulty: FC<CompletionByDifficultyProps> = ({
           <LinearProgress
             variant="determinate"
             value={
-              Math.floor(
-                (completedQuestionsByDifficulty[difficulty] ?? 0) /
-                  TOTAL_NUM_QUESTIONS_BY_DIFFICULTY[difficulty]
-              ) * 100
+              ((completedQuestionsByDifficulty[difficulty] ?? 0) /
+                TOTAL_NUM_QUESTIONS_BY_DIFFICULTY[difficulty]) *
+              100
             }
             sx={{
               borderRadius: 5,
-              bgcolor: `${theme.palette[`${difficulty}`].main}40`,
+              bgcolor: `${theme.palette[`${difficulty}`].main}25`,
               '& .MuiLinearProgress-bar': {
                 backgroundColor: theme.palette[`${difficulty}`].main,
               },

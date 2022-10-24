@@ -8,7 +8,9 @@ type Props = {
 const LanguageUsage: FC<Props> = ({ languagesUsed }) => {
   return (
     <Stack>
-      <Typography>Languages</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2 }}>
+        Languages
+      </Typography>
       <Stack>
         {Object.entries(languagesUsed).map(([language, count]) => {
           return (
@@ -25,12 +27,12 @@ const LanguageUsage: FC<Props> = ({ languagesUsed }) => {
                 label={language.toLowerCase()}
                 sx={{ textTransform: 'capitalize' }}
               />
-              <Stack flexDirection="row">
+              <Stack flexDirection="row" columnGap={0.5}>
                 <Typography fontWeight="bold" variant="subtitle2">
                   {count}
                 </Typography>
                 <Typography fontWeight="light" variant="subtitle2">
-                  x
+                  problems completed
                 </Typography>
               </Stack>
             </Stack>
