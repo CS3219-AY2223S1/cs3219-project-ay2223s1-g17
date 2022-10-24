@@ -5,6 +5,7 @@ export type Question = {
   id: string;
   language: LANGUAGE;
   difficulty: DIFFICULTY;
+  topics?: string[];
 };
 
 export interface IStatistics {

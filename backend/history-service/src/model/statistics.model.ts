@@ -97,12 +97,21 @@ statisticsSchema.static(
 
     const statistics = await Statistics.getStatisticsByUser(userId);
 
-    const { id, difficulty, language } = completedQuestion;
+    const { id, difficulty, language, topics } = completedQuestion;
 
     statistics.languagesUsed.set(
       language,
       (statistics.languagesUsed.get(language) ?? 0) + 1
     );
+
+    if (topics && topics.length) {
+      topics.forEach((topic) => {
+        statistics.completedTopics.set(
+          topic,
+          (statistics.completedTopics.get(topic) ?? 0) + 1
+        );
+      });
+    }
 
     if (!statistics.completedQuestions.includes(id)) {
       statistics.completedQuestions.push(id);
