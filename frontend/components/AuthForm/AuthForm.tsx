@@ -55,7 +55,7 @@ const AuthForm = () => {
       (user && newPassword !== confirmPassword) ||
       (!isLogin && password !== confirmPassword)
     )
-      handleErrorWithToast('Passwords do not match');
+      return handleErrorWithToast('Passwords do not match');
 
     user
       ? await changePassword(password, newPassword, onSuccess)
@@ -89,15 +89,11 @@ const AuthForm = () => {
   };
 
   const onSuccess = () => {
-    toast.success(
-      `Successfully ${
-        user
-          ? 'changed password!'
-          : isLogin
-          ? 'logged in!'
-          : 'created new account!'
-      }`
-    );
+    if (!isLogin) {
+      toast.success(
+        `Successfully ${user ? 'changed password!' : 'created new account!'}`
+      );
+    }
     handleReset();
     return isLogin ? router.push('/') : setIsLogin(true);
   };
@@ -113,7 +109,7 @@ const AuthForm = () => {
             spacing={2}
             sx={{
               filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
-              bgcolor: '#fffaf0',
+              bgcolor: 'white',
               borderRadius: '12px',
               height: '400px',
               justifyContent: 'center',
