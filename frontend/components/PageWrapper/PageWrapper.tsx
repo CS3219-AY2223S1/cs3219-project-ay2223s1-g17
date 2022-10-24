@@ -13,7 +13,7 @@ const PageWrapper: FC<Props> = ({ children, fullWidth, fixedHeight }) => {
     <Box
       sx={{
         height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`,
-        backgroundColor: 'inherit',
+        backgroundColor: '#f7f8fa',
         position: 'absolute',
         top: `${NAVBAR_HEIGHT_PX}px`,
         left: 0,
