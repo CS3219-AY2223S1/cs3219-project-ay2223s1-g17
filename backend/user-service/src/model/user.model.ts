@@ -13,24 +13,27 @@ import {
 } from './user.constants';
 import axios from 'axios';
 
-const userSchema = new mongoose.Schema<IUser, IUserModel>({
-  username: {
-    type: String,
-    unique: true,
-    required: [true, 'Username is required'],
-    minLength: [3, 'Username is too short'],
-    maxLength: [12, 'Username is too long'],
+const userSchema = new mongoose.Schema<IUser, IUserModel>(
+  {
+    username: {
+      type: String,
+      unique: true,
+      required: [true, 'Username is required'],
+      minLength: [3, 'Username is too short'],
+      maxLength: [12, 'Username is too long'],
+    },
+    password: {
+      type: String,
+      select: false,
+      required: [true, 'Password is required'],
+      minLength: [6, 'Password is too short'],
+    },
+    avatarImage: {
+      type: String,
+    },
   },
-  password: {
-    type: String,
-    select: false,
-    required: [true, 'Password is required'],
-    minLength: [6, 'Password is too short'],
-  },
-  avatarImage: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 userSchema.pre('save', async function (callback) {
   const user = this;
