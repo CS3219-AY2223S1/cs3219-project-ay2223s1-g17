@@ -1,37 +1,26 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material/';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { DIFFICULTY } from 'utils/enums';
-import Countdown from 'components/Countdown';
 import { useMatchingContext } from 'contexts/MatchingContext';
 
-const MatchMake = () => {
-  const { startMatch, count } = useMatchingContext();
+const DifficultySelector = () => {
   const theme = useTheme();
-  const isMatching = count !== undefined;
+  const { isMatching, startMatch } = useMatchingContext();
 
-  return isMatching ? (
-    <Countdown count={count} />
-  ) : (
-    <Box
-      sx={{
-        margin: 'auto',
-        paddingTop: '20%',
-        width: '50%',
-      }}
-    >
-      <Stack spacing={2}>
-        <Typography align="center" fontWeight="bold" fontSize={28}>
-          Select Difficulty
-        </Typography>
+  return (
+    <Stack flexDirection="row" columnGap={2} alignItems="center">
+      <Typography variant="subtitle1" fontWeight={500} fontFamily="Raleway">
+        Find Match:
+      </Typography>
+      <Stack flexDirection="row" columnGap={1}>
         {Object.values(DIFFICULTY).map((difficulty) => {
           return (
             <Button
               key={difficulty}
               type="submit"
               variant="contained"
-              size="large"
+              size="small"
               sx={{
                 backgroundColor: theme.palette[`${difficulty}`].main,
-                fontSize: '20px',
                 fontWeight: 500,
                 textTransform: 'capitalize',
               }}
@@ -43,8 +32,8 @@ const MatchMake = () => {
           );
         })}
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 
-export default MatchMake;
+export default DifficultySelector;
