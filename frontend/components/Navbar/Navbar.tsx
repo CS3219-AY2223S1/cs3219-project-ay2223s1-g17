@@ -122,8 +122,8 @@ const Navbar = () => {
               color: '#FFFFFF',
               fontFamily: 'Raleway',
               position: 'absolute',
-              top: 0,
-              right: 0,
+              my: 'auto',
+              right: 12,
             }}
           />
         )}
