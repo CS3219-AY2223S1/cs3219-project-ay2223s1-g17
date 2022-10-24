@@ -96,7 +96,7 @@ const ChatPanel: FC<Props> = ({
       <Stack
         id="chat-box"
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: 'inherit',
           color: 'black',
           wordBreak: 'break-word',
           overflowY: 'auto',

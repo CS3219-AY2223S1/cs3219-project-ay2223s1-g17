@@ -6,13 +6,12 @@ import { useEffect, useRef, useState } from 'react';
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
 import { useMatchingContext } from 'contexts/MatchingContext';
-import { HTTP_METHOD, LANGUAGE, SERVICE, VIEW } from 'utils/enums';
+import { LANGUAGE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
 import ChatPanel, { Chat } from './ChatPanel';
 import QuestionPanel from './QuestionPanel';
 import Resizer from './Resizer';
-import { apiCall } from 'utils/helpers';
 import useAuth from 'contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
@@ -26,7 +25,7 @@ export type View = {
 };
 
 const Room = () => {
-  const { roomId } = useMatchingContext();
+  const { roomId, leaveRoom } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
   const [socket, setSocket] = useState<Socket>();
@@ -48,8 +47,6 @@ const Room = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [otherConfirm, setOtherConfirm] = useState(false);
-  const [otherReject, setOtherReject] = useState(false);
 
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
@@ -59,33 +56,26 @@ const Room = () => {
     questions[questionNumber]?.templates?.[language] ?? '# start coding here';
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
-  const handleSaveHistory = async () => {
-    const history = {
-      user: user?._id,
-      questionId: questions[questionNumber]._id,
-      code: editorRef.current?.getValue() ?? editorContent,
-      chats,
-    };
-
-    await apiCall({
-      path: '/save',
-      service: SERVICE.HISTORY,
-      method: HTTP_METHOD.POST,
-      requiresCredentials: true,
-      body: {
-        history: history,
-      },
-      onSuccess: () => toast.success('Successfully saved session to history!'),
-    });
-  };
-
   const handleNextQuestion = () => {
+    setOpen(true);
     socket?.emit('openNextQuestionPrompt');
   };
 
   const handleAccept = () => {
     setConfirm(true);
-    socket?.emit('acceptNextQuestion');
+    const { title, difficulty, _id } = questions[questionNumber];
+    const history = {
+      user: user?._id,
+      question: {
+        title,
+        difficulty,
+        id: _id,
+      },
+      code: editorRef.current?.getValue() ?? editorContent,
+      language,
+      chats,
+    };
+    socket?.emit('acceptNextQuestion', history);
   };
 
   const handleReject = () => {
@@ -96,8 +86,6 @@ const Room = () => {
 
   const resetConfirmations = () => {
     setConfirm(false);
-    setOtherConfirm(false);
-    setOtherReject(false);
   };
 
   const roomOptionsProps = {
@@ -111,7 +99,6 @@ const Room = () => {
     open,
     confirm,
     handleConfirm: handleAccept,
-    otherReject,
     handleReject,
   };
   const codeEditorProps = {
@@ -161,8 +148,7 @@ const Room = () => {
     );
 
     if (!roomId) {
-      alert('Room not found, redirecting');
-      window.location.replace('/');
+      leaveRoom();
     }
 
     sock.auth = { roomId };
@@ -171,43 +157,38 @@ const Room = () => {
 
     sock.on('openNextQuestionPrompt', () => setOpen(true));
 
-    sock.on('acceptNextQuestion', () => {
-      setOtherConfirm(true);
+    sock.on('otherUserRejectedNextQuestion', () => {
+      setOpen(false);
+      resetConfirmations();
+      toast.info(
+        `The other user has rejected ${
+          questionNumber === questions.length - 1
+            ? 'ending the session'
+            : 'proceeding to the next question'
+        }`
+      );
     });
 
-    sock.on('rejectNextQuestion', () => {
-      setOtherReject(true);
-      setTimeout(() => {
-        setOpen(false);
-        resetConfirmations();
-      }, 3000);
+    sock.on('proceedToNextQuestion', () => {
+      setOpen(false);
+      resetConfirmations();
+      setQuestionNumber((prev) => prev + 1);
+      setChats([]);
+
+      if (questionNumber === questions.length - 1) router.push('/');
+    });
+
+    sock.on('error', (error) => {
+      setOpen(false);
+      resetConfirmations();
+      toast.error(error.message ?? error);
     });
 
     return () => {
       sock.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const moveToNextQuestion = async () => {
-      setOpen(false);
-      await handleSaveHistory();
-
-      if (questionNumber === questions.length - 1) {
-        return router.push('/');
-      }
-
-      setQuestionNumber((prev) => prev + 1);
-      setChats([]);
-      resetConfirmations();
-    };
-
-    if (confirm && otherConfirm) {
-      moveToNextQuestion();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirm, otherConfirm]);
+  }, [roomId]);
 
   useEffect(() => {
     const verticalResizer = document.getElementById('vertical-resizer');

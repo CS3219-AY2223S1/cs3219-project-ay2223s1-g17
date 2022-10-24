@@ -22,7 +22,7 @@ const CodeEditor = ({
   pointerEvents,
   shouldDisplay,
 }: Props) => {
-  const { roomId } = useMatchingContext();
+  const { roomId, leaveRoom } = useMatchingContext();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
   const [options] = useState<editor.IStandaloneEditorConstructionOptions>({
@@ -52,8 +52,7 @@ const CodeEditor = ({
     );
 
     if (!roomId) {
-      alert('Room not found, redirecting');
-      window.location.replace('/');
+      leaveRoom();
     }
 
     sock.auth = { roomId };
@@ -101,7 +100,7 @@ const CodeEditor = ({
       sock.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [roomId]);
 
   function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Box, Stack, Divider, Typography } from '@mui/material';
+import { Box, Stack, Divider, Typography, useTheme } from '@mui/material';
 import { DIFFICULTY } from 'utils/enums';
 import { Question } from 'contexts/MatchingContext';
 
@@ -18,7 +18,7 @@ type Props = {
 };
 
 const QuestionPanel: FC<Props> = ({
-  question: { title, difficulty, description, examples, constraints },
+  question,
   id,
   width,
   cursor,
@@ -30,12 +30,16 @@ const QuestionPanel: FC<Props> = ({
   mx,
   shouldDisplay,
 }) => {
-  const DifficultyColorMap: Record<DIFFICULTY, string> = {
-    EASY: '#93DB9A',
-    MEDIUM: '#F8B06E',
-    HARD: '#ED8D8D',
-  };
-
+  const theme = useTheme();
+  const { title, difficulty, description, examples, constraints } =
+    question ?? {
+      title: 'title',
+      difficulty: DIFFICULTY.EASY,
+      description: 'description',
+      examples: [],
+      constraints: [],
+    };
+  if (!difficulty) return <></>;
   return (
     <Stack
       id={id}
@@ -71,7 +75,7 @@ const QuestionPanel: FC<Props> = ({
         </Typography>
         <Typography
           variant="h6"
-          color={DifficultyColorMap[difficulty || DIFFICULTY.HARD]}
+          color={theme.palette[`${difficulty}`].main}
           sx={{ textTransform: 'capitalize', mb: 1 }}
           fontWeight="bold"
           fontSize={24}

@@ -31,7 +31,6 @@ type Props = {
   open: boolean;
   confirm: boolean;
   handleConfirm: () => void;
-  otherReject: boolean;
   handleReject: () => void;
 };
 
@@ -46,7 +45,6 @@ const RoomOptions: FC<Props> = ({
   open,
   confirm,
   handleConfirm,
-  otherReject,
   handleReject,
 }) => {
   const ViewButtonMap: Record<VIEW, ReactNode> = {
@@ -61,9 +59,9 @@ const RoomOptions: FC<Props> = ({
         open={open}
         confirm={confirm}
         handleConfirm={handleConfirm}
-        otherReject={otherReject}
         handleClose={handleReject}
       />
+
       <Stack
         sx={{
           p: 2,
@@ -73,7 +71,7 @@ const RoomOptions: FC<Props> = ({
           left: 0,
           right: 0,
           zIndex: 10,
-          backgroundColor: 'white',
+          backgroundColor: 'inherit',
         }}
         flexDirection="row"
         justifyContent="space-between"
