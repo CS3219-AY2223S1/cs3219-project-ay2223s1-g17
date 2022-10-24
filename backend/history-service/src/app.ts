@@ -24,7 +24,11 @@ database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
 // TODO: add hosted frontend domain here
 
 // TODO: Might have to add chat-service in
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://user-service:8001',
+  'http://collaboration-service:8004',
+];
 // only allows requests coming in from allowed origins
 app.use(
   cors({
@@ -54,5 +58,5 @@ app.use(
 app.use('/', router);
 
 app.listen(port, () => {
-  console.log(`History Service is running at https://localhost:${port}`);
+  console.log(`History Service is running at http://localhost:${port}`);
 });
