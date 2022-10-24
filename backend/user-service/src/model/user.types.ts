@@ -1,9 +1,9 @@
-import { PopulatedDoc, Types, Model, Document } from 'mongoose';
+import { Types, Model, Document } from 'mongoose';
 
 export interface IUser {
   username: string;
   password: string;
-  friends: PopulatedDoc<IUser>[];
+  avatarImage: string;
 }
 
 export type UserDocument = Document<unknown, any, IUser> &

@@ -3,6 +3,15 @@ import mongoose from 'mongoose';
 import { IUser, IUserModel, UserDocument } from './user.types';
 import jwt from 'jsonwebtoken';
 import { HttpStatusCode, PeerPrepError } from '../../../utils';
+import {
+  HISTORY_URL,
+  MULTIAVATAR_FIELD_MAX,
+  MULTIAVATAR_FIELD_MIN,
+  MULTIAVATAR_NUM_FIELDS,
+  STATISTICS_CREATION_URL,
+  STATISTICS_URL,
+} from './user.constants';
+import axios from 'axios';
 
 const userSchema = new mongoose.Schema<IUser, IUserModel>({
   username: {
@@ -18,6 +27,9 @@ const userSchema = new mongoose.Schema<IUser, IUserModel>({
     required: [true, 'Password is required'],
     minLength: [6, 'Password is too short'],
   },
+  avatarImage: {
+    type: String,
+  },
 });
 
 userSchema.pre('save', async function (callback) {
@@ -28,13 +40,57 @@ userSchema.pre('save', async function (callback) {
     user.password = hashedPassword;
   }
 
+  if (user.isNew) {
+    // create user's initital statistics
+    const { status: statisticsStatus, data: statisticsData } = await axios.post(
+      STATISTICS_CREATION_URL,
+      {
+        userId: user._id.toString(),
+      }
+    );
+    console.log(statisticsStatus, statisticsData);
+    if (statisticsStatus !== HttpStatusCode.OK)
+      throw new PeerPrepError(statisticsStatus, statisticsData);
+
+    let avatarId = '';
+    for (let i = 0; i < MULTIAVATAR_NUM_FIELDS; i++) {
+      avatarId += Math.floor(
+        Math.random() * (MULTIAVATAR_FIELD_MAX - MULTIAVATAR_FIELD_MIN + 1) +
+          MULTIAVATAR_FIELD_MIN
+      );
+    }
+    const { status: multiAvatarStatus, data: multiAvatarData } =
+      await axios.get(`https://api.multiavatar.com/${avatarId}`);
+    if (multiAvatarStatus !== HttpStatusCode.OK)
+      throw new PeerPrepError(multiAvatarStatus, multiAvatarData);
+
+    const multiAvatarImage = multiAvatarData;
+    const buffer = Buffer.from(multiAvatarImage);
+    user.avatarImage = buffer.toString('base64');
+  }
+
   callback();
 });
 
 userSchema.pre('remove', async function (callback) {
   const user = this;
+  const data = { userId: user._id.toString() };
 
-  //TODO: delete history
+  // delete user's history
+  const { status: historyStatus, data: historyData } = await axios.delete(
+    HISTORY_URL,
+    { data }
+  );
+  if (historyStatus !== HttpStatusCode.OK)
+    throw new PeerPrepError(historyStatus, historyData);
+
+  // delete user's statistics
+  const { status: statisticsStatus, data: statisticsData } = await axios.delete(
+    STATISTICS_URL,
+    { data }
+  );
+  if (statisticsStatus !== HttpStatusCode.OK)
+    throw new PeerPrepError(statisticsStatus, statisticsData);
 
   callback();
 });
