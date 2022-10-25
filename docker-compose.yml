@@ -4,6 +4,10 @@ services:
   frontend:
     depends_on:
       - user-service
+      - matching-service
+      - collaboration-service
+      - history-service
+      - communication-service
     container_name: frontend
     build:
       context: ./frontend
@@ -26,6 +30,7 @@ services:
     container_name: user-service
     depends_on:
       - mongo_db
+      - history-service
     build:
       context: ./backend
       dockerfile: Dockerfile.user
@@ -42,6 +47,8 @@ services:
 
   matching-service:
     container_name: matching-service
+    depends_on:
+      - question-service
     build:
       context: ./backend
       dockerfile: Dockerfile.matching
@@ -74,6 +81,7 @@ services:
     container_name: collaboration-service
     depends_on:
       - redis
+      - history-service
     build:
       context: ./backend
       dockerfile: Dockerfile.collaboration
@@ -123,8 +131,8 @@ services:
     restart: always
     ports:
       - '27017:27017'
-    # volumes:
-    #   - mongo_db:/data/db
+    volumes:
+      - mongo_db:/data/db
     networks:
       - cs3219-project-network
     logging:
@@ -136,8 +144,8 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    # volumes:
-    #   - redisdata:/data
+    volumes:
+      - redisdata:/data
     networks:
       - cs3219-project-network
 
@@ -145,6 +153,6 @@ networks:
   cs3219-project-network:
     driver: bridge
 
-# volumes:
-#   mongo_db: {}
-#   redisdata: {}
+volumes:
+  mongo_db: {}
+  redisdata: {}
