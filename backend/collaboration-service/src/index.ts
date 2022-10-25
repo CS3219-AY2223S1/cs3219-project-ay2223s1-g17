@@ -1,7 +1,10 @@
 import express, { Express } from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
-import { registerStopwatchHandler } from './socketHandler/stopwatchHandler';
+import {
+  onTimerStop,
+  registerStopwatchHandler,
+} from './socketHandler/stopwatchHandler';
 import axios, { HttpStatusCode } from 'axios';
 import * as redis from 'redis';
 
@@ -55,6 +58,8 @@ io.on('connection', async (socket: ISocket) => {
   });
 
   socket.on('acceptNextQuestion', async (history) => {
+    onTimerStop(io, socket, roomId);
+
     const users = await redisClient
       .get(usersKey)
       .then((res) => (res ? JSON.parse(res) : res));
