@@ -5,9 +5,9 @@ import jwt from 'jsonwebtoken';
 import { HttpStatusCode, PeerPrepError } from '../../../utils';
 import {
   HISTORY_URL,
-  MULTIAVATAR_FIELD_MAX,
-  MULTIAVATAR_FIELD_MIN,
-  MULTIAVATAR_NUM_FIELDS,
+  // MULTIAVATAR_FIELD_MAX,
+  // MULTIAVATAR_FIELD_MIN,
+  // MULTIAVATAR_NUM_FIELDS,
   STATISTICS_CREATION_URL,
   STATISTICS_URL,
 } from './user.constants';
@@ -28,9 +28,9 @@ const userSchema = new mongoose.Schema<IUser, IUserModel>(
       required: [true, 'Password is required'],
       minLength: [6, 'Password is too short'],
     },
-    avatarImage: {
-      type: String,
-    },
+    // avatarImage: {
+    //   type: String,
+    // },
   },
   { timestamps: true }
 );
@@ -51,25 +51,24 @@ userSchema.pre('save', async function (callback) {
         userId: user._id.toString(),
       }
     );
-    console.log(statisticsStatus, statisticsData);
     if (statisticsStatus !== HttpStatusCode.OK)
       throw new PeerPrepError(statisticsStatus, statisticsData);
 
-    let avatarId = '';
-    for (let i = 0; i < MULTIAVATAR_NUM_FIELDS; i++) {
-      avatarId += Math.floor(
-        Math.random() * (MULTIAVATAR_FIELD_MAX - MULTIAVATAR_FIELD_MIN + 1) +
-          MULTIAVATAR_FIELD_MIN
-      );
-    }
-    const { status: multiAvatarStatus, data: multiAvatarData } =
-      await axios.get(`https://api.multiavatar.com/${avatarId}`);
-    if (multiAvatarStatus !== HttpStatusCode.OK)
-      throw new PeerPrepError(multiAvatarStatus, multiAvatarData);
+    // let avatarId = '';
+    // for (let i = 0; i < MULTIAVATAR_NUM_FIELDS; i++) {
+    //   avatarId += Math.floor(
+    //     Math.random() * (MULTIAVATAR_FIELD_MAX - MULTIAVATAR_FIELD_MIN + 1) +
+    //       MULTIAVATAR_FIELD_MIN
+    //   );
+    // }
+    // const { status: multiAvatarStatus, data: multiAvatarData } =
+    //   await axios.get(`https://api.multiavatar.com/${avatarId}`);
+    // if (multiAvatarStatus !== HttpStatusCode.OK)
+    //   throw new PeerPrepError(multiAvatarStatus, multiAvatarData);
 
-    const multiAvatarImage = multiAvatarData;
-    const buffer = Buffer.from(multiAvatarImage);
-    user.avatarImage = buffer.toString('base64');
+    // const multiAvatarImage = multiAvatarData;
+    // const buffer = Buffer.from(multiAvatarImage);
+    // user.avatarImage = buffer.toString('base64');
   }
 
   callback();

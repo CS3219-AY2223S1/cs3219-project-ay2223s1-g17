@@ -3,7 +3,7 @@ import { Types, Model, Document } from 'mongoose';
 export interface IUser {
   username: string;
   password: string;
-  avatarImage: string;
+  // avatarImage: string;
 }
 
 export type UserDocument = Document<unknown, any, IUser> &
