@@ -95,6 +95,11 @@ questionSchema.static(
       { $sample: { size: numQuestions } },
     ]);
 
+    if (questions.length === 0)
+      throw new Error(
+        `No questions with this difficulty '${difficulty}' found`
+      );
+
     return questions.map((question) => formatQuestion(question));
   }
 );
