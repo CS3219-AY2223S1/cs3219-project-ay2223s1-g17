@@ -16,6 +16,7 @@ export interface IStatistics {
   completedQuestionsByDay: Map<string, number>;
   languagesUsed: Map<string, number>;
   dailyStreak: number;
+  longestStreak: number;
 }
 
 export interface IStatisticsMethods {}

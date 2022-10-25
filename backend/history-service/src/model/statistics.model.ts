@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { HttpStatusCode, PeerPrepError } from '../../../utils';
+import { HttpStatusCode, LANGUAGE, PeerPrepError, TOPIC } from '../../../utils';
 import { IStatistics, IStatisticsModel, Question } from './statistics.types';
 
 const statisticsSchema = new Schema<IStatistics, IStatisticsModel>({
@@ -22,7 +22,9 @@ const statisticsSchema = new Schema<IStatistics, IStatisticsModel>({
   languagesUsed: {
     type: Map,
     of: Number,
-    default: new Map<string, number>(),
+    default: new Map<string, number>(
+      Object.values(LANGUAGE).map((language) => [language, 0])
+    ),
   },
   completedQuestionsByDay: {
     type: Map,
@@ -35,6 +37,10 @@ const statisticsSchema = new Schema<IStatistics, IStatisticsModel>({
     default: new Map<string, number>(),
   },
   dailyStreak: {
+    type: Number,
+    default: 0,
+  },
+  longestStreak: {
     type: Number,
     default: 0,
   },
@@ -58,8 +64,22 @@ statisticsSchema.pre('save', async function (callback) {
       statistics.completedQuestionsByDay.get(String(parseInt(dayOfYear) - 1)) ??
       0;
 
-    if (completedQuestionsYesterday && !completedQuestionsToday)
-      statistics.dailyStreak += 1;
+    // only update streak if this is the first question completed today
+    if (!completedQuestionsToday) {
+      // continue streak if completed question yesterday
+      if (completedQuestionsYesterday) {
+        statistics.dailyStreak += 1;
+        statistics.longestStreak = Math.max(
+          statistics.longestStreak,
+          statistics.dailyStreak
+        );
+      } else {
+        // reset dailyStreak
+        statistics.dailyStreak = 1;
+        statistics.longestStreak = Math.max(1, statistics.longestStreak);
+      }
+    }
+
     statistics.completedQuestionsByDay.set(
       dayOfYear,
       completedQuestionsToday + 1
@@ -74,9 +94,8 @@ statisticsSchema.static(
   async function getStatisticsByUser(userId: string) {
     if (!userId) throw new Error('User id is required');
 
-    const statistics = Statistics.findOne({ user: userId }).sort({
-      languagesUsed: 'desc',
-    });
+    const statistics = Statistics.findOne({ user: userId });
+
     if (!statistics)
       throw new PeerPrepError(
         HttpStatusCode.NOT_FOUND,

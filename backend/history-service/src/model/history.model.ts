@@ -1,6 +1,5 @@
-import { assert } from 'console';
 import mongoose from 'mongoose';
-import { HistoryDocument, IHistory, IHistoryModel } from './history.types';
+import { IHistory, IHistoryModel } from './history.types';
 
 const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
   {
@@ -18,6 +17,9 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
           type: String,
         },
         difficulty: {
+          type: String,
+        },
+        id: {
           type: String,
         },
       },
