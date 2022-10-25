@@ -26,6 +26,21 @@ export default [
         starterCode:
           'class Solution:\n\n\tdef twoSum(self, nums: List[int], target: int) -> List[int]:\n\t\t',
       },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic int[] twoSum(int[] nums, int target) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tvector<int> twoSum(vector<int>& nums, int target) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nvar twoSum = function(nums, target) {\n\t};',
+      },
     ],
     link: 'https://leetcode.com/problems/two-sum/',
   },
@@ -54,6 +69,21 @@ export default [
         language: 'PYTHON',
         starterCode:
           '# Definition for singly-linked list.\n\n# class ListNode:\n\n#\tdef __init__(self, val=0, next=None):\n\n#\tself.val = val\n#\tself.next = next\n\nclass Solution:\n\n\tdef reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n\t\t',
+      },
+      {
+        language: 'JAVA',
+        starterCode:
+          '/**\n * Definition for singly-linked list.\n * public class ListNode {\n * \tint val;\n * \tListNode next;\n * \tListNode() {}\n * \tListNode(int val) { this.val = val; }\n * \tListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n\tpublic ListNode reverseList(ListNode head) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          '/**\n * Definition for singly-linked list.\n * struct ListNode {\n * \tint val;\n * \tListNode *next;\n * \tListNode() : val(0), next(nullptr) {}\n * \tListNode(int x) : val(x), next(nullptr) {}\n * \tListNode(int x, ListNode *next) : val(x), next(next) {}\n * };\n */\nclass Solution {\npublic:\n\tListNode* reverseList(ListNode* head) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * Definition for singly-linked list.\n * function ListNode(val, next) {\n * \tthis.val = (val===undefined ? 0 : val)\n * \tthis.next = (next===undefined ? null : next)\n * }\n */\n/**\n * @param {ListNode} head\n * @return {ListNode}\n */\nvar reverseList = function(head) {\n\t};',
       },
     ],
     link: 'https://leetcode.com/problems/reverse-linked-list/',
@@ -84,6 +114,21 @@ export default [
         starterCode:
           '# Definition for singly-linked list.\n\n# class ListNode:\n\n#\tdef __init__(self, val=0, next=None):\n\n#\tself.val = val\n#\tself.next = next\n\nclass Solution:\n\n\tdef mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n\t\t',
       },
+      {
+        language: 'JAVA',
+        starterCode:
+          '/**\n * Definition for singly-linked list.\n * public class ListNode {\n * \tint val;\n * \tListNode next;\n * \tListNode() {}\n * \tListNode(int val) { this.val = val; }\n * \tListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n\tpublic ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          '/**\n * Definition for singly-linked list.\n * struct ListNode {\n * \tint val;\n * \tListNode *next;\n * \tListNode() : val(0), next(nullptr) {}\n * \tListNode(int x) : val(x), next(nullptr) {}\n * \tListNode(int x, ListNode *next) : val(x), next(next) {}\n * };\n */\nclass Solution {\npublic:\n\tListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * Definition for singly-linked list.\n * function ListNode(val, next) {\n * \tthis.val = (val===undefined ? 0 : val)\n * \tthis.next = (next===undefined ? null : next)\n * }\n */\n/**\n * @param {ListNode} list1\n * @param {ListNode} list2\n * @return {ListNode}\n */\nvar mergeTwoLists = function(list1, list2) {\n\t};',
+      },
     ],
     link: 'https://leetcode.com/problems/merge-two-sorted-lists/',
   },
@@ -112,6 +157,21 @@ export default [
         language: 'PYTHON',
         starterCode:
           'class Solution:\n\n\tdef isValid(self, s: str) -> bool:\n\t\t',
+      },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic boolean isValid(String s) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tbool isValid(string s) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {string} s\n * @return {boolean}\n */\nvar isValid = function(s) {\n\t};',
       },
     ],
     link: 'https://leetcode.com/problems/valid-parentheses/',
@@ -142,6 +202,21 @@ export default [
         starterCode:
           'class Solution:\n\n\tdef climbStairs(self, n: int) -> int:\n\t\t',
       },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic int climbStairs(int n) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tint climbStairs(int n) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {number} n\n * @return {number}\n */\nvar climbStairs = function(n) {\n\t};',
+      },
     ],
     link: 'https://leetcode.com/problems/climbing-stairs/',
   },
@@ -169,6 +244,21 @@ export default [
         starterCode:
           'class Solution:\n\n\tdef diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:\n\t\t',
       },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic int[][] diagonalSort(int[][] mat) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tvector<vector<int>> diagonalSort(vector<vector<int>>& mat) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {number[][]} mat\n * @return {number[][]}\n */\nvar diagonalSort = function(mat) {\n\t};',
+      },
     ],
     link: 'https://leetcode.com/problems/sort-the-matrix-diagonally/',
   },
@@ -194,6 +284,21 @@ export default [
         language: 'PYTHON',
         starterCode:
           'class Solution:\n\n\tdef longestPalindrome(self, s: str) -> str:\n\t\t',
+      },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic String longestPalindrome(String s) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tstring longestPalindrome(string s) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {string} s\n * @return {string}\n */\nvar longestPalindrome = function(s) {\n\t};',
       },
     ],
     link: 'https://leetcode.com/problems/longest-palindromic-substring/',
@@ -228,6 +333,21 @@ export default [
         starterCode:
           'class Solution:\n\n\tdef threeSum(self, nums: List[int]) -> List[List[int]]:\n\t\t',
       },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic List<List<Integer>> threeSum(int[] nums) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tvector<vector<int>> threeSum(vector<int>& nums) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {number[]} nums\n * @return {number[][]}\n */\nvar threeSum = function(nums) {\n\t};',
+      },
     ],
     link: 'https://leetcode.com/problems/3sum/',
   },
@@ -259,6 +379,21 @@ export default [
         starterCode:
           'class Solution:\n\n\tdef longestValidParentheses(self, s: str) -> int:\n\t\t',
       },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic int longestValidParentheses(String s) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tint longestValidParentheses(string s) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {string} s\n * @return {number}\n */\nvar longestValidParentheses = function(s) {\n\t};',
+      },
     ],
     link: 'https://leetcode.com/problems/longest-valid-parentheses/',
   },
@@ -287,6 +422,21 @@ export default [
         language: 'PYTHON',
         starterCode:
           'class Solution:\n\n\tdef candy(self, ratings: List[int]) -> int:\n\t\t',
+      },
+      {
+        language: 'JAVA',
+        starterCode:
+          'class Solution {\n\tpublic int candy(int[] ratings) {\n\t\t\n\t}}',
+      },
+      {
+        language: 'C++',
+        starterCode:
+          'class Solution {\npublic:\n\tint candy(vector<int>& ratings) {\n\t\t\n\t}\n};',
+      },
+      {
+        language: 'JAVASCRIPT',
+        starterCode:
+          '/**\n * @param {number[]} ratings\n * @return {number}\n */\nvar candy = function(ratings) {\n\t};',
       },
     ],
     link: 'https://leetcode.com/problems/candy/',
