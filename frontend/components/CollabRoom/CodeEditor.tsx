@@ -21,8 +21,9 @@ const CodeEditor = ({
   userSelect,
   pointerEvents,
   shouldDisplay,
+  readOnly,
 }: Props) => {
-  const { roomId, leaveRoom } = useMatchingContext();
+  const { roomId } = useMatchingContext();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
   const [options] = useState<editor.IStandaloneEditorConstructionOptions>({
@@ -30,7 +31,7 @@ const CodeEditor = ({
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
     lineNumbersMinChars: 3,
-    // readOnly: isReadOnly ?? false,
+    readOnly: readOnly ?? false,
     scrollbar: {
       useShadows: false,
       verticalHasArrows: false,
@@ -44,6 +45,8 @@ const CodeEditor = ({
   const otherDecoration = useRef<string[]>([]);
 
   useEffect(() => {
+    if (readOnly) return;
+
     const sock = io(
       `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
       {
@@ -51,9 +54,7 @@ const CodeEditor = ({
       }
     );
 
-    if (!roomId) {
-      leaveRoom();
-    }
+    if (!roomId) return;
 
     sock.auth = { roomId };
     sock.connect();
@@ -104,12 +105,13 @@ const CodeEditor = ({
 
   function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
-    editor.onDidChangeCursorSelection(
-      (e: editor.ICursorSelectionChangedEvent) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        socket!.emit('selection', e);
-      }
-    );
+    if (!readOnly)
+      editor.onDidChangeCursorSelection(
+        (e: editor.ICursorSelectionChangedEvent) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          socket!.emit('selection', e);
+        }
+      );
   }
 
   const handleChange = (
@@ -126,7 +128,7 @@ const CodeEditor = ({
     socket?.emit('editorChange', event);
   };
 
-  return socket ? (
+  return readOnly || socket ? (
     <Box
       sx={{
         flexGrow: 1,
@@ -168,4 +170,5 @@ interface Props {
   userSelect: string;
   pointerEvents: string;
   shouldDisplay: boolean;
+  readOnly?: boolean;
 }

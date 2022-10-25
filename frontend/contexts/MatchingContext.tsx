@@ -51,7 +51,6 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     setSocket(socket);
 
     socket.on('matchCountdown', (counter) => {
-      if (!isMatching) return;
       // timeout
       if (counter === 0) {
         setCount(undefined);
@@ -75,7 +74,6 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on('matchLeave', () => {
-      // assert(roomId != undefined);
       setRoomId(undefined);
       toast.warn('The other user has left!');
     });
@@ -93,15 +91,16 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const startMatch = (difficulty: DIFFICULTY) => {
     if (!socket) return;
     if (!socket.connected) socket.connect();
+
     setIsMatching(true);
     socket.emit('matchStart', difficulty);
     setCount(30);
   };
 
   const leaveRoom = (returnHome = true) => {
+    socket?.emit('matchLeave');
     setIsMatching(false);
     setRoomId(undefined);
-    socket?.emit('matchLeave');
 
     if (returnHome) router.push('/');
   };

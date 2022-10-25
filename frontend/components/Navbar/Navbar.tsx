@@ -4,7 +4,7 @@ import { MouseEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import useAuth from 'contexts/AuthContext';
 import { NAVBAR_HEIGHT_PX } from 'utils/constants';
-import { Login } from '@mui/icons-material';
+import { Handshake, Login } from '@mui/icons-material';
 import { IconButton, Stack } from '@mui/material';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import Matchmaking from 'components/Matchmaking';
@@ -15,7 +15,7 @@ import NavbarOption from './NavbarOption';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { leaveRoom } = useMatchingContext();
+  const { isMatching, leaveRoom } = useMatchingContext();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
@@ -84,9 +84,8 @@ const Navbar = () => {
             ></img>
           }
           styles={{
-            fontFamily: 'Raleway',
             fontSize: 28,
-            fontWeight: 'bold',
+            fontWeight: 500,
             position: 'absolute',
             top: 0,
             left: 12,
@@ -102,15 +101,28 @@ const Navbar = () => {
         {user ? <Matchmaking /> : <></>}
         {user ? (
           <>
-            <IconButton
-              onClick={handleOpen}
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              sx={{ position: 'absolute', right: 12, my: 'auto' }}
+            <Stack
+              flexDirection="row"
+              columnGap={2}
+              sx={{ position: 'absolute', my: 'auto', right: 12 }}
             >
-              <ManageAccountsIcon />
-            </IconButton>
+              <NavbarOption
+                onClick={() => router.push('/match')}
+                label="Find Match"
+                icon={<Handshake />}
+                styles={{
+                  display: isMatching ? 'none' : 'auto',
+                }}
+              />
+              <IconButton
+                onClick={handleOpen}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <ManageAccountsIcon />
+              </IconButton>
+            </Stack>
             <AccountMenu
               open={open}
               anchorEl={anchorEl}

@@ -1,5 +1,6 @@
 import { FC, Dispatch, SetStateAction, ReactNode } from 'react';
 import {
+  Box,
   Button,
   IconButton,
   // MenuItem,
@@ -32,6 +33,7 @@ type Props = {
   confirm: boolean;
   handleConfirm: () => void;
   handleReject: () => void;
+  readOnly?: boolean;
 };
 
 const RoomOptions: FC<Props> = ({
@@ -46,6 +48,7 @@ const RoomOptions: FC<Props> = ({
   confirm,
   handleConfirm,
   handleReject,
+  readOnly,
 }) => {
   const ViewButtonMap: Record<VIEW, ReactNode> = {
     QUESTION: <DescriptionIcon />,
@@ -53,7 +56,7 @@ const RoomOptions: FC<Props> = ({
     EDITOR: <CodeIcon />,
   };
   return (
-    <>
+    <Box bgcolor="#f7f8fa">
       <NextQuestionPrompt
         isLastQuestion={questionNumber === maxQuestionNumber}
         open={open}
@@ -97,35 +100,43 @@ const RoomOptions: FC<Props> = ({
           ))}
         </ToggleButtonGroup>
 
-        <Stack flexDirection="row" alignItems="center" sx={{ mr: '5%' }}>
-          <Typography color="black" variant="h6">
-            Question {questionNumber + 1}
-          </Typography>
-          {questionNumber < maxQuestionNumber ? (
-            <IconButton onClick={handleNextQuestion} disableRipple>
-              <NavigateNextIcon />
-            </IconButton>
-          ) : (
-            <></>
-          )}
-        </Stack>
+        {readOnly ? (
+          <></>
+        ) : (
+          <Stack flexDirection="row" alignItems="center" sx={{ mr: '5%' }}>
+            <Typography color="black" variant="h6">
+              Question {questionNumber + 1}
+            </Typography>
+            {questionNumber < maxQuestionNumber ? (
+              <IconButton onClick={handleNextQuestion} disableRipple>
+                <NavigateNextIcon />
+              </IconButton>
+            ) : (
+              <></>
+            )}
+          </Stack>
+        )}
 
-        <Stack flexDirection="row" columnGap={2}>
-          <Stopwatch />
-          {questionNumber === maxQuestionNumber ? (
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleNextQuestion}
-              disableRipple
-            >
-              End Session
-            </Button>
-          ) : (
-            <></>
-          )}
+        {readOnly ? (
+          <></>
+        ) : (
+          <Stack flexDirection="row" columnGap={2}>
+            <Stopwatch />
+            {questionNumber === maxQuestionNumber ? (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleNextQuestion}
+                disableRipple
+                size="small"
+              >
+                End Session
+              </Button>
+            ) : (
+              <></>
+            )}
 
-          {/* <Select
+            {/* <Select
             value={language}
             onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
             sx={{ textTransform: 'capitalize' }}
@@ -141,9 +152,10 @@ const RoomOptions: FC<Props> = ({
               </MenuItem>
             ))}
           </Select> */}
-        </Stack>
+          </Stack>
+        )}
       </Stack>
-    </>
+    </Box>
   );
 };
 

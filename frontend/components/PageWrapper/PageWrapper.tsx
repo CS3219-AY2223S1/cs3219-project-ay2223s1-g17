@@ -6,14 +6,20 @@ type Props = {
   children: ReactNode;
   fullWidth?: boolean;
   fixedHeight?: boolean;
+  whiteBackground?: boolean;
 };
 
-const PageWrapper: FC<Props> = ({ children, fullWidth, fixedHeight }) => {
+const PageWrapper: FC<Props> = ({
+  children,
+  fullWidth,
+  fixedHeight,
+  whiteBackground,
+}) => {
   return (
     <Box
       sx={{
         height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`,
-        backgroundColor: '#f7f8fa',
+        backgroundColor: whiteBackground ? 'white' : '#f7f8fa',
         position: 'absolute',
         top: `${NAVBAR_HEIGHT_PX}px`,
         left: 0,

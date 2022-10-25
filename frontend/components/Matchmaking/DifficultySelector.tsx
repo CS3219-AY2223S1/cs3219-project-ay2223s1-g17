@@ -5,9 +5,10 @@ import { FC } from 'react';
 
 type Props = {
   hideLabel?: boolean;
+  large?: boolean;
 };
 
-const DifficultySelector: FC<Props> = ({ hideLabel }) => {
+const DifficultySelector: FC<Props> = ({ hideLabel, large }) => {
   const theme = useTheme();
   const { isMatching, startMatch } = useMatchingContext();
 
@@ -16,22 +17,28 @@ const DifficultySelector: FC<Props> = ({ hideLabel }) => {
       {hideLabel ? (
         <></>
       ) : (
-        <Typography variant="subtitle1" fontWeight={500} fontFamily="Raleway">
-          Find Match:
+        <Typography variant="subtitle1" color="primary" fontWeight={500}>
+          Quick Match:
         </Typography>
       )}
-      <Stack flexDirection="row" columnGap={1}>
+      <Stack flexDirection="row" columnGap={large ? 2 : 1}>
         {Object.values(DIFFICULTY).map((difficulty) => {
           return (
             <Button
               key={difficulty}
               type="submit"
               variant="contained"
-              size="small"
+              size={large ? 'large' : 'small'}
               sx={{
-                backgroundColor: theme.palette[`${difficulty}`].main,
+                bgcolor: theme.palette[`${difficulty}`].main,
                 fontWeight: 500,
                 textTransform: 'capitalize',
+                transitionProperty: 'background-color',
+                transitionDuration: '0.15s',
+                transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  bgcolor: theme.palette[`${difficulty}`].dark,
+                },
               }}
               disabled={isMatching}
               onClick={() => startMatch(difficulty)}

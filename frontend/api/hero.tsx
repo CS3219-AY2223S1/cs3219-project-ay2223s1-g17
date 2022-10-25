@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query/build/lib/useQuery';
-import { History, Statistics } from 'components/Hero/Hero';
+import { Statistics } from 'components/Hero/Hero';
 import { SERVICE, HTTP_METHOD } from 'utils/enums';
 import { apiCall } from 'utils/helpers';
+import { useQuery } from '@tanstack/react-query';
+import { History } from 'components/Hero/CompletionPanel/CompletionPanel';
 
 export const useHistory = (userId: string) => {
   const queryKey = ['history'];

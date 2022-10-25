@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Box, Stack, Divider, Typography, useTheme } from '@mui/material';
 import { DIFFICULTY } from 'utils/enums';
 import { Question } from 'contexts/MatchingContext';
+import { Output } from '@mui/icons-material';
 
 type Props = {
   question: Question;
@@ -53,11 +54,12 @@ const QuestionPanel: FC<Props> = ({
         overflowY,
         mx,
         display: shouldDisplay ? 'flex' : 'none',
+        bgcolor: 'white',
       }}
     >
       <Stack
         sx={{
-          px: 1,
+          pr: 1,
           pt: 1,
         }}
         flexDirection="row"
@@ -77,67 +79,63 @@ const QuestionPanel: FC<Props> = ({
           variant="h6"
           color={theme.palette[`${difficulty}`].main}
           sx={{ textTransform: 'capitalize', mb: 1 }}
-          fontWeight="bold"
+          fontWeight={500}
           fontSize={24}
         >
           {difficulty?.toLowerCase()}
         </Typography>
       </Stack>
       <Divider orientation="horizontal" flexItem />
-      <Typography color="black" sx={{ px: 2, my: 4 }} fontSize={18}>
+      <Typography sx={{ pr: 2, mt: 4, mb: 2 }} fontSize={18}>
         {description}
       </Typography>
       {(examples ?? []).map(({ input, output, explanation }, index) => (
         <Box
           key={`example-${index}`}
           sx={{
-            px: 2,
-            my: 4,
+            pr: 2,
+            my: 2,
           }}
         >
           <Typography fontWeight="bold" color="black">
             Example {index + 1}
           </Typography>
-          <Box
-            color="black"
+          <Stack
             sx={{
               backgroundColor: '#EEEDE7',
-              borderRadius: '5px',
-              px: 2,
-              py: 0.5,
+              borderRadius: '4px',
+              py: 1.5,
+              pr: 1.5,
               my: 1,
             }}
+            rowGap={1}
           >
-            <p>
-              <strong>Input: </strong>
-              {input}
-            </p>
-            <p>
-              <strong>Ouput: </strong>
-              {output}
-            </p>
+            <Stack flexDirection="row" columnGap={1}>
+              <Typography fontWeight={500}>Input: </Typography>
+              <Typography>{input}</Typography>
+            </Stack>
+            <Stack flexDirection="row" columnGap={1}>
+              <Typography fontWeight={500}>Output: </Typography>
+              <Typography>{output}</Typography>
+            </Stack>
             {explanation ? (
-              <p>
-                <strong>Explanation: </strong>
-                {explanation}
-              </p>
+              <Stack flexDirection="row" columnGap={1}>
+                <Typography fontWeight={500}>Explanation: </Typography>
+                <Typography>{explanation}</Typography>
+              </Stack>
             ) : (
               <></>
             )}
-          </Box>
+          </Stack>
         </Box>
       ))}
       {constraints && constraints.length ? (
-        <Typography fontWeight="bold" color="black">
-          Constraints
-        </Typography>
+        <Typography fontWeight="bold">Constraints</Typography>
       ) : (
         <></>
       )}
       {(constraints ?? []).map((constraint, index) => (
-        <Typography key={`constraint-${index}`} color="black">
-          {constraint}
-        </Typography>
+        <Typography key={`constraint-${index}`}>{constraint}</Typography>
       ))}
     </Stack>
   );

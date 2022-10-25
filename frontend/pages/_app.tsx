@@ -10,8 +10,8 @@ import {
   PaletteColorOptions,
   ThemeProvider,
 } from '@mui/material';
-import { green, amber, red } from '@mui/material/colors';
-import { useQueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { green, amber, red, grey } from '@mui/material/colors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -37,16 +37,25 @@ declare module '@mui/material/Button' {
 const theme = createTheme({
   palette: {
     EASY: {
-      main: green[400], //#93DB9A
+      light: green[100],
+      main: green[400],
+      dark: green[700],
     },
     MEDIUM: {
-      main: amber[600], //#F8B06E
+      light: amber[100],
+      main: amber[600],
+      dark: amber[900],
     },
     HARD: {
-      main: red[400], //#ED8D8D
+      light: red[100],
+      main: red[400],
+      dark: red[700],
     },
-    contrastThreshold: 3,
-    tonalOffset: 0.2,
+    secondary: {
+      light: grey[400],
+      main: grey[500],
+      dark: grey[600],
+    },
   },
   typography: {
     fontFamily: 'Raleway',
@@ -62,8 +71,9 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient();
+
 function MyApp({ Component, pageProps }: AppProps) {
-  const queryClient = useQueryClient();
   return (
     <QueryClientProvider client={queryClient}>
       <AppContext>

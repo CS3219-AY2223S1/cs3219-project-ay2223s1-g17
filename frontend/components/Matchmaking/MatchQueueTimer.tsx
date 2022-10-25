@@ -1,6 +1,7 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useMatchingContext } from 'contexts/MatchingContext';
+import TimeDisplay from './TimeDisplay';
 
 const MatchQueueTimer = () => {
   const { count, leaveRoom } = useMatchingContext();
@@ -9,41 +10,11 @@ const MatchQueueTimer = () => {
     <Stack flexDirection="row" alignItems="center">
       <Stack>
         <Stack flexDirection="row" alignItems="center">
-          <Typography variant="caption" sx={{ mr: 1 }}>
+          <Typography variant="caption" color="primary" sx={{ mr: 1 }}>
             Finding Match
           </Typography>
-          {Array.from(Array(3).keys()).map((index) => {
-            return (
-              <Box
-                key={index}
-                sx={{
-                  height: '4px',
-                  width: '4px',
-                  borderRadius: '50%',
-                  bgcolor: 'blue',
-                }}
-              />
-            );
-          })}
         </Stack>
-        {/* <Stack flexDirection="row" columnGap={0.25} alignItems="end">
-        <Typography
-        sx={{
-          fontSize: 20,
-        }}
-        >
-          {count < 10 ? '0' : ''}
-          {count}
-          </Typography>
-          <Typography
-          sx={{
-            fontSize: 12,
-            mb: 0.35,
-          }}
-          >
-          s
-          </Typography>
-        </Stack> */}
+        <TimeDisplay count={count ?? 0} />
       </Stack>
       <IconButton onClick={() => leaveRoom(false)}>
         <CloseIcon color="error" />

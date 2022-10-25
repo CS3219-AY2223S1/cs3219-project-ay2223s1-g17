@@ -1,11 +1,11 @@
 // packages
 
 import { Box, Stack } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { Question, useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
@@ -24,7 +24,21 @@ export type View = {
   showChat: boolean;
 };
 
-const Room = () => {
+type ReadOnlyProps = {
+  readOnly: boolean;
+  readOnlyQuestion: Question;
+  readOnlyEditorContent: string;
+  readOnlyChats: Chat[];
+};
+
+type Props = ReadOnlyProps | Record<string, never>;
+
+const Room: FC<Props> = ({
+  readOnly,
+  readOnlyQuestion,
+  readOnlyChats,
+  readOnlyEditorContent,
+}) => {
   const { roomId, leaveRoom } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
@@ -44,7 +58,7 @@ const Room = () => {
     VIEW.QUESTION,
     VIEW.CHAT,
   ]);
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<Chat[]>(readOnly ? readOnlyChats : []);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
 
@@ -52,8 +66,9 @@ const Room = () => {
   const showEditor = view.includes(VIEW.EDITOR);
   const showChat = view.includes(VIEW.CHAT);
 
-  const editorContent =
-    questions[questionNumber]?.templates?.[language] ?? '# start coding here';
+  const editorContent = readOnly
+    ? readOnlyEditorContent
+    : questions[questionNumber]?.templates?.[language] ?? '# start coding here';
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const handleNextQuestion = () => {
@@ -100,7 +115,9 @@ const Room = () => {
     confirm,
     handleConfirm: handleAccept,
     handleReject,
+    readOnly,
   };
+
   const codeEditorProps = {
     language,
     questionNumber,
@@ -115,7 +132,9 @@ const Room = () => {
     userSelect,
     pointerEvents,
     shouldDisplay: showEditor,
+    readOnly,
   };
+
   const chatBoxProps = {
     id: 'chat-panel',
     height: showEditor ? height : '100%',
@@ -124,10 +143,12 @@ const Room = () => {
     shouldDisplay: showChat,
     chats,
     setChats,
+    readOnly,
   };
+
   const questionPanelProps = {
     id: 'question-panel',
-    question: questions[questionNumber],
+    question: readOnly ? readOnlyQuestion : questions[questionNumber],
     width,
     cursor,
     pointerEvents,
@@ -140,6 +161,8 @@ const Room = () => {
   };
 
   useEffect(() => {
+    if (readOnly) return;
+
     const sock = io(
       `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
       {
@@ -175,7 +198,9 @@ const Room = () => {
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
 
-      if (questionNumber === questions.length - 1) router.push('/');
+      if (questionNumber >= questions.length - 1) {
+        router.push('/');
+      }
     });
 
     sock.on('error', (error) => {
