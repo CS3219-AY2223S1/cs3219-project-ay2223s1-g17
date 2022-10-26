@@ -1,4 +1,4 @@
-import { Document, LeanDocument, Model, Types } from 'mongoose';
+import { LeanDocument, Model, Types } from 'mongoose';
 import { DIFFICULTY, LANGUAGE, TOPIC } from '../../../utils';
 
 export interface IQuestion {
@@ -23,7 +23,7 @@ interface ITemplate {
   starterCode: string;
 }
 
-export type QuestionDocument = Document<unknown, any, IQuestion> &
+export type QuestionDocument = LeanDocument<IQuestion> &
   IQuestion & { _id: Types.ObjectId } & IQuestionMethods;
 
 export type FormattedQuestionDocument = LeanDocument<

@@ -118,7 +118,7 @@ questionSchema.static(
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const question = await Question.findById(id);
+    const question = await Question.findById(id).lean();
 
     if (!question) throw new Error(`No question with id ${id} found`);
 
@@ -166,7 +166,11 @@ const formatQuestion = (
     templatesMap.set(template.language, template.starterCode)
   );
   const templates = Object.fromEntries(templatesMap);
-  return { ...question.toObject(), templates };
+
+  return {
+    ...question,
+    templates,
+  };
 };
 
 const Question = mongoose.model<IQuestion, IQuestionModel>(
