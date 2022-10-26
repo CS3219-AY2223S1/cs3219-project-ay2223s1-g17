@@ -101,6 +101,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     socket?.emit('matchLeave');
     setIsMatching(false);
     setRoomId(undefined);
+    setQuestions([]);
 
     if (returnHome) router.push('/');
   };
@@ -115,7 +116,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       questions: questions || [{}],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [count, isMatching, roomId, socket]
+    [count, isMatching, roomId, questions, socket]
   );
 
   return (
