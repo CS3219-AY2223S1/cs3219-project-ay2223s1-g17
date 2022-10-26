@@ -26,12 +26,13 @@ export type View = {
 
 type ReadOnlyProps = {
   readOnly: boolean;
+  isLoading: boolean;
   readOnlyQuestion?: Question;
   readOnlyEditorContent?: string;
   readOnlyChats?: Chat[];
 };
 
-type Props = (ReadOnlyProps | Record<string, never>) & { isLoading: boolean };
+type Props = ReadOnlyProps | Record<string, never>;
 
 const Room: FC<Props> = ({
   readOnly,
