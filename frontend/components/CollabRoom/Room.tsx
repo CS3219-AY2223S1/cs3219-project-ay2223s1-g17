@@ -215,7 +215,7 @@ const Room: FC<Props> = ({
       sock.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId]);
+  }, [roomId, questionNumber]);
 
   useEffect(() => {
     const verticalResizer = document.getElementById('vertical-resizer');
