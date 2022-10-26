@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { History } from 'components/Hero/Hero';
+import { History } from 'components/Hero/CompletionPanel/CompletionPanel';
 import { Question } from 'contexts/MatchingContext';
 import { SERVICE, HTTP_METHOD } from 'utils/enums';
 import { apiCall } from 'utils/helpers';
+import { reactQueryConfig } from './config';
 
 export type CompleteHistory = Omit<History, 'question'> & {
   question: Question;
@@ -23,11 +24,11 @@ export const useCodingSession = (id?: string) => {
     const question = await apiCall({
       service: SERVICE.QUESTION,
       method: HTTP_METHOD.GET,
-      path: `/${history.question.id}`,
+      path: `/question/${history.question.id}`,
     });
 
     return { ...history, question };
   };
 
-  return useQuery(queryKey, () => queryFn(id));
+  return useQuery(queryKey, () => queryFn(id), reactQueryConfig);
 };

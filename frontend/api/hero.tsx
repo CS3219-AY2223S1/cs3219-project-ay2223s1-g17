@@ -3,6 +3,7 @@ import { SERVICE, HTTP_METHOD } from 'utils/enums';
 import { apiCall } from 'utils/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { History } from 'components/Hero/CompletionPanel/CompletionPanel';
+import { reactQueryConfig } from './config';
 
 export const useHistory = (userId: string) => {
   const queryKey = ['history'];
@@ -20,8 +21,10 @@ export const useHistory = (userId: string) => {
     return history;
   };
 
-  const { data, isLoading, isFetching } = useQuery(queryKey, () =>
-    queryFn(userId)
+  const { data, isLoading, isFetching } = useQuery(
+    queryKey,
+    () => queryFn(userId),
+    reactQueryConfig
   );
 
   return {
@@ -47,8 +50,10 @@ export const useStatistics = (userId: string) => {
     return statistics;
   };
 
-  const { data, isLoading, isFetching } = useQuery(queryKey, () =>
-    queryFn(userId)
+  const { data, isLoading, isFetching } = useQuery(
+    queryKey,
+    () => queryFn(userId),
+    reactQueryConfig
   );
 
   return {
