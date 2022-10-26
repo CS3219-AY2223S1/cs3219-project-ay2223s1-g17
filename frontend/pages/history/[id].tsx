@@ -10,7 +10,7 @@ const ViewHistory: NextPage = () => {
   const { data, isLoading, isFetching } = useCodingSession(String(id));
 
   return (
-    <PageWrapper fullWidth fixedHeight>
+    <PageWrapper fullWidth fixedHeight whiteBackground>
       <Room
         readOnly
         readOnlyQuestion={data?.question}
