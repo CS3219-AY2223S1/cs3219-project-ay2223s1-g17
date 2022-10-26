@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable jsx-a11y/alt-text */
 import { FC } from 'react';
 import { Stack, Tooltip, Typography } from '@mui/material';
 import WhatshotIcon from '@mui/icons-material/Whatshot';

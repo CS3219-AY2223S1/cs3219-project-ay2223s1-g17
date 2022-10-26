@@ -143,7 +143,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: HTTP_METHOD.PUT,
       requiresCredentials: true,
       body: { preferredLanguage },
-      onSuccess,
+      onSuccess: () => {
+        onSuccess();
+        setUser({ ...(user as User), preferredLanguage });
+      },
     });
   };
 

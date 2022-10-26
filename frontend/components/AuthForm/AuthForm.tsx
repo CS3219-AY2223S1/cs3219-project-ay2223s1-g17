@@ -114,7 +114,13 @@ const AuthForm = () => {
     setPassword('');
     setUsername('');
     setConfirmPassword('');
+    setNewPassword('');
+    setShowConfirmPassword(false);
+    setShowNewPassword(false);
     setShowPassword(false);
+    setIsConfirmPasswordFocused(false);
+    setIsNewPasswordFocused(false);
+    setIsPasswordFocused(false);
   };
 
   const onSuccess = () => {
@@ -130,6 +136,7 @@ const AuthForm = () => {
       );
     }
     handleReset();
+
     return user || isLogin ? router.push('/') : setIsLogin(true);
   };
 
