@@ -73,7 +73,7 @@ const onMatchStart =
 
     const waitRoomId = uuidv4();
 
-    let counter = 30;
+    let counter = 29;
     const countdown = setInterval(async () => {
       socket.emit('matchCountdown', counter);
       if (counter === 0) {
