@@ -100,7 +100,10 @@ const QuestionPanel: FC<Props> = ({
         </LoadingWrapper>
       </Stack>
       <Divider orientation="horizontal" flexItem />
-      <LoadingWrapper isLoading={isLoading}>
+      <LoadingWrapper
+        isLoading={isLoading}
+        styles={{ width: '85%', mx: 'auto' }}
+      >
         <Typography sx={{ pr: 2, mt: 4, mb: 2 }} fontSize={18}>
           {description}
         </Typography>
@@ -109,7 +112,7 @@ const QuestionPanel: FC<Props> = ({
         <LoadingWrapper
           isLoading={isLoading}
           custom
-          styles={{ height: '4rem' }}
+          styles={{ height: '3rem', width: '85%', mx: 'auto' }}
           key={`example-${index}`}
         >
           <Box

@@ -91,7 +91,13 @@ const ChatPanel: FC<Props> = ({
   };
 
   return (
-    <LoadingWrapper isLoading={isLoading} custom repeat={4}>
+    <LoadingWrapper
+      isLoading={isLoading}
+      custom
+      styles={{ width: '85%', mx: 'auto' }}
+      containerStyles={{ my: 'auto' }}
+      repeat={4}
+    >
       <Stack
         id={id}
         sx={{

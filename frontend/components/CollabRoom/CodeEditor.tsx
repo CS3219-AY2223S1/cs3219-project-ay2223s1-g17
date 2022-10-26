@@ -8,6 +8,7 @@ import { Box } from '@mui/material';
 // code
 import { useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE } from 'utils/enums';
+import LoadingWrapper from 'components/Loading/LoadingWrapper';
 
 const CodeEditor = ({
   language,
@@ -130,28 +131,36 @@ const CodeEditor = ({
   };
 
   return readOnly || socket ? (
-    <Box
-      sx={{
-        flexGrow: 1,
-        display: shouldDisplay ? 'block' : 'none',
-        minHeight,
-        maxHeight,
-        minWidth,
-        maxWidth,
-        userSelect,
-        pointerEvents,
-      }}
+    <LoadingWrapper
+      isLoading={isLoading}
+      custom
+      repeat={4}
+      styles={{ width: '85%', mx: 'auto' }}
+      containerStyles={{ my: 'auto' }}
     >
-      <Editor
-        key={questionNumber}
-        defaultLanguage={language.toLowerCase()}
-        defaultValue={editorContent ?? '# start coding here'}
-        width="auto"
-        options={options}
-        onMount={handleEditorDidMount}
-        onChange={handleChange}
-      />
-    </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: shouldDisplay ? 'block' : 'none',
+          minHeight,
+          maxHeight,
+          minWidth,
+          maxWidth,
+          userSelect,
+          pointerEvents,
+        }}
+      >
+        <Editor
+          key={questionNumber}
+          defaultLanguage={language.toLowerCase()}
+          defaultValue={editorContent ?? '# start coding here'}
+          width="auto"
+          options={options}
+          onMount={handleEditorDidMount}
+          onChange={handleChange}
+        />
+      </Box>
+    </LoadingWrapper>
   ) : (
     <></>
   );
