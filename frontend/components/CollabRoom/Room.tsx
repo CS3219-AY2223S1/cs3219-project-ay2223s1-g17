@@ -40,7 +40,7 @@ const Room: FC<Props> = ({
   readOnlyEditorContent,
   isLoading,
 }) => {
-  const { roomId, leaveRoom } = useMatchingContext();
+  const { roomId } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
   const [socket, setSocket] = useState<Socket>();
@@ -175,10 +175,6 @@ const Room: FC<Props> = ({
         autoConnect: false,
       }
     );
-
-    if (!roomId) {
-      leaveRoom();
-    }
 
     sock.auth = { roomId };
     sock.connect();

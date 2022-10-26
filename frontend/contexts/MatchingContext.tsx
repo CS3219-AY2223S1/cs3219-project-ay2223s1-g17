@@ -74,7 +74,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on('matchLeave', () => {
-      setRoomId(undefined);
+      leaveRoom();
       toast.warn('The other user has left!');
     });
 
