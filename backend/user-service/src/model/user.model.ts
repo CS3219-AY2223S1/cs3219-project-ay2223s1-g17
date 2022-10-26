@@ -2,11 +2,7 @@ import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import { IUser, IUserModel, UserDocument } from './user.types';
 import jwt from 'jsonwebtoken';
-import { HttpStatusCode, PeerPrepError } from '../../../utils';
-import // MULTIAVATAR_FIELD_MAX,
-// MULTIAVATAR_FIELD_MIN,
-// MULTIAVATAR_NUM_FIELDS
-'./user.constants';
+import { HttpStatusCode, LANGUAGE, PeerPrepError } from '../../../utils';
 import axios from 'axios';
 
 const userSchema = new mongoose.Schema<IUser, IUserModel>(
@@ -24,9 +20,11 @@ const userSchema = new mongoose.Schema<IUser, IUserModel>(
       required: [true, 'Password is required'],
       minLength: [6, 'Password is too short'],
     },
-    // avatarImage: {
-    //   type: String,
-    // },
+    preferredLanguage: {
+      type: String,
+      enum: LANGUAGE,
+      required: true,
+    },
   },
   { timestamps: true }
 );
@@ -49,22 +47,6 @@ userSchema.pre('save', async function (callback) {
     );
     if (statisticsStatus !== HttpStatusCode.OK)
       throw new PeerPrepError(statisticsStatus, statisticsData);
-
-    // let avatarId = '';
-    // for (let i = 0; i < MULTIAVATAR_NUM_FIELDS; i++) {
-    //   avatarId += Math.floor(
-    //     Math.random() * (MULTIAVATAR_FIELD_MAX - MULTIAVATAR_FIELD_MIN + 1) +
-    //       MULTIAVATAR_FIELD_MIN
-    //   );
-    // }
-    // const { status: multiAvatarStatus, data: multiAvatarData } =
-    //   await axios.get(`https://api.multiavatar.com/${avatarId}`);
-    // if (multiAvatarStatus !== HttpStatusCode.OK)
-    //   throw new PeerPrepError(multiAvatarStatus, multiAvatarData);
-
-    // const multiAvatarImage = multiAvatarData;
-    // const buffer = Buffer.from(multiAvatarImage);
-    // user.avatarImage = buffer.toString('base64');
   }
 
   callback();
@@ -100,10 +82,15 @@ userSchema.static(
    *
    * @param username Username of the new user
    * @param password Unhashed password of the new user
+   * @param preferredLanguage Preferred programming language of the new user
    * @throws Error if credentials are missing
    */
-  async function createUser(username: string, password: string) {
-    await User.create({ username, password });
+  async function createUser(
+    username: string,
+    password: string,
+    preferredLanguage: LANGUAGE
+  ) {
+    await User.create({ username, password, preferredLanguage });
   }
 );
 
@@ -170,7 +157,7 @@ userSchema.static(
 userSchema.static(
   'updateUserPasswordById',
   /**
-   * Attempts to delete a user with a specified id
+   * Attempts to update the password of the user with the specified id
    *
    * @param id Id of the user
    * @param options Optionally specify user data to select
@@ -189,6 +176,24 @@ userSchema.static(
 
     verifiedUser.password = newPassword;
     await verifiedUser.save();
+  }
+);
+
+userSchema.static(
+  'updateUserPreferredLanguageById',
+  /**
+   * Attempts to update the preferred language of the user with the specified id
+   *
+   * @param id Id of the user
+   * @throws Error if no user is found
+   */
+  async function updateUserPreferredLanguageById(
+    id: string,
+    preferredLanguage: LANGUAGE
+  ) {
+    const user = await User.findUserById(id);
+
+    await user.update({ preferredLanguage });
   }
 );
 

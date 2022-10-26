@@ -152,7 +152,7 @@ const CodeEditor = ({
       >
         <Editor
           key={questionNumber}
-          defaultLanguage={language.toLowerCase()}
+          defaultLanguage={(language ?? LANGUAGE.PYTHON).toLowerCase()}
           defaultValue={editorContent ?? '# start coding here'}
           width="auto"
           options={options}
@@ -169,7 +169,7 @@ const CodeEditor = ({
 export default CodeEditor;
 
 interface Props {
-  language: LANGUAGE;
+  language?: LANGUAGE;
   questionNumber: number;
   editorContent?: string;
   editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;

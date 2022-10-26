@@ -3,8 +3,6 @@ import {
   Box,
   Button,
   IconButton,
-  MenuItem,
-  Select,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
@@ -20,11 +18,9 @@ import NextQuestionPrompt from './NextQuestionPrompt';
 
 type Props = {
   view: VIEW[];
-  language: LANGUAGE;
   questionNumber: number;
   maxQuestionNumber: number;
   setView: Dispatch<SetStateAction<VIEW[]>>;
-  setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
   handleNextQuestion: () => void;
   open: boolean;
   confirm: boolean;
@@ -35,11 +31,9 @@ type Props = {
 
 const RoomOptions: FC<Props> = ({
   view,
-  language,
   questionNumber,
   maxQuestionNumber,
   setView,
-  setLanguage,
   handleNextQuestion,
   open,
   confirm,
@@ -132,22 +126,6 @@ const RoomOptions: FC<Props> = ({
             ) : (
               <></>
             )}
-            <Select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
-              sx={{ textTransform: 'capitalize', bgcolor: 'white' }}
-              size="small"
-            >
-              {Object.values(LANGUAGE).map((languageOption) => (
-                <MenuItem
-                  key={languageOption}
-                  value={languageOption}
-                  sx={{ textTransform: 'capitalize' }}
-                >
-                  {languageOption.toLowerCase()}
-                </MenuItem>
-              ))}
-            </Select>
           </Stack>
         )}
       </Stack>

@@ -7,13 +7,14 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { HTTP_METHOD, SERVICE } from 'utils/enums';
+import { HTTP_METHOD, LANGUAGE, SERVICE } from 'utils/enums';
 import { apiCall } from 'utils/helpers';
 
 type User = {
   _id: string;
   username: string;
   createdAt: string;
+  preferredLanguage: LANGUAGE;
 };
 
 interface IAuthContext {
@@ -22,6 +23,7 @@ interface IAuthContext {
   register: (
     username: string,
     password: string,
+    preferredLanguage: LANGUAGE,
     onSuccess: () => void
   ) => Promise<void>;
   login: (
@@ -35,6 +37,10 @@ interface IAuthContext {
     newPassword: string,
     onSuccess: () => void
   ) => Promise<void>;
+  changePreferredLanguage: (
+    preferredLanguage: LANGUAGE,
+    onSuccess: () => void
+  ) => Promise<void>;
   deleteAccount: (onSuccess: () => void) => Promise<void>;
 }
 
@@ -45,6 +51,7 @@ const AuthContext = createContext<IAuthContext>({
   login: async () => {},
   logout: async () => {},
   changePassword: async () => {},
+  changePreferredLanguage: async () => {},
   deleteAccount: async () => {},
 });
 
@@ -71,13 +78,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (
     username: string,
     password: string,
+    preferredLanguage: LANGUAGE,
     onSuccess: () => void
   ) => {
     await apiCall({
       path: '/register',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      body: { username, password },
+      body: { username, password, preferredLanguage },
       onSuccess,
     });
   };
@@ -125,6 +133,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const changePreferredLanguage = async (
+    preferredLanguage: LANGUAGE,
+    onSuccess: () => void
+  ) => {
+    await apiCall({
+      path: '/language',
+      service: SERVICE.USER,
+      method: HTTP_METHOD.PUT,
+      requiresCredentials: true,
+      body: { preferredLanguage },
+      onSuccess,
+    });
+  };
+
   const deleteAccount = async (onSuccess: () => void) => {
     await apiCall({
       path: '/',
@@ -146,6 +168,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       login,
       logout,
       changePassword,
+      changePreferredLanguage,
       deleteAccount,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -46,7 +46,6 @@ const Room: FC<Props> = ({
   const [socket, setSocket] = useState<Socket>();
   const { questions } = useMatchingContext();
   const [questionNumber, setQuestionNumber] = useState(0);
-  const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [width, setWidth] = useState('33%');
   const [height, setHeight] = useState('33%');
   const [cursor, setCursor] = useState('auto');
@@ -71,7 +70,9 @@ const Room: FC<Props> = ({
 
   const editorContent = readOnly
     ? readOnlyEditorContent
-    : questions[questionNumber]?.templates?.[language];
+    : questions[questionNumber]?.templates?.[
+        user?.preferredLanguage ?? LANGUAGE.PYTHON
+      ];
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const handleNextQuestion = () => {
@@ -90,7 +91,7 @@ const Room: FC<Props> = ({
         id: _id,
       },
       code: editorRef.current?.getValue() ?? editorContent,
-      language,
+      language: user?.preferredLanguage,
       chats,
     };
     socket?.emit('acceptNextQuestion', history);
@@ -108,11 +109,9 @@ const Room: FC<Props> = ({
 
   const roomOptionsProps = {
     view,
-    language,
     questionNumber,
     maxQuestionNumber: questions.length - 1,
     setView,
-    setLanguage,
     handleNextQuestion,
     open,
     confirm,
@@ -122,7 +121,7 @@ const Room: FC<Props> = ({
   };
 
   const codeEditorProps = {
-    language,
+    language: user?.preferredLanguage,
     questionNumber,
     editorContent,
     editorRef,
