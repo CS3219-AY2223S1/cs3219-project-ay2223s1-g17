@@ -15,7 +15,7 @@ import NavbarOption from './NavbarOption';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { isMatching, leaveRoom } = useMatchingContext();
+  const { isMatching, roomId, leaveRoom } = useMatchingContext();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
@@ -111,7 +111,7 @@ const Navbar = () => {
                 label="Find Match"
                 icon={<Handshake />}
                 styles={{
-                  display: isMatching ? 'none' : 'auto',
+                  display: isMatching || roomId ? 'none' : 'auto',
                 }}
               />
               <IconButton

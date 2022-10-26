@@ -22,6 +22,7 @@ const CodeEditor = ({
   pointerEvents,
   shouldDisplay,
   readOnly,
+  isLoading,
 }: Props) => {
   const { roomId } = useMatchingContext();
   const isIncoming = useRef(false);
@@ -144,7 +145,7 @@ const CodeEditor = ({
       <Editor
         key={questionNumber}
         defaultLanguage={language.toLowerCase()}
-        defaultValue={editorContent}
+        defaultValue={editorContent ?? '# start coding here'}
         width="auto"
         options={options}
         onMount={handleEditorDidMount}
@@ -161,7 +162,7 @@ export default CodeEditor;
 interface Props {
   language: LANGUAGE;
   questionNumber: number;
-  editorContent: string;
+  editorContent?: string;
   editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
   minHeight: string;
   maxHeight: string;
@@ -171,4 +172,5 @@ interface Props {
   pointerEvents: string;
   shouldDisplay: boolean;
   readOnly?: boolean;
+  isLoading: boolean;
 }

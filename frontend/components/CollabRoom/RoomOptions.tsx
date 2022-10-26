@@ -3,17 +3,14 @@ import {
   Box,
   Button,
   IconButton,
-  // MenuItem,
-  // Select,
+  MenuItem,
+  Select,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import {
-  // LANGUAGE,
-  VIEW,
-} from 'utils/enums';
+import { LANGUAGE, VIEW } from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -23,11 +20,11 @@ import NextQuestionPrompt from './NextQuestionPrompt';
 
 type Props = {
   view: VIEW[];
-  // language: LANGUAGE;
+  language: LANGUAGE;
   questionNumber: number;
   maxQuestionNumber: number;
   setView: Dispatch<SetStateAction<VIEW[]>>;
-  // setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
+  setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
   handleNextQuestion: () => void;
   open: boolean;
   confirm: boolean;
@@ -38,11 +35,11 @@ type Props = {
 
 const RoomOptions: FC<Props> = ({
   view,
-  // language,
+  language,
   questionNumber,
   maxQuestionNumber,
   setView,
-  // setLanguage,
+  setLanguage,
   handleNextQuestion,
   open,
   confirm,
@@ -135,23 +132,22 @@ const RoomOptions: FC<Props> = ({
             ) : (
               <></>
             )}
-
-            {/* <Select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
-            sx={{ textTransform: 'capitalize' }}
-            SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
-          >
-            {Object.values(LANGUAGE).map((languageOption) => (
-              <MenuItem
-                key={languageOption}
-                value={languageOption}
-                sx={{ textTransform: 'capitalize' }}
-              >
-                {languageOption.toLowerCase()}
-              </MenuItem>
-            ))}
-          </Select> */}
+            <Select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
+              sx={{ textTransform: 'capitalize', bgcolor: 'white' }}
+              size="small"
+            >
+              {Object.values(LANGUAGE).map((languageOption) => (
+                <MenuItem
+                  key={languageOption}
+                  value={languageOption}
+                  sx={{ textTransform: 'capitalize' }}
+                >
+                  {languageOption.toLowerCase()}
+                </MenuItem>
+              ))}
+            </Select>
           </Stack>
         )}
       </Stack>

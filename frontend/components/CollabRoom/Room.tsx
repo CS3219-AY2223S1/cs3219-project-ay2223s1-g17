@@ -26,18 +26,19 @@ export type View = {
 
 type ReadOnlyProps = {
   readOnly: boolean;
-  readOnlyQuestion: Question;
-  readOnlyEditorContent: string;
-  readOnlyChats: Chat[];
+  readOnlyQuestion?: Question;
+  readOnlyEditorContent?: string;
+  readOnlyChats?: Chat[];
 };
 
-type Props = ReadOnlyProps | Record<string, never>;
+type Props = (ReadOnlyProps | Record<string, never>) & { isLoading: boolean };
 
 const Room: FC<Props> = ({
   readOnly,
   readOnlyQuestion,
   readOnlyChats,
   readOnlyEditorContent,
+  isLoading,
 }) => {
   const { roomId, leaveRoom } = useMatchingContext();
   const { user } = useAuth();
@@ -58,7 +59,9 @@ const Room: FC<Props> = ({
     VIEW.QUESTION,
     VIEW.CHAT,
   ]);
-  const [chats, setChats] = useState<Chat[]>(readOnly ? readOnlyChats : []);
+  const [chats, setChats] = useState<Chat[]>(
+    readOnly ? readOnlyChats ?? [] : []
+  );
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
 
@@ -68,7 +71,7 @@ const Room: FC<Props> = ({
 
   const editorContent = readOnly
     ? readOnlyEditorContent
-    : questions[questionNumber]?.templates?.[language] ?? '# start coding here';
+    : questions[questionNumber]?.templates?.[language];
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const handleNextQuestion = () => {
@@ -105,11 +108,11 @@ const Room: FC<Props> = ({
 
   const roomOptionsProps = {
     view,
-    // language,
+    language,
     questionNumber,
     maxQuestionNumber: questions.length - 1,
     setView,
-    // setLanguage,
+    setLanguage,
     handleNextQuestion,
     open,
     confirm,
@@ -133,6 +136,7 @@ const Room: FC<Props> = ({
     pointerEvents,
     shouldDisplay: showEditor,
     readOnly,
+    isLoading,
   };
 
   const chatBoxProps = {
@@ -144,6 +148,7 @@ const Room: FC<Props> = ({
     chats,
     setChats,
     readOnly,
+    isLoading,
   };
 
   const questionPanelProps = {
@@ -158,6 +163,7 @@ const Room: FC<Props> = ({
     overflowY: 'auto',
     mx: 'auto',
     shouldDisplay: showQuestion,
+    isLoading,
   };
 
   useEffect(() => {

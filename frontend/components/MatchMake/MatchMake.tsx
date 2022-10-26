@@ -16,13 +16,11 @@ import {
   INTERMEDIATE,
   SKILL,
 } from 'utils/enums';
-import Countdown from 'components/Countdown';
 import { useMatchingContext } from 'contexts/MatchingContext';
 
 const MatchMake = () => {
-  const { startMatch, count } = useMatchingContext();
+  const { startMatch, isMatching } = useMatchingContext();
   const theme = useTheme();
-  const isMatching = count !== undefined;
   const skills = [FUNDAMENTAL, INTERMEDIATE, ADVANCED];
 
   // return
@@ -38,11 +36,26 @@ const MatchMake = () => {
       }}
       elevation={2}
     >
-      <Stack rowGap={2}>
-        <Typography align="center" variant="h4">
-          Select Difficulty
+      <Stack>
+        <Typography align="center" variant="h4" color="primary">
+          {isMatching
+            ? 'Please wait while we find you a match'
+            : 'Select Difficulty'}
         </Typography>
-        <Grid container>
+        {isMatching ? (
+          <Typography
+            align="center"
+            variant="subtitle2"
+            fontWeight="light"
+            color="secondary.dark"
+          >
+            You can view the queue timer or cancel the queue at the top of the
+            page
+          </Typography>
+        ) : (
+          <></>
+        )}
+        <Grid container sx={{ mt: 2 }}>
           {Object.values(DIFFICULTY).map((difficulty, index) => {
             return (
               <Grid

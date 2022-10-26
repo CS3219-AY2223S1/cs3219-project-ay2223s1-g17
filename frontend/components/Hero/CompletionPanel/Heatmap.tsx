@@ -106,7 +106,7 @@ const Heatmap: FC<Props> = ({
                       const emptyDay = dayIndex < emptyDays;
                       const completedQuestionsToday = emptyDay
                         ? 0
-                        : completedQuestionsByDay?.[String(++dayCounter)] ?? 0;
+                        : completedQuestionsByDay?.[String(dayCounter++)] ?? 0;
 
                       return (
                         <Grid

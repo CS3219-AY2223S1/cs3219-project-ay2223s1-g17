@@ -1,4 +1,4 @@
-import { Skeleton, Stack, Typography, useTheme } from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import LoadingWrapper from 'components/Loading/LoadingWrapper';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
@@ -50,7 +50,7 @@ const HistoryCard: FC<Props> = ({
           transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
             color: 'white',
-            bgcolor: theme.palette.primary.main,
+            bgcolor: theme.palette.primary.dark,
           },
         }}
         onClick={() => router.push(`/history/${historyId}`)}
