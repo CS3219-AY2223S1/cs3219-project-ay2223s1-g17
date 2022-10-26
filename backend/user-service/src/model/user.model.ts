@@ -3,14 +3,10 @@ import mongoose from 'mongoose';
 import { IUser, IUserModel, UserDocument } from './user.types';
 import jwt from 'jsonwebtoken';
 import { HttpStatusCode, PeerPrepError } from '../../../utils';
-import {
-  HISTORY_URL,
-  // MULTIAVATAR_FIELD_MAX,
-  // MULTIAVATAR_FIELD_MIN,
-  // MULTIAVATAR_NUM_FIELDS,
-  STATISTICS_CREATION_URL,
-  STATISTICS_URL,
-} from './user.constants';
+import // MULTIAVATAR_FIELD_MAX,
+// MULTIAVATAR_FIELD_MIN,
+// MULTIAVATAR_NUM_FIELDS
+'./user.constants';
 import axios from 'axios';
 
 const userSchema = new mongoose.Schema<IUser, IUserModel>(
@@ -46,7 +42,7 @@ userSchema.pre('save', async function (callback) {
   if (user.isNew) {
     // create user's initital statistics
     const { status: statisticsStatus, data: statisticsData } = await axios.post(
-      STATISTICS_CREATION_URL,
+      String(process.env.STATISTICS_CREATION_URL),
       {
         userId: user._id.toString(),
       }
@@ -80,7 +76,7 @@ userSchema.pre('remove', async function (callback) {
 
   // delete user's history
   const { status: historyStatus, data: historyData } = await axios.delete(
-    HISTORY_URL,
+    String(process.env.HISTORY_URL),
     { data }
   );
   if (historyStatus !== HttpStatusCode.OK)
@@ -88,7 +84,7 @@ userSchema.pre('remove', async function (callback) {
 
   // delete user's statistics
   const { status: statisticsStatus, data: statisticsData } = await axios.delete(
-    STATISTICS_URL,
+    String(process.env.STATISTICS_URL),
     { data }
   );
   if (statisticsStatus !== HttpStatusCode.OK)
