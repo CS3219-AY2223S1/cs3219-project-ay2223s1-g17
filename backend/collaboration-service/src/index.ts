@@ -5,7 +5,7 @@ import {
   onTimerStop,
   registerStopwatchHandler,
 } from './socketHandler/stopwatchHandler';
-import axios, { HttpStatusCode } from 'axios';
+import axios from 'axios';
 import * as redis from 'redis';
 
 const app: Express = express();
