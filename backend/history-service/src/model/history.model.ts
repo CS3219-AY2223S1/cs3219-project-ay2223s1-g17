@@ -102,7 +102,7 @@ historySchema.static(
   async function findHistoryById(userId: string) {
     if (!userId) throw new Error('History id is required');
 
-    return History.find({ user: userId });
+    return History.find({ user: userId }).sort({ createdAt: 'desc' });
   }
 );
 
