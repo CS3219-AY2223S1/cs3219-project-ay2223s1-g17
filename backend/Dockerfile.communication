@@ -1,0 +1,16 @@
+
+FROM node:alpine
+
+WORKDIR /app/backend/communication-service
+
+COPY ./communication-service/package.json ./
+COPY ./communication-service/yarn.lock ./
+
+RUN yarn install
+
+COPY ./communication-service ./
+
+
+EXPOSE 8006
+
+CMD ["yarn", "dev"]

@@ -4,12 +4,9 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import PageWrapper from 'components/PageWrapper';
 
-const DynamicMatchMake = dynamic(
-  () => import('../components/MatchMake/MatchMake'),
-  {
-    suspense: true,
-  }
-);
+const DynamicMatchMake = dynamic(() => import('../components/MatchMake'), {
+  suspense: true,
+});
 
 const MatchPage: NextPage = () => {
   return (

@@ -29,6 +29,12 @@ interface IAuthContext {
     onSuccess: () => void
   ) => Promise<void>;
   logout: () => Promise<void>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+    onSuccess: () => void
+  ) => Promise<void>;
+  deleteAccount: (onSuccess: () => void) => Promise<void>;
 }
 
 const AuthContext = createContext<IAuthContext>({
@@ -37,6 +43,8 @@ const AuthContext = createContext<IAuthContext>({
   register: async () => {},
   login: async () => {},
   logout: async () => {},
+  changePassword: async () => {},
+  deleteAccount: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -53,7 +61,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       requiresCredentials: true,
       allowError: true,
     });
-
     setUser(res as User);
   };
   useEffect(() => {
@@ -79,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     onSuccess: () => void
   ) => {
-    apiCall({
+    await apiCall({
       path: '/login',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
@@ -102,6 +109,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string,
+    onSuccess: () => void
+  ) => {
+    await apiCall({
+      path: '/',
+      service: SERVICE.USER,
+      method: HTTP_METHOD.PUT,
+      requiresCredentials: true,
+      body: { currentPassword, newPassword },
+      onSuccess,
+    });
+  };
+
+  const deleteAccount = async (onSuccess: () => void) => {
+    await apiCall({
+      path: '/',
+      service: SERVICE.USER,
+      method: HTTP_METHOD.DELETE,
+      requiresCredentials: true,
+      onSuccess: () => {
+        setUser(undefined);
+        onSuccess();
+      },
+    });
+  };
+
   const memoedValue = useMemo(
     () => ({
       user,
@@ -109,6 +144,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       register,
       login,
       logout,
+      changePassword,
+      deleteAccount,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [user, isLoading]

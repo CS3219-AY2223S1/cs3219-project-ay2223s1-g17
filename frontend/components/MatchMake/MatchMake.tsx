@@ -10,13 +10,19 @@ const MatchMake = () => {
   return isMatching ? (
     <Countdown count={count} />
   ) : (
-    <Box sx={{ width: '50%', margin: 'auto', paddingTop: '20%' }}>
+    <Box
+      sx={{
+        margin: 'auto',
+        paddingTop: '20%',
+        width: '50%',
+      }}
+    >
       <Stack spacing={2}>
         <Typography
           align="center"
-          color="black"
+          color="#2365C8"
           fontWeight="bold"
-          fontSize={24}
+          fontSize={28}
         >
           Select Difficulty
         </Typography>

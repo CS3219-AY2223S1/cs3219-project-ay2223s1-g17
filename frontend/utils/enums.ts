@@ -2,6 +2,9 @@ export enum SERVICE {
   USER = 'USER',
   MATCHING = 'MATCHING',
   QUESTION = 'QUESTION',
+  COLLABORATION = 'COLLABORATION',
+  HISTORY = 'HISTORY',
+  COMMUNICATION = 'COMMUNICATION',
 }
 
 export enum HTTP_METHOD {
@@ -23,6 +26,6 @@ export enum LANGUAGE {
 
 export enum VIEW {
   QUESTION = 'QUESTION',
-  HYBRID = 'HYBRID',
   EDITOR = 'EDITOR',
+  CHAT = 'CHAT',
 }

@@ -20,7 +20,11 @@ mongoose.connect(mongoDbUrl ?? '');
 const database = mongoose.connection;
 database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
 
-const allowedOrigins = ['http://localhost:3000'];
+// TODO: Make use of env variable when deployed to prod
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://matching-service:8002',
+];
 // only allows requests coming in from allowed origins
 app.use(
   cors({

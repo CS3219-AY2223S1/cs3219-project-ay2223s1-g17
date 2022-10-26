@@ -10,16 +10,31 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
-import { DIFFICULTY } from 'utils/enums';
+import { DIFFICULTY, LANGUAGE } from 'utils/enums';
+
+export type Question = Partial<{
+  _id: string;
+  title: string;
+  difficulty: DIFFICULTY;
+  description: string;
+  examples: { input: string; output: string; explanation: string }[];
+  constraints: string[];
+  templates: Record<LANGUAGE, string>;
+}>;
+
+const emptyCallBack = () => {};
 
 const MatchingContext = createContext<IMatchingContextValue>({
-  startMatch: () => {},
-  leaveRoom: () => {},
+  startMatch: emptyCallBack,
+  leaveRoom: emptyCallBack,
+  questions: [{}],
 });
 
 export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket>();
   const [count, setCount] = useState<number>();
+  const [roomId, setRoomId] = useState<number>();
+  const [questions, setQuestions] = useState<Question[]>();
 
   const router = useRouter();
 
@@ -34,6 +49,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     setSocket(socket);
 
     socket.on('matchCountdown', (counter) => {
+      console.log('cd socket: ', socket);
       // timeout
       if (counter === 0) {
         setCount(undefined);
@@ -46,9 +62,11 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       setCount(counter);
     });
 
-    socket.on('matchSuccess', () => {
+    socket.on('matchSuccess', ({ id, questions }) => {
       toast.success('A match has been found!');
       setCount(undefined);
+      setRoomId(id);
+      setQuestions(questions);
       router.push('/room');
     });
 
@@ -61,6 +79,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       socket.off('matchSuccess');
       socket.off('matchCountdown');
       socket.off('matchLeave');
+      socket.off('timeTick');
       socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,6 +102,8 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       startMatch,
       count,
       leaveRoom,
+      roomId,
+      questions: questions || [{}],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [count, socket]
@@ -103,4 +124,6 @@ interface IMatchingContextValue {
   startMatch: (difficulty: DIFFICULTY) => void;
   count?: number;
   leaveRoom: () => void;
+  roomId?: number;
+  questions: Question[];
 }

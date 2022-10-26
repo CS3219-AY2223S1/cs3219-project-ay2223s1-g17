@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 html,
 body {
   padding: 0;
   margin: 0;
+  background-color: #fffaf0;
 }
 
 a {
@@ -16,19 +18,14 @@ a {
   font-family: 'Inter', sans-serif !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
-}
-
 @font-face {
   font-family: 'Digital';
   src: url(../fonts/digital-7.ttf);
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url(../fonts/Raleway-VariableFont_wght.ttf);
 }
 
 @keyframes loading {
@@ -41,4 +38,43 @@ a {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.otherUserCursor {
+  background-color: orange;
+  width: 2px !important;
+}
+
+.otherUserSelection {
+  background-color: orange;
+}
+
+#vertical-resizer:hover,
+#horizontal-resizer:hover {
+  background-color: #1976d2 !important;
+}
+
+#question-panel::-webkit-scrollbar,
+#chat-box::-webkit-scrollbar {
+  width: 10px;
+}
+
+#question-panel::-webkit-scrollbar-track,
+#chat-box::-webkit-scrollbar-track {
+  background: #fffffe;
+}
+
+#question-panel::-webkit-scrollbar-thumb,
+#chat-box::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.4);
+}
+
+#question-panel::-webkit-scrollbar-thumb:hover,
+#chat-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.7);
+}
+
+#question-panel::-webkit-scrollbar-thumb:active,
+#chat-box::-webkit-scrollbar-thumb:active {
+  background: rgba(100, 100, 100, 0.9);
 }
