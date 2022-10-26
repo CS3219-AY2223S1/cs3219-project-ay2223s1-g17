@@ -111,7 +111,7 @@ const Heatmap: FC<Props> = ({
                       return (
                         <Grid
                           item
-                          key={`day-${dayCounter}`}
+                          key={`${monthLabel}-${dayIndex}`}
                           sx={{
                             width: '9px',
                             aspectRatio: '1/1',
