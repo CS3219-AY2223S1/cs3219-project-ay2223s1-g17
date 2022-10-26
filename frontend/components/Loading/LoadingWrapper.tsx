@@ -6,6 +6,7 @@ export type LoadingWrapperProps = {
   isLoading: boolean;
   variant?: 'rectangular' | 'text' | 'rounded' | 'circular';
   styles?: SxProps;
+  containerStyles?: SxProps;
   custom?: boolean;
   repeat?: number;
 };
@@ -15,12 +16,13 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
   isLoading,
   variant,
   styles,
+  containerStyles,
   custom,
   repeat,
 }) => {
   return isLoading ? (
     custom ? (
-      <Stack rowGap={1}>
+      <Stack rowGap={1} sx={containerStyles}>
         {Array.from(Array(repeat ?? 1).keys()).map((num) => {
           return (
             <Skeleton
