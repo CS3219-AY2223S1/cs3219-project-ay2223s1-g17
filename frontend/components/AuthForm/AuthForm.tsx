@@ -87,7 +87,7 @@ const AuthForm = () => {
         : await changePassword(password, newPassword, onSuccess)
       : isLogin
       ? await login(username, password, onSuccess)
-      : await register(username, password, onSuccess);
+      : await register(username, password, preferredLanguage, onSuccess);
   };
 
   const handleSwitchMode = () => {
@@ -195,7 +195,7 @@ const AuthForm = () => {
             ) : (
               <></>
             )}
-            {isChangePreferredLanguage ? (
+            {user && isChangePreferredLanguage ? (
               <></>
             ) : (
               <PasswordInput
@@ -237,7 +237,7 @@ const AuthForm = () => {
             ) : (
               <></>
             )}
-            {isChangePreferredLanguage ? (
+            {user && isChangePreferredLanguage ? (
               <FormControl>
                 <InputLabel
                   variant="standard"
