@@ -1,9 +1,17 @@
 import { Op } from 'sequelize';
 import { Socket } from 'socket.io';
-import { Room, RoomModel, User, UserModel, WaitRoomModel } from '../model';
+import {
+  Room,
+  RoomModel,
+  User,
+  UserModel,
+  WaitRoom,
+  WaitRoomModel,
+} from '../model';
 
 import { InputOutput } from '..';
 import onMatchStart from './onMatchStart';
+import { timers } from '../timers';
 
 const handleLeave = async (io: InputOutput, socket: Socket) => {
   const user = (await UserModel.findByPk(socket.id)) as unknown as User;
@@ -48,12 +56,20 @@ const handleLeave = async (io: InputOutput, socket: Socket) => {
       },
     });
   } else {
-    // if user is not matched yet, destroy wait room
+    const { id } = (await WaitRoomModel.findOne({
+      where: {
+        waitingSocketId: leavingUserId,
+      },
+    })) as unknown as WaitRoom;
+
+    // if user is not matched yet, destroy wait room, clear timer
     await WaitRoomModel.destroy({
       where: {
         waitingSocketId: leavingUserId,
       },
     });
+
+    clearInterval(timers[id]);
   }
 };
 
@@ -62,7 +78,6 @@ const onMatchLeave = (io: InputOutput, socket: Socket) => () => {
 };
 
 const onDisconnect = (io: InputOutput, socket: Socket) => async () => {
-  console.log(`disconnecting ${socket.id}`);
   await handleLeave(io, socket);
   await UserModel.destroy({
     where: {
