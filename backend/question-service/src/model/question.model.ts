@@ -166,7 +166,7 @@ const formatQuestion = (
     templatesMap.set(template.language, template.starterCode)
   );
   const templates = Object.fromEntries(templatesMap);
-  return { ...question, templates };
+  return { ...question.toObject(), templates };
 };
 
 const Question = mongoose.model<IQuestion, IQuestionModel>(
