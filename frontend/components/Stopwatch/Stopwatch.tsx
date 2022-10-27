@@ -90,7 +90,7 @@ const Stopwatch = () => {
 
   return isActive ? (
     <Stack
-      sx={{ color: 'black', columnGap: 1 }}
+      sx={{ color: 'black', columnGap: 1, display: roomId ? 'flex' : 'none' }}
       flexDirection="row"
       alignItems="center"
     >

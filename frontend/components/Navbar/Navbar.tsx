@@ -12,6 +12,7 @@ import { useMatchingContext } from 'contexts/MatchingContext';
 import LeaveRoomPrompt from './LeaveRoomPrompt';
 import AccountMenu from './AccountMenu';
 import NavbarOption from './NavbarOption';
+import Stopwatch from 'components/Stopwatch';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -106,6 +107,7 @@ const Navbar = () => {
               columnGap={2}
               sx={{ position: 'absolute', my: 'auto', right: 12 }}
             >
+              <Stopwatch />
               <NavbarOption
                 onClick={() => router.push('/match')}
                 label="Find Match"
