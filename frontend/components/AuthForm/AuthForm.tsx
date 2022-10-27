@@ -124,19 +124,18 @@ const AuthForm = () => {
   };
 
   const onSuccess = () => {
-    if (!isLogin) {
-      toast.success(
-        `Successfully ${
-          user
-            ? isChangePreferredLanguage
-              ? 'changed preferred language'
-              : 'changed password!'
-            : 'created new account!'
-        }`
-      );
-    }
+    isLogin
+      ? setIsLogin(false)
+      : toast.success(
+          `Successfully ${
+            user
+              ? isChangePreferredLanguage
+                ? 'changed preferred language'
+                : 'changed password!'
+              : 'created new account!'
+          }`
+        );
     handleReset();
-
     return user || isLogin ? router.push('/') : setIsLogin(true);
   };
 
@@ -244,7 +243,7 @@ const AuthForm = () => {
             ) : (
               <></>
             )}
-            {user && isChangePreferredLanguage ? (
+            {(user && isChangePreferredLanguage) || (!user && !isLogin) ? (
               <FormControl>
                 <InputLabel
                   variant="standard"

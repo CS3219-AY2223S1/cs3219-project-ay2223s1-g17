@@ -15,7 +15,7 @@ const Home: NextPage = () => {
         <meta name="PeerPrep" content="Leetcode with friends uwu" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PageWrapper fixedHeight>
+      <PageWrapper fixedHeight whiteBackground={!user}>
         {user ? (
           <Hero
             userId={user._id}
