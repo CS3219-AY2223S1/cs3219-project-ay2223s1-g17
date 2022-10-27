@@ -12,6 +12,7 @@ type Props = {
 
 const TopicMastery: FC<Props> = ({ completedTopics, isLoading }) => {
   const theme = useTheme();
+  console.log(completedTopics);
   const difficulties = Object.values(DIFFICULTY);
   const numDifficulties = difficulties.length;
   // assert(numDifficulties === Object.values(SKILL).length);
@@ -91,9 +92,26 @@ const TopicBlock: FC<TopicBlockProps> = ({ topics, isLoading }) => {
                   label={topic.toLowerCase()}
                   sx={{ textTransform: 'capitalize' }}
                 />
-                <Typography fontWeight="bold" variant="subtitle1">
-                  x{count}
-                </Typography>
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  columnGap={0.125}
+                >
+                  <Typography
+                    fontWeight="light"
+                    color="secondary.dark"
+                    variant="caption"
+                  >
+                    x
+                  </Typography>
+                  <Typography
+                    fontWeight="bold"
+                    variant="subtitle1"
+                    sx={{ pb: 0.25 }}
+                  >
+                    {count}
+                  </Typography>
+                </Stack>
               </Stack>
             </Box>
           </LoadingWrapper>

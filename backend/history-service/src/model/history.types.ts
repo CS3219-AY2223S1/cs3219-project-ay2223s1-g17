@@ -9,6 +9,7 @@ export interface IHistory {
     id: string;
     title: string;
     difficulty: string;
+    topics: string[];
   };
   code: string;
   language: string;

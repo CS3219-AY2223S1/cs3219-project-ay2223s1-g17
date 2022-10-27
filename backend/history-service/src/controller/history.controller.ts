@@ -5,6 +5,7 @@ import {
   errorHandler,
   LANGUAGE,
   successHandler,
+  TOPIC,
 } from '../../../utils';
 import History from '../model/history.model';
 import { IHistory } from '../model/history.types';
@@ -73,7 +74,7 @@ export const addHistory = async (
     const {
       users,
       language,
-      question: { id, difficulty, title },
+      question: { id, difficulty, topics, title },
     } = history;
 
     assert(users.length === 2);
@@ -92,6 +93,7 @@ export const addHistory = async (
         title,
         language: language as LANGUAGE,
         difficulty: difficulty as DIFFICULTY,
+        topics: topics as TOPIC[],
       };
       const updateStatisticsPromise = Statistics.updateStatisticsByUser(
         user,

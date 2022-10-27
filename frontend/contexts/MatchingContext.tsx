@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
-import { DIFFICULTY, LANGUAGE } from 'utils/enums';
+import { DIFFICULTY, LANGUAGE, TOPIC } from 'utils/enums';
 
 export type Question = Partial<{
   _id: string;
@@ -20,6 +20,7 @@ export type Question = Partial<{
   examples: { input: string; output: string; explanation: string }[];
   constraints: string[];
   templates: Record<LANGUAGE, string>;
+  topics: TOPIC[];
 }>;
 
 const emptyCallBack = () => {};
@@ -97,13 +98,12 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     setCount(30);
   };
 
-  const leaveRoom = (returnHome = true) => {
+  const leaveRoom = () => {
     socket?.emit('matchLeave');
     setIsMatching(false);
     setRoomId(undefined);
     setQuestions([]);
-
-    if (returnHome) router.push('/');
+    router.push('/');
   };
 
   const memoedValue = useMemo(
