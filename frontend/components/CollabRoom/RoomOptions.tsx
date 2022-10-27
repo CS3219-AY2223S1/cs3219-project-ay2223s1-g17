@@ -2,18 +2,16 @@ import { FC, Dispatch, SetStateAction, ReactNode } from 'react';
 import {
   Box,
   Button,
-  IconButton,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { LANGUAGE, VIEW } from 'utils/enums';
+import { VIEW } from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChatIcon from '@mui/icons-material/Chat';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Stopwatch from 'components/Stopwatch';
 import NextQuestionPrompt from './NextQuestionPrompt';
 
 type Props = {
@@ -46,10 +44,13 @@ const RoomOptions: FC<Props> = ({
     CHAT: <ChatIcon />,
     EDITOR: <CodeIcon />,
   };
+
+  const isLastQuestion = questionNumber === maxQuestionNumber;
+
   return (
     <Box bgcolor="#f7f8fa">
       <NextQuestionPrompt
-        isLastQuestion={questionNumber === maxQuestionNumber}
+        isLastQuestion={isLastQuestion}
         open={open}
         confirm={confirm}
         handleConfirm={handleConfirm}
@@ -94,39 +95,25 @@ const RoomOptions: FC<Props> = ({
         {readOnly ? (
           <></>
         ) : (
-          <Stack flexDirection="row" alignItems="center" sx={{ mr: '5%' }}>
-            <Typography color="black" variant="h6">
-              Question {questionNumber + 1}
-            </Typography>
-            {questionNumber < maxQuestionNumber ? (
-              <IconButton onClick={handleNextQuestion} disableRipple>
-                <NavigateNextIcon />
-              </IconButton>
-            ) : (
-              <></>
-            )}
-          </Stack>
+          <Typography color="black" variant="h6">
+            Question {questionNumber + 1}
+          </Typography>
         )}
 
         {readOnly ? (
           <></>
         ) : (
-          <Stack flexDirection="row" columnGap={2}>
-            <Stopwatch />
-            {questionNumber === maxQuestionNumber ? (
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleNextQuestion}
-                disableRipple
-                size="small"
-              >
-                End Session
-              </Button>
-            ) : (
-              <></>
-            )}
-          </Stack>
+          <Button
+            variant="contained"
+            color={isLastQuestion ? 'error' : 'primary'}
+            onClick={handleNextQuestion}
+            disableRipple
+            size="small"
+            endIcon={<NavigateNextIcon fontSize="small" />}
+            sx={{ textTransform: 'none' }}
+          >
+            {isLastQuestion ? 'End Session' : 'Next Question'}
+          </Button>
         )}
       </Stack>
     </Box>
