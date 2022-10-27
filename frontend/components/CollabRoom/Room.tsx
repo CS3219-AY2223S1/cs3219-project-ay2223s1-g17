@@ -41,7 +41,7 @@ const Room: FC<Props> = ({
   readOnlyEditorContent,
   isLoading,
 }) => {
-  const { roomId } = useMatchingContext();
+  const { roomId, leaveRoom } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
   const [socket, setSocket] = useState<Socket>();
@@ -83,12 +83,13 @@ const Room: FC<Props> = ({
 
   const handleAccept = () => {
     setConfirm(true);
-    const { title, difficulty, _id } = questions[questionNumber];
+    const { title, difficulty, topics, _id } = questions[questionNumber];
     const history = {
       user: user?._id,
       question: {
         title,
         difficulty,
+        topics,
         id: _id,
       },
       code: editorRef.current?.getValue() ?? editorContent,
@@ -200,9 +201,7 @@ const Room: FC<Props> = ({
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
 
-      if (questionNumber >= questions.length - 1) {
-        router.push('/');
-      }
+      if (questionNumber >= questions.length - 1) leaveRoom();
     });
 
     sock.on('error', (error) => {

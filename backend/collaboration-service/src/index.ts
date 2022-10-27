@@ -37,7 +37,6 @@ io.on('connection', async (socket: ISocket) => {
   const roomId = socket.roomId!;
   socket.join(roomId);
   const host = `${process.env.REDIS_HOST ?? 'redis'}`;
-  const usersKey = 'users';
   const redisClient = redis.createClient({
     socket: {
       host,
@@ -58,22 +57,21 @@ io.on('connection', async (socket: ISocket) => {
   });
 
   socket.on('acceptNextQuestion', async (history) => {
-    onTimerStop(io, socket, roomId);
-
     const users = await redisClient
-      .get(usersKey)
+      .get(roomId)
       .then((res) => (res ? JSON.parse(res) : res));
     if (!users) {
-      await redisClient.set(usersKey, JSON.stringify([history.user]));
+      await redisClient.set(roomId, JSON.stringify([history.user]));
       return;
     }
 
+    onTimerStop(io, socket, roomId);
     users.push(history.user);
     delete history.user;
     const { status, data } = await axios.post('http://history-service:8005', {
       history: { ...history, users: Array.from(users) },
     });
-    await redisClient.del(usersKey);
+    await redisClient.del(roomId);
 
     if (status !== 200) return io.to(roomId).emit('error', data);
 
@@ -81,7 +79,7 @@ io.on('connection', async (socket: ISocket) => {
   });
 
   socket.on('rejectNextQuestion', async () => {
-    await redisClient.del(usersKey);
+    await redisClient.del(roomId);
     socket.to(roomId).emit('otherUserRejectedNextQuestion');
   });
 
