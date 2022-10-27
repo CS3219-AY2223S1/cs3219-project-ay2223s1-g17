@@ -193,7 +193,7 @@ userSchema.static(
   ) {
     const user = await User.findUserById(id);
 
-    await user.update({ preferredLanguage });
+    await user.updateOne({ preferredLanguage });
   }
 );
 
