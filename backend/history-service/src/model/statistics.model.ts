@@ -51,7 +51,7 @@ statisticsSchema.pre('save', async function (callback) {
 
   if (!statistics.isNew && statistics.isModified('languagesUsed')) {
     const now = new Date();
-    const startOfYear = new Date(now.getFullYear(), 0, 0);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
     const timeSinceStartOfYear = now.getTime() - startOfYear.getTime();
     const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
     const dayOfYear = String(
