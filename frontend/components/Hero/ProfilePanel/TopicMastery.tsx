@@ -12,7 +12,6 @@ type Props = {
 
 const TopicMastery: FC<Props> = ({ completedTopics, isLoading }) => {
   const theme = useTheme();
-  console.log(completedTopics);
   const difficulties = Object.values(DIFFICULTY);
   const numDifficulties = difficulties.length;
   // assert(numDifficulties === Object.values(SKILL).length);

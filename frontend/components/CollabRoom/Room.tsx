@@ -44,6 +44,7 @@ const Room: FC<Props> = ({
   const { roomId, leaveRoom } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
+
   const [socket, setSocket] = useState<Socket>();
   const { questions } = useMatchingContext();
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -68,6 +69,12 @@ const Room: FC<Props> = ({
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
   const showChat = view.includes(VIEW.CHAT);
+
+  useEffect(() => {
+    if (router.asPath === '/room' && roomId === undefined) {
+      router.push('/');
+    }
+  }, [roomId]);
 
   const editorContent = readOnly
     ? readOnlyEditorContent

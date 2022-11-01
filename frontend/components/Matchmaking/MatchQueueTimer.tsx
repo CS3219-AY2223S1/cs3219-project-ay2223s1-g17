@@ -4,7 +4,7 @@ import { useMatchingContext } from 'contexts/MatchingContext';
 import TimeDisplay from './TimeDisplay';
 
 const MatchQueueTimer = () => {
-  const { count, leaveRoom } = useMatchingContext();
+  const { count, stopQueuing } = useMatchingContext();
 
   return (
     <Stack flexDirection="row" alignItems="center">
@@ -16,7 +16,7 @@ const MatchQueueTimer = () => {
         </Stack>
         <TimeDisplay count={count ?? 0} />
       </Stack>
-      <IconButton onClick={() => leaveRoom(false)}>
+      <IconButton onClick={stopQueuing}>
         <CloseIcon color="error" />
       </IconButton>
     </Stack>

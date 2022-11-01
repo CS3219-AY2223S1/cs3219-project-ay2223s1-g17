@@ -75,7 +75,6 @@ const RoomOptions: FC<Props> = ({
         <ToggleButtonGroup
           value={view}
           onChange={(_, newView: VIEW[]) => {
-            console.log(newView);
             setView(newView);
           }}
           color="primary"

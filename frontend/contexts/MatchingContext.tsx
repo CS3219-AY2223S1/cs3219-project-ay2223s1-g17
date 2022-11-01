@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import useAuth from 'contexts/AuthContext';
 import { useRouter } from 'next/router';
 import {
   createContext,
@@ -28,11 +29,13 @@ const emptyCallBack = () => {};
 const MatchingContext = createContext<IMatchingContextValue>({
   startMatch: emptyCallBack,
   leaveRoom: emptyCallBack,
+  stopQueuing: emptyCallBack,
   isMatching: false,
   questions: [{}],
 });
 
 export const MatchingProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const [socket, setSocket] = useState<Socket>();
   const [count, setCount] = useState<number>();
   const [roomId, setRoomId] = useState<number>();
@@ -75,7 +78,9 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on('matchLeave', () => {
-      leaveRoom();
+      setRoomId(undefined);
+      setQuestions([]);
+      router.push('/');
       toast.warn('The other user has left!');
     });
 
@@ -90,20 +95,24 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const startMatch = (difficulty: DIFFICULTY) => {
-    if (!socket) return;
+    if (!socket || !user) return;
     if (!socket.connected) socket.connect();
 
     setIsMatching(true);
-    socket.emit('matchStart', difficulty);
+    socket.emit('matchStart', { difficulty, language: user.preferredLanguage });
     setCount(30);
   };
 
   const leaveRoom = () => {
     socket?.emit('matchLeave');
-    setIsMatching(false);
     setRoomId(undefined);
     setQuestions([]);
     router.push('/');
+  };
+
+  const stopQueuing = () => {
+    socket?.emit('stopQueuing');
+    setIsMatching(false);
   };
 
   const memoedValue = useMemo(
@@ -113,10 +122,11 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       leaveRoom,
       isMatching,
       roomId,
+      stopQueuing,
       questions: questions || [{}],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [count, isMatching, roomId, questions, socket]
+    [count, isMatching, roomId, questions, socket, user]
   );
 
   return (
@@ -135,6 +145,7 @@ interface IMatchingContextValue {
   count?: number;
   isMatching: boolean;
   leaveRoom: (returnHome?: boolean) => void;
+  stopQueuing: () => void;
   roomId?: number;
   questions: Question[];
 }
