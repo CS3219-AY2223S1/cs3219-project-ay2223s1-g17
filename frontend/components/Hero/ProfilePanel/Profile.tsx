@@ -1,12 +1,16 @@
 import { FC } from 'react';
-import { Stack, Tooltip, Typography } from '@mui/material';
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import EditIcon from '@mui/icons-material/Edit';
 import { amber } from '@mui/material/colors';
 import LoadingWrapper from 'components/Loading/LoadingWrapper';
+import { LANGUAGE } from 'utils/enums';
+import { useRouter } from 'next/router';
 
 type Props = {
   username: string;
   createdAt: string;
+  preferredLanguage: LANGUAGE;
   dailyStreak?: number;
   isLoading: boolean;
 };
@@ -14,9 +18,11 @@ type Props = {
 const Profile: FC<Props> = ({
   username,
   createdAt,
+  preferredLanguage,
   dailyStreak,
   isLoading,
 }) => {
+  const router = useRouter();
   return (
     <Stack justifyContent="center" width="100%" rowGap={0.5}>
       <LoadingWrapper isLoading={isLoading} custom>
@@ -52,6 +58,35 @@ const Profile: FC<Props> = ({
             year: 'numeric',
           })}
         </Typography>
+      </LoadingWrapper>
+      <LoadingWrapper isLoading={isLoading} custom styles={{ height: '1rem' }}>
+        <Stack flexDirection="row" columnGap={1} alignItems="center">
+          <Typography variant="subtitle2" color="secondary.dark">
+            Preferred Language:
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            fontWeight={500}
+            color="black"
+            textTransform="capitalize"
+            sx={{ position: 'relative' }}
+          >
+            {preferredLanguage.toLowerCase()}
+            <Tooltip title="Edit Preferred Language">
+              <IconButton onClick={() => router.push('/auth')} disableRipple>
+                <EditIcon
+                  fontSize="small"
+                  sx={{
+                    position: 'absolute',
+                    left: 8,
+                    bottom: 1,
+                    '&:hover': { color: 'primary.main' },
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Typography>
+        </Stack>
       </LoadingWrapper>
     </Stack>
   );

@@ -21,6 +21,7 @@ const Home: NextPage = () => {
             userId={user._id}
             username={user.username}
             createdAt={user.createdAt}
+            preferredLanguage={user.preferredLanguage}
           />
         ) : (
           <LandingPage />

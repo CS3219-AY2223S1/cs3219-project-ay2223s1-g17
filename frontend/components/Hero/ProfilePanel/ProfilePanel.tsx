@@ -4,10 +4,12 @@ import LanguageUsage from './LanguageUsage';
 import Profile from './Profile';
 import TopicMastery from './TopicMastery';
 import { Statistics } from '../Hero';
+import { LANGUAGE } from 'utils/enums';
 
 type Props = {
   username: string;
   createdAt: string;
+  preferredLanguage: LANGUAGE;
   isLoading: boolean;
   statistics?: Statistics;
 };
@@ -15,6 +17,7 @@ type Props = {
 const ProfilePanel: FC<Props> = ({
   username,
   createdAt,
+  preferredLanguage,
   statistics,
   isLoading,
 }) => {
@@ -31,6 +34,7 @@ const ProfilePanel: FC<Props> = ({
         <Profile
           username={username}
           createdAt={createdAt}
+          preferredLanguage={preferredLanguage}
           dailyStreak={statistics?.dailyStreak}
           isLoading={isLoading}
         />
