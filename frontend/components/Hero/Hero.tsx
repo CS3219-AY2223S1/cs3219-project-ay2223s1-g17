@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { useHistory, useStatistics } from 'api/hero';
 import ProfilePanel from './ProfilePanel';
 import CompletionPanel from './CompletionPanel';
+import { LANGUAGE } from 'utils/enums';
 
 export type Statistics = {
   completedQuestions: string[];
@@ -18,9 +19,15 @@ type Props = {
   userId: string;
   username: string;
   createdAt: string;
+  preferredLanguage: LANGUAGE;
 };
 
-const Hero: FC<Props> = ({ userId, username, createdAt }) => {
+const Hero: FC<Props> = ({
+  userId,
+  username,
+  createdAt,
+  preferredLanguage,
+}) => {
   const { history, isLoadingHistory, isFetchingHistory } = useHistory(userId);
   const { statistics, isLoadingStatistics, isFetchingStatistics } =
     useStatistics(userId);
@@ -32,6 +39,7 @@ const Hero: FC<Props> = ({ userId, username, createdAt }) => {
   const profilePanelProps = {
     username,
     createdAt,
+    preferredLanguage,
     statistics,
     isLoading,
   };
