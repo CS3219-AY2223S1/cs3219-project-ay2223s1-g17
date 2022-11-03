@@ -68,7 +68,11 @@ const onMatchStart = async (
 
     // TODO: Make use of env variable when deployed to prod
     const res = await fetch(
-      `http://question-service:8003/question/get/difficulty/${difficulty}`
+      `${
+        process.env.ENV === 'production'
+          ? process.env.QUESTION_URL_PROD
+          : process.env.QUESTION_URL_DEV
+      }/${difficulty}`
     );
     const questions = await res.json();
 

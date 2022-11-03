@@ -42,9 +42,10 @@ services:
     environment:
       JWT_SECRET: jwt-secret
       DB_LOCAL_URI: mongodb://mongo_db:27017/user
-      HISTORY_URL: http://history-service:8005
-      STATISTICS_URL: http://history-service:8005/stats
-      STATISTICS_CREATION_URL: http://history-service:8005/stats/create
+      HISTORY_URL_DEV: 'http://history-service:8005/history'
+      HISTORY_URL_PROD: 'http://history-service:8005/history'
+      STATISTICS_URL_DEV: 'http://history-service:8005/stats'
+      STATISTICS_URL_PROD: 'http://history-service:8005/stats'
     networks:
       - cs3219-project-network
 
@@ -60,6 +61,9 @@ services:
       - /app/backend/matching-service/node_modules
     ports:
       - '8002:8002'
+    environment:
+      QUESTION_URL_DEV: 'http://question-service:8003/difficulty'
+      QUESTION_URL_PROD: 'http://question-service:8003/difficulty'
     networks:
       - cs3219-project-network
 
@@ -95,6 +99,8 @@ services:
       - '8004:8004'
     environment:
       REDIS_HOST: 'redis'
+      HISTORY_URL_DEV: 'http://history-service:8005'
+      HISTORY_URL_PROD: 'http://history-service:8005'
     networks:
       - cs3219-project-network
 

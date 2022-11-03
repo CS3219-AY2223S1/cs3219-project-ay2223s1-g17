@@ -21,7 +21,6 @@ const stopwatches: Stopwatches = {};
 
 const handleTimer = (io: InputOutput, _: Socket, roomId: string) => {
   const timer = setInterval(() => {
-    console.log('tick');
     const stopwatch = stopwatches[roomId];
     const { interval, time, isActive, isPaused } = stopwatch;
 
@@ -56,16 +55,17 @@ const onTimerStart =
     handleTimer(io, socket, roomId);
   };
 
-export const onTimerStop = (io: InputOutput, socket: Socket, roomId: string) => () => {
-  const stopwatch = stopwatches[roomId];
-  stopwatch.isActive = false;
-  io.to(roomId).emit('timerLoad');
+export const onTimerStop =
+  (io: InputOutput, socket: Socket, roomId: string) => () => {
+    const stopwatch = stopwatches[roomId];
+    stopwatch.isActive = false;
+    io.to(roomId).emit('timerLoad');
 
-  if (stopwatch.isPaused) {
-    stopwatch.isPaused = false;
-    handleTimer(io, socket, roomId);
-  }
-};
+    if (stopwatch.isPaused) {
+      stopwatch.isPaused = false;
+      handleTimer(io, socket, roomId);
+    }
+  };
 
 const onTimerPause = (io: InputOutput, __: Socket, roomId: string) => () => {
   const stopwatch = stopwatches[roomId];

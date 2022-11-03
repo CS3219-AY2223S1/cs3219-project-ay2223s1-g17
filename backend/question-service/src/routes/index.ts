@@ -14,13 +14,9 @@ router.get('/', (_: Request, res: Response) => {
 });
 
 router.route('/:id').get(getQuestion);
-
-router.route('/get/difficulty/:difficulty').get(getQuestionByDifficulty);
-
-router.route('/get/all').get(getQuestions);
-
-router.route('/get/count').get(getQuestionsCount);
-
+router.route('/difficulty/:difficulty').get(getQuestionByDifficulty);
+router.route('/all').get(getQuestions);
+router.route('/count').get(getQuestionsCount);
 router.route('/seed').post(loadQuestions);
 
 export default router;
