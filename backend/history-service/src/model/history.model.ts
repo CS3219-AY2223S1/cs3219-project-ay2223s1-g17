@@ -115,7 +115,7 @@ historySchema.static(
    * @param userId id of user
    */
   async function findHistoryById(userId: string) {
-    if (!userId) throw new Error('History id is required');
+    if (!userId) throw new Error('User id is required');
 
     await History.deleteMany({ user: userId });
     await Statistics.deleteOne({ user: userId });
