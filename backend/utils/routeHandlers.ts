@@ -51,6 +51,15 @@ export const errorHandler = (res: Response, error: unknown) => {
         ? Object.values((error as mongoose.Error.ValidationError).errors).map(
             (val) => val.message
           )
+        : error.name === 'MongoServerError' && (error as any).code == 11000
+        ? Object.entries((error as any).keyValue)[0]
+            .join(' ')
+            .charAt(0)
+            .toUpperCase() +
+          Object.entries((error as any).keyValue)[0]
+            .join(' ')
+            .slice(1) +
+          ' already exists'
         : error.message
       : error;
 
