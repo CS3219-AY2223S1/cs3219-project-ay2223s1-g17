@@ -37,7 +37,10 @@ const CompletionPanel: FC<Props> = ({ statistics, history, isLoading }) => {
           />
         </HeroWrapper>
         <HeroWrapper containerStyles={{ width: '50%' }}>
-          <QuickMatch isLoading={isLoading} />
+          <QuickMatch
+            completedQuestionsByDay={statistics?.completedQuestionsByDay}
+            isLoading={isLoading}
+          />
         </HeroWrapper>
       </Stack>
       <HeroWrapper>

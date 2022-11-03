@@ -10,7 +10,7 @@ export const createStatisticsForUser = async (req: Request, res: Response) => {
 
 export const getStatisticsForUser = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.params;
 
     const statistics = await Statistics.getStatisticsByUser(userId);
     successHandler(res, statistics);

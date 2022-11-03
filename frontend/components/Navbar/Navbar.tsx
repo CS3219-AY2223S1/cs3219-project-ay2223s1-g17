@@ -99,7 +99,11 @@ const Navbar = () => {
           handleClose={handleClosePrompt}
           handleLeave={handleLeave}
         />
-        {user ? <Matchmaking /> : <></>}
+        {user && (isMatching || !['/', '/match'].includes(router.asPath)) ? (
+          <Matchmaking />
+        ) : (
+          <></>
+        )}
         {user ? (
           <>
             <Stack

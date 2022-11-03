@@ -34,7 +34,7 @@ const Profile: FC<Props> = ({
           >
             {username}&apos;s Profile
           </Typography>
-          <Tooltip title="Daily Streak">
+          <Tooltip title="Daily streak">
             <Stack
               flexDirection="row"
               justifyContent="center"
@@ -72,7 +72,7 @@ const Profile: FC<Props> = ({
             sx={{ position: 'relative' }}
           >
             {preferredLanguage.toLowerCase()}
-            <Tooltip title="Edit Preferred Language">
+            <Tooltip title="Edit your preferred language">
               <IconButton onClick={() => router.push('/auth')} disableRipple>
                 <EditIcon
                   fontSize="small"
