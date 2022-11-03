@@ -20,7 +20,14 @@ import {
 } from '@mui/material';
 import useAuth from 'contexts/AuthContext';
 import { useRouter } from 'next/router';
-import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
+import {
+  FormEvent,
+  useState,
+  FC,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from 'react';
 import { toast } from 'react-toastify';
 import { LANGUAGE } from 'utils/enums';
 import { handleErrorWithToast } from 'utils/helpers';
@@ -55,6 +62,11 @@ const AuthForm = () => {
     useState(false);
   const [isChangePreferredLanguage, setIsChangePreferredLanguage] =
     useState(true);
+
+  useEffect(() => {
+    const { mode } = router.query;
+    if (mode === 'register') setIsLogin(false);
+  }, [router]);
 
   const handleOpen = () => {
     setOpen(true);
