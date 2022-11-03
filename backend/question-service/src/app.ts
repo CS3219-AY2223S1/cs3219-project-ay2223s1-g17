@@ -51,7 +51,7 @@ app.use(
 );
 
 // routes
-app.use('/question', router);
+app.use('/', router);
 
 app.listen(port, () => {
   console.log(`Server is running at https://localhost:${port}`);
