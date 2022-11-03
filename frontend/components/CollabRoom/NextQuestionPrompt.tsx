@@ -10,7 +10,6 @@ import { FC } from 'react';
 type Props = {
   open: boolean;
   confirm: boolean;
-  otherReject: boolean;
   isLastQuestion: boolean;
   handleClose: () => void;
   handleConfirm: () => void;
@@ -19,7 +18,6 @@ type Props = {
 const NextQuestionPrompt: FC<Props> = ({
   open,
   confirm,
-  otherReject,
   isLastQuestion,
   handleClose,
   handleConfirm,
@@ -29,19 +27,7 @@ const NextQuestionPrompt: FC<Props> = ({
       <DialogTitle>
         {isLastQuestion ? 'End Session' : 'Proceed to Next Question'}
       </DialogTitle>
-      {otherReject ? (
-        <>
-          <DialogContent>
-            <DialogContentText>
-              The other user has rejected{' '}
-              {isLastQuestion
-                ? 'ending the session'
-                : 'moving on to the next question'}
-              . This prompt will automatically close in 3s.
-            </DialogContentText>
-          </DialogContent>
-        </>
-      ) : confirm ? (
+      {confirm ? (
         <>
           <DialogContent
             sx={{

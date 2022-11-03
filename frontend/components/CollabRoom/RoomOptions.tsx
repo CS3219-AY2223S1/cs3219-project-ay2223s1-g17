@@ -1,69 +1,62 @@
 import { FC, Dispatch, SetStateAction, ReactNode } from 'react';
 import {
+  Box,
   Button,
-  IconButton,
-  // MenuItem,
-  // Select,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import {
-  // LANGUAGE,
-  VIEW,
-} from 'utils/enums';
+import { VIEW } from 'utils/enums';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChatIcon from '@mui/icons-material/Chat';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Stopwatch from 'components/Stopwatch';
 import NextQuestionPrompt from './NextQuestionPrompt';
 
 type Props = {
   view: VIEW[];
-  // language: LANGUAGE;
   questionNumber: number;
   maxQuestionNumber: number;
   setView: Dispatch<SetStateAction<VIEW[]>>;
-  // setLanguage: Dispatch<SetStateAction<LANGUAGE>>;
   handleNextQuestion: () => void;
   open: boolean;
   confirm: boolean;
   handleConfirm: () => void;
-  otherReject: boolean;
   handleReject: () => void;
+  readOnly?: boolean;
 };
 
 const RoomOptions: FC<Props> = ({
   view,
-  // language,
   questionNumber,
   maxQuestionNumber,
   setView,
-  // setLanguage,
   handleNextQuestion,
   open,
   confirm,
   handleConfirm,
-  otherReject,
   handleReject,
+  readOnly,
 }) => {
   const ViewButtonMap: Record<VIEW, ReactNode> = {
     QUESTION: <DescriptionIcon />,
     CHAT: <ChatIcon />,
     EDITOR: <CodeIcon />,
   };
+
+  const isLastQuestion = questionNumber === maxQuestionNumber;
+
   return (
-    <>
+    <Box bgcolor="#f7f8fa">
       <NextQuestionPrompt
-        isLastQuestion={questionNumber === maxQuestionNumber}
+        isLastQuestion={isLastQuestion}
         open={open}
         confirm={confirm}
         handleConfirm={handleConfirm}
-        otherReject={otherReject}
         handleClose={handleReject}
       />
+
       <Stack
         sx={{
           p: 2,
@@ -73,7 +66,7 @@ const RoomOptions: FC<Props> = ({
           left: 0,
           right: 0,
           zIndex: 10,
-          backgroundColor: 'white',
+          backgroundColor: 'inherit',
         }}
         flexDirection="row"
         justifyContent="space-between"
@@ -82,7 +75,6 @@ const RoomOptions: FC<Props> = ({
         <ToggleButtonGroup
           value={view}
           onChange={(_, newView: VIEW[]) => {
-            console.log(newView);
             setView(newView);
           }}
           color="primary"
@@ -99,53 +91,31 @@ const RoomOptions: FC<Props> = ({
           ))}
         </ToggleButtonGroup>
 
-        <Stack flexDirection="row" alignItems="center" sx={{ mr: '5%' }}>
+        {readOnly ? (
+          <></>
+        ) : (
           <Typography color="black" variant="h6">
             Question {questionNumber + 1}
           </Typography>
-          {questionNumber < maxQuestionNumber ? (
-            <IconButton onClick={handleNextQuestion} disableRipple>
-              <NavigateNextIcon />
-            </IconButton>
-          ) : (
-            <></>
-          )}
-        </Stack>
+        )}
 
-        <Stack flexDirection="row" columnGap={2}>
-          <Stopwatch />
-          {questionNumber === maxQuestionNumber ? (
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleNextQuestion}
-              disableRipple
-            >
-              End Session
-            </Button>
-          ) : (
-            <></>
-          )}
-
-          {/* <Select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value as LANGUAGE)}
-            sx={{ textTransform: 'capitalize' }}
-            SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
+        {readOnly ? (
+          <></>
+        ) : (
+          <Button
+            variant="contained"
+            color={isLastQuestion ? 'error' : 'primary'}
+            onClick={handleNextQuestion}
+            disableRipple
+            size="small"
+            endIcon={<NavigateNextIcon fontSize="small" />}
+            sx={{ textTransform: 'none' }}
           >
-            {Object.values(LANGUAGE).map((languageOption) => (
-              <MenuItem
-                key={languageOption}
-                value={languageOption}
-                sx={{ textTransform: 'capitalize' }}
-              >
-                {languageOption.toLowerCase()}
-              </MenuItem>
-            ))}
-          </Select> */}
-        </Stack>
+            {isLastQuestion ? 'End Session' : 'Next Question'}
+          </Button>
+        )}
       </Stack>
-    </>
+    </Box>
   );
 };
 

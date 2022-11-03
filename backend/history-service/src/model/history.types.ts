@@ -4,17 +4,25 @@ import { LeanDocument, Model, Types } from 'mongoose';
 // to them.
 export interface IHistory {
   user: string;
-  questionId: string;
+  otherUser: string;
+  question: {
+    id: string;
+    title: string;
+    difficulty: string;
+    topics: string[];
+  };
   code: string;
+  language: string;
   chats: Chat[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Add timestamp?
 interface Chat {
-  sender: string; // userId
+  senderId: string;
+  senderName: string;
   message: string;
+  time: string;
 }
 
 export interface IHistoryMethods {}
@@ -24,5 +32,7 @@ export type HistoryDocument = LeanDocument<IHistory> &
 
 export interface IHistoryModel extends Model<IHistory, {}, IHistoryMethods> {
   findHistoryById(id: string): Promise<HistoryDocument>;
-  saveHistory(history: IHistory): Promise<HistoryDocument>;
+  findHistoryByUser(userId: string): Promise<HistoryDocument[]>;
+  deleteHistoryByUser(userId: string): Promise<void>;
+  saveHistory(history: IHistory): Promise<void>;
 }

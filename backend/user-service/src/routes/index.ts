@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import {
   changePassword,
+  changePreferredLanguage,
   deleteAccount,
   login,
   logout,
@@ -23,5 +24,6 @@ router
   })
   .put(authenticate, changePassword)
   .delete(authenticate, deleteAccount);
+router.route('/language').put(authenticate, changePreferredLanguage);
 
 export default router;

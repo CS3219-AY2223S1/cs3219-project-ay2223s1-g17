@@ -4,23 +4,37 @@ import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import WarningIcon from '@mui/icons-material/Warning';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Button,
+  FormControl,
   IconButton,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import useAuth from 'contexts/AuthContext';
 import { useRouter } from 'next/router';
 import { FormEvent, useState, FC, Dispatch, SetStateAction } from 'react';
 import { toast } from 'react-toastify';
+import { LANGUAGE } from 'utils/enums';
 import { handleErrorWithToast } from 'utils/helpers';
 import DeleteAccountPrompt from './DeleteAccountPrompt';
 
 const AuthForm = () => {
-  const { user, register, login, changePassword, deleteAccount } = useAuth();
+  const {
+    user,
+    register,
+    login,
+    changePassword,
+    changePreferredLanguage,
+    deleteAccount,
+  } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -31,6 +45,16 @@ const AuthForm = () => {
   const [newPassword, setNewPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [open, setOpen] = useState(false);
+  const [preferredLanguage, setPreferredLanguage] = useState(
+    user?.preferredLanguage ?? LANGUAGE.PYTHON
+  );
+  const [isUsernameFocused, setIsUsernameFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isNewPasswordFocused, setIsNewPasswordFocused] = useState(false);
+  const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] =
+    useState(false);
+  const [isChangePreferredLanguage, setIsChangePreferredLanguage] =
+    useState(true);
 
   const handleOpen = () => {
     setOpen(true);
@@ -55,18 +79,23 @@ const AuthForm = () => {
       (user && newPassword !== confirmPassword) ||
       (!isLogin && password !== confirmPassword)
     )
-      handleErrorWithToast('Passwords do not match');
+      return handleErrorWithToast('Passwords do not match');
 
     user
-      ? await changePassword(password, newPassword, onSuccess)
+      ? isChangePreferredLanguage
+        ? await changePreferredLanguage(preferredLanguage, onSuccess)
+        : await changePassword(password, newPassword, onSuccess)
       : isLogin
       ? await login(username, password, onSuccess)
-      : await register(username, password, onSuccess);
+      : await register(username, password, preferredLanguage, onSuccess);
   };
 
   const handleSwitchMode = () => {
     handleReset();
-    setIsLogin((prev) => !prev);
+
+    user
+      ? setIsChangePreferredLanguage((prev) => !prev)
+      : setIsLogin((prev) => !prev);
   };
 
   const handleSwitchPasswordVisibility = () => {
@@ -85,21 +114,29 @@ const AuthForm = () => {
     setPassword('');
     setUsername('');
     setConfirmPassword('');
+    setNewPassword('');
+    setShowConfirmPassword(false);
+    setShowNewPassword(false);
     setShowPassword(false);
+    setIsConfirmPasswordFocused(false);
+    setIsNewPasswordFocused(false);
+    setIsPasswordFocused(false);
   };
 
   const onSuccess = () => {
-    toast.success(
-      `Successfully ${
-        user
-          ? 'changed password!'
-          : isLogin
-          ? 'logged in!'
-          : 'created new account!'
-      }`
-    );
+    isLogin
+      ? setIsLogin(false)
+      : toast.success(
+          `Successfully ${
+            user
+              ? isChangePreferredLanguage
+                ? 'changed preferred language'
+                : 'changed password!'
+              : 'created new account!'
+          }`
+        );
     handleReset();
-    return isLogin ? router.push('/') : setIsLogin(true);
+    return user || isLogin ? router.push('/') : setIsLogin(true);
   };
 
   return (
@@ -113,9 +150,8 @@ const AuthForm = () => {
             spacing={2}
             sx={{
               filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
-              bgcolor: '#fffaf0',
+              bgcolor: 'white',
               borderRadius: '12px',
-              height: '400px',
               justifyContent: 'center',
               columnGap: 8,
               paddingY: 4,
@@ -125,64 +161,126 @@ const AuthForm = () => {
             <Typography
               variant="h6"
               align="center"
-              color="#2365C8"
+              color="primary.main"
               fontWeight="bold"
               sx={{ marginBottom: 2 }}
               fontSize={24}
             >
               {user
-                ? 'Change Password'
+                ? isChangePreferredLanguage
+                  ? 'Change Preferred Language'
+                  : 'Change Password'
                 : `PeerPrep ${isLogin ? 'Login' : 'Sign Up'}`}
             </Typography>
             {!user ? (
-              <TextField
-                name="username"
-                placeholder="Username"
-                value={username}
-                size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonIcon sx={{ color: 'black' }} fontSize="small" />
-                    </InputAdornment>
-                  ),
-                  sx: { borderRadius: '12px', fontSize: 12 },
-                }}
-                onChange={(e) => setUsername(e.target.value)}
-                sx={{
-                  backgroundColor: '#E7E7E7',
-                  borderRadius: '12px',
-                }}
-              />
+              <FormControl>
+                <InputLabel
+                  focused={isUsernameFocused}
+                  variant="standard"
+                  shrink
+                >
+                  Username
+                </InputLabel>
+                <TextField
+                  name="username"
+                  size="small"
+                  value={username}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon sx={{ color: 'black' }} fontSize="small" />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onFocus={() => setIsUsernameFocused(true)}
+                  onBlur={() => setIsUsernameFocused(false)}
+                  sx={{ mt: 2.75 }}
+                />
+              </FormControl>
             ) : (
               <></>
             )}
-            <PasswordInput
-              showPassword={showPassword}
-              handleSwitchVisibility={handleSwitchPasswordVisibility}
-              value={password}
-              label={`${user ? 'Current ' : ''}Password`}
-              handleChange={setPassword}
-            />
-            {user ? (
+            {user && isChangePreferredLanguage ? (
+              <></>
+            ) : (
+              <PasswordInput
+                showPassword={showPassword}
+                handleSwitchVisibility={handleSwitchPasswordVisibility}
+                value={password}
+                label={`${user ? 'Current ' : ''}Password`}
+                handleChange={setPassword}
+                onFocus={() => setIsPasswordFocused(true)}
+                onBlur={() => setIsPasswordFocused(false)}
+                isFocused={isPasswordFocused}
+              />
+            )}
+            {user && !isChangePreferredLanguage ? (
               <PasswordInput
                 showPassword={showNewPassword}
                 handleSwitchVisibility={handleSwitchNewPasswordVisibility}
                 value={newPassword}
                 label="New Password"
                 handleChange={setNewPassword}
+                onFocus={() => setIsNewPasswordFocused(true)}
+                onBlur={() => setIsNewPasswordFocused(false)}
+                isFocused={isNewPasswordFocused}
               />
             ) : (
               <></>
             )}
-            {user || !isLogin ? (
+            {(user && !isChangePreferredLanguage) || !isLogin ? (
               <PasswordInput
                 showPassword={showConfirmPassword}
                 handleSwitchVisibility={handleSwitchConfirmPasswordVisibility}
                 value={confirmPassword}
                 label={`Confirm ${user ? 'New ' : ''}Password`}
                 handleChange={setConfirmPassword}
+                onFocus={() => setIsConfirmPasswordFocused(true)}
+                onBlur={() => setIsConfirmPasswordFocused(false)}
+                isFocused={isConfirmPasswordFocused}
               />
+            ) : (
+              <></>
+            )}
+            {(user && isChangePreferredLanguage) || (!user && !isLogin) ? (
+              <FormControl>
+                <InputLabel
+                  variant="standard"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    columnGap: 1.25,
+                  }}
+                >
+                  Preferred Language
+                  <Tooltip title="You will be matched with others who have the same preferred language. Can be changed any time via profile page.">
+                    <InfoIcon />
+                  </Tooltip>
+                </InputLabel>
+                <Select
+                  fullWidth
+                  value={preferredLanguage}
+                  onChange={(e) =>
+                    setPreferredLanguage(e.target.value as LANGUAGE)
+                  }
+                  sx={{
+                    textTransform: 'capitalize',
+                    mt: 2.75,
+                  }}
+                  size="small"
+                >
+                  {Object.values(LANGUAGE).map((languageOption) => (
+                    <MenuItem
+                      key={languageOption}
+                      value={languageOption}
+                      sx={{ textTransform: 'capitalize' }}
+                    >
+                      {languageOption.toLowerCase()}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             ) : (
               <></>
             )}
@@ -191,35 +289,45 @@ const AuthForm = () => {
               variant="contained"
               size="large"
               sx={{
-                backgroundColor: '#2365C8',
-                borderRadius: '12px',
+                backgroundColor: 'primary.main',
                 filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+                borderRadius: '12px',
+              }}
+              style={{
+                marginTop: '2rem',
               }}
             >
               {user ? 'Submit' : isLogin ? 'Login' : 'Register'}
             </Button>
+            <Button
+              variant="text"
+              size="small"
+              endIcon={<ArrowRightAltOutlinedIcon />}
+              style={{
+                color: 'black',
+                textTransform: 'none',
+                marginTop: '1rem',
+                fontWeight: 'medium',
+              }}
+              onClick={handleSwitchMode}
+            >
+              {user
+                ? isChangePreferredLanguage
+                  ? 'Change your password'
+                  : 'Change your preferred language'
+                : isLogin
+                ? 'Create your account'
+                : 'Sign in instead'}
+            </Button>
             {!user ? (
-              <Button
-                variant="text"
-                size="small"
-                endIcon={<ArrowRightAltOutlinedIcon />}
-                style={{
-                  color: 'black',
-                  textTransform: 'none',
-                  marginTop: '32px',
-                  fontWeight: 'medium',
-                }}
-                onClick={handleSwitchMode}
-              >
-                {isLogin ? 'Create your account' : 'Sign in instead'}
-              </Button>
+              <></>
             ) : (
               <Button
                 variant="text"
                 color="error"
                 startIcon={<WarningIcon color="error" />}
                 style={{
-                  marginTop: '32px',
+                  marginTop: '2rem',
                   textTransform: 'none',
                 }}
                 onClick={handleOpen}
@@ -245,6 +353,9 @@ type Props = {
   value: string;
   label: string;
   handleChange: Dispatch<SetStateAction<string>>;
+  onFocus: () => void;
+  onBlur: () => void;
+  isFocused: boolean;
 };
 
 const PasswordInput: FC<Props> = ({
@@ -253,35 +364,43 @@ const PasswordInput: FC<Props> = ({
   value,
   label,
   handleChange,
+  onFocus,
+  onBlur,
+  isFocused,
 }) => (
-  <TextField
-    name="password"
-    placeholder={label}
-    type={showPassword ? 'text' : 'password'}
-    size="small"
-    value={value}
-    InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <LockIcon sx={{ color: 'black' }} fontSize="small" />
-        </InputAdornment>
-      ),
-      endAdornment: (
-        <InputAdornment position="end">
-          <IconButton onClick={handleSwitchVisibility}>
-            {showPassword ? (
-              <VisibilityOffIcon sx={{ color: 'black' }} fontSize="small" />
-            ) : (
-              <VisibilityIcon sx={{ color: 'black' }} fontSize="small" />
-            )}
-          </IconButton>
-        </InputAdornment>
-      ),
-      sx: { borderRadius: '12px', fontSize: 12 },
-    }}
-    onChange={(e) => handleChange(e.target.value)}
-    sx={{ backgroundColor: '#E7E7E7', borderRadius: '12px' }}
-  />
+  <FormControl>
+    <InputLabel variant="standard" shrink focused={isFocused}>
+      {label}
+    </InputLabel>
+    <TextField
+      name="password"
+      type={showPassword ? 'text' : 'password'}
+      size="small"
+      value={value}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <LockIcon sx={{ color: 'black' }} fontSize="small" />
+          </InputAdornment>
+        ),
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={handleSwitchVisibility}>
+              {showPassword ? (
+                <VisibilityOffIcon sx={{ color: 'black' }} fontSize="small" />
+              ) : (
+                <VisibilityIcon sx={{ color: 'black' }} fontSize="small" />
+              )}
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+      onChange={(e) => handleChange(e.target.value)}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      sx={{ mt: 2.75 }}
+    />
+  </FormControl>
 );
 
 export default AuthForm;

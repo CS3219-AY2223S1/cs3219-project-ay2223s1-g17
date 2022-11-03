@@ -1,7 +1,12 @@
 import express, { Express } from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
-import { registerStopwatchHandler } from './socketHandler/stopwatchHandler';
+import {
+  onTimerStop,
+  registerStopwatchHandler,
+} from './socketHandler/stopwatchHandler';
+import axios from 'axios';
+import * as redis from 'redis';
 
 const app: Express = express();
 
@@ -27,10 +32,17 @@ io.use((socket: ISocket, next) => {
   next();
 });
 
-io.on('connection', (socket: ISocket) => {
+io.on('connection', async (socket: ISocket) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const roomId = socket.roomId!;
   socket.join(roomId);
+  const host = `${process.env.REDIS_HOST ?? 'redis'}`;
+  const redisClient = redis.createClient({
+    socket: {
+      host,
+    },
+  });
+  await redisClient.connect();
 
   socket.on('editorChange', (event) => {
     socket.to(roomId).emit('editorChange', event);
@@ -41,15 +53,34 @@ io.on('connection', (socket: ISocket) => {
   });
 
   socket.on('openNextQuestionPrompt', () => {
-    io.to(roomId).emit('openNextQuestionPrompt');
+    socket.to(roomId).emit('openNextQuestionPrompt');
   });
 
-  socket.on('acceptNextQuestion', () => {
-    socket.to(roomId).emit('acceptNextQuestion');
+  socket.on('acceptNextQuestion', async (history) => {
+    const users = await redisClient
+      .get(roomId)
+      .then((res) => (res ? JSON.parse(res) : res));
+    if (!users) {
+      await redisClient.set(roomId, JSON.stringify([history.user]));
+      return;
+    }
+
+    onTimerStop(io, socket, roomId);
+    users.push(history.user);
+    delete history.user;
+    const { status, data } = await axios.post('http://history-service:8005', {
+      history: { ...history, users: Array.from(users) },
+    });
+    await redisClient.del(roomId);
+
+    if (status !== 200) return io.to(roomId).emit('error', data);
+
+    io.to(roomId).emit('proceedToNextQuestion');
   });
 
-  socket.on('rejectNextQuestion', () => {
-    socket.to(roomId).emit('rejectNextQuestion');
+  socket.on('rejectNextQuestion', async () => {
+    await redisClient.del(roomId);
+    socket.to(roomId).emit('otherUserRejectedNextQuestion');
   });
 
   registerStopwatchHandler(io, socket, roomId);

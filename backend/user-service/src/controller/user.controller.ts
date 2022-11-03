@@ -10,8 +10,8 @@ import { errorHandler, successHandler } from '../../../utils';
  */
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, password } = req.body;
-    await User.createUser(username, password);
+    const { username, password, preferredLanguage } = req.body;
+    await User.createUser(username, password, preferredLanguage);
     successHandler(res);
   } catch (error) {
     errorHandler(res, error);
@@ -53,6 +53,16 @@ export const changePassword = async (req: Request, res: Response) => {
   try {
     const { userId, currentPassword, newPassword } = req.body;
     await User.updateUserPasswordById(userId, currentPassword, newPassword);
+    successHandler(res);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+export const changePreferredLanguage = async (req: Request, res: Response) => {
+  try {
+    const { userId, preferredLanguage } = req.body;
+    await User.updateUserPreferredLanguageById(userId, preferredLanguage);
     successHandler(res);
   } catch (error) {
     errorHandler(res, error);

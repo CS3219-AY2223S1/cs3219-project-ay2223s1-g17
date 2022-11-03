@@ -1,18 +1,17 @@
 // packages
 
 import { Box, Stack } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
-import { useMatchingContext } from 'contexts/MatchingContext';
-import { HTTP_METHOD, LANGUAGE, SERVICE, VIEW } from 'utils/enums';
+import { Question, useMatchingContext } from 'contexts/MatchingContext';
+import { LANGUAGE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
 import ChatPanel, { Chat } from './ChatPanel';
 import QuestionPanel from './QuestionPanel';
 import Resizer from './Resizer';
-import { apiCall } from 'utils/helpers';
 import useAuth from 'contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
@@ -25,14 +24,30 @@ export type View = {
   showChat: boolean;
 };
 
-const Room = () => {
-  const { roomId } = useMatchingContext();
+type ReadOnlyProps = {
+  readOnly: boolean;
+  isLoading: boolean;
+  readOnlyQuestion?: Question;
+  readOnlyEditorContent?: string;
+  readOnlyChats?: Chat[];
+};
+
+type Props = ReadOnlyProps | Record<string, never>;
+
+const Room: FC<Props> = ({
+  readOnly,
+  readOnlyQuestion,
+  readOnlyChats,
+  readOnlyEditorContent,
+  isLoading,
+}) => {
+  const { roomId, leaveRoom } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
+
   const [socket, setSocket] = useState<Socket>();
   const { questions } = useMatchingContext();
   const [questionNumber, setQuestionNumber] = useState(0);
-  const [language, setLanguage] = useState<LANGUAGE>(LANGUAGE.PYTHON);
   const [width, setWidth] = useState('33%');
   const [height, setHeight] = useState('33%');
   const [cursor, setCursor] = useState('auto');
@@ -45,47 +60,50 @@ const Room = () => {
     VIEW.QUESTION,
     VIEW.CHAT,
   ]);
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<Chat[]>(
+    readOnly ? readOnlyChats ?? [] : []
+  );
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [otherConfirm, setOtherConfirm] = useState(false);
-  const [otherReject, setOtherReject] = useState(false);
 
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
   const showChat = view.includes(VIEW.CHAT);
 
-  const editorContent =
-    questions[questionNumber]?.templates?.[language] ?? '# start coding here';
+  useEffect(() => {
+    if (router.asPath === '/room' && roomId === undefined) {
+      router.push('/');
+    }
+  }, [roomId]);
+
+  const editorContent = readOnly
+    ? readOnlyEditorContent
+    : questions[questionNumber]?.templates?.[
+        user?.preferredLanguage ?? LANGUAGE.PYTHON
+      ];
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
-  const handleSaveHistory = async () => {
-    const history = {
-      user: user?._id,
-      questionId: questions[questionNumber]._id,
-      code: editorRef.current?.getValue() ?? editorContent,
-      chats,
-    };
-
-    await apiCall({
-      path: '/save',
-      service: SERVICE.HISTORY,
-      method: HTTP_METHOD.POST,
-      requiresCredentials: true,
-      body: {
-        history: history,
-      },
-      onSuccess: () => toast.success('Successfully saved session to history!'),
-    });
-  };
-
   const handleNextQuestion = () => {
+    setOpen(true);
     socket?.emit('openNextQuestionPrompt');
   };
 
   const handleAccept = () => {
     setConfirm(true);
-    socket?.emit('acceptNextQuestion');
+    const { title, difficulty, topics, _id } = questions[questionNumber];
+    const history = {
+      user: user?._id,
+      question: {
+        title,
+        difficulty,
+        topics,
+        id: _id,
+      },
+      code: editorRef.current?.getValue() ?? editorContent,
+      language: user?.preferredLanguage,
+      chats,
+    };
+    socket?.emit('acceptNextQuestion', history);
   };
 
   const handleReject = () => {
@@ -96,26 +114,23 @@ const Room = () => {
 
   const resetConfirmations = () => {
     setConfirm(false);
-    setOtherConfirm(false);
-    setOtherReject(false);
   };
 
   const roomOptionsProps = {
     view,
-    // language,
     questionNumber,
     maxQuestionNumber: questions.length - 1,
     setView,
-    // setLanguage,
     handleNextQuestion,
     open,
     confirm,
     handleConfirm: handleAccept,
-    otherReject,
     handleReject,
+    readOnly,
   };
+
   const codeEditorProps = {
-    language,
+    language: user?.preferredLanguage,
     questionNumber,
     editorContent,
     editorRef,
@@ -128,7 +143,10 @@ const Room = () => {
     userSelect,
     pointerEvents,
     shouldDisplay: showEditor,
+    readOnly,
+    isLoading,
   };
+
   const chatBoxProps = {
     id: 'chat-panel',
     height: showEditor ? height : '100%',
@@ -137,10 +155,13 @@ const Room = () => {
     shouldDisplay: showChat,
     chats,
     setChats,
+    readOnly,
+    isLoading,
   };
+
   const questionPanelProps = {
     id: 'question-panel',
-    question: questions[questionNumber],
+    question: readOnly ? readOnlyQuestion : questions[questionNumber],
     width,
     cursor,
     pointerEvents,
@@ -150,9 +171,12 @@ const Room = () => {
     overflowY: 'auto',
     mx: 'auto',
     shouldDisplay: showQuestion,
+    isLoading,
   };
 
   useEffect(() => {
+    if (readOnly) return;
+
     const sock = io(
       `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
       {
@@ -160,54 +184,44 @@ const Room = () => {
       }
     );
 
-    if (!roomId) {
-      alert('Room not found, redirecting');
-      window.location.replace('/');
-    }
-
     sock.auth = { roomId };
     sock.connect();
     setSocket(sock);
 
     sock.on('openNextQuestionPrompt', () => setOpen(true));
 
-    sock.on('acceptNextQuestion', () => {
-      setOtherConfirm(true);
+    sock.on('otherUserRejectedNextQuestion', () => {
+      setOpen(false);
+      resetConfirmations();
+      toast.info(
+        `The other user has rejected ${
+          questionNumber === questions.length - 1
+            ? 'ending the session'
+            : 'proceeding to the next question'
+        }`
+      );
     });
 
-    sock.on('rejectNextQuestion', () => {
-      setOtherReject(true);
-      setTimeout(() => {
-        setOpen(false);
-        resetConfirmations();
-      }, 3000);
+    sock.on('proceedToNextQuestion', () => {
+      setOpen(false);
+      resetConfirmations();
+      setQuestionNumber((prev) => prev + 1);
+      setChats([]);
+
+      if (questionNumber >= questions.length - 1) leaveRoom();
+    });
+
+    sock.on('error', (error) => {
+      setOpen(false);
+      resetConfirmations();
+      toast.error(error.message ?? error);
     });
 
     return () => {
       sock.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const moveToNextQuestion = async () => {
-      setOpen(false);
-      await handleSaveHistory();
-
-      if (questionNumber === questions.length - 1) {
-        return router.push('/');
-      }
-
-      setQuestionNumber((prev) => prev + 1);
-      setChats([]);
-      resetConfirmations();
-    };
-
-    if (confirm && otherConfirm) {
-      moveToNextQuestion();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirm, otherConfirm]);
+  }, [roomId, questionNumber]);
 
   useEffect(() => {
     const verticalResizer = document.getElementById('vertical-resizer');

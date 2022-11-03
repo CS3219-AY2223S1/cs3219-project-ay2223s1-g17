@@ -4,6 +4,10 @@ services:
   frontend:
     depends_on:
       - user-service
+      - matching-service
+      - collaboration-service
+      - history-service
+      - communication-service
     container_name: frontend
     build:
       context: ./frontend
@@ -26,6 +30,7 @@ services:
     container_name: user-service
     depends_on:
       - mongo_db
+      - history-service
     build:
       context: ./backend
       dockerfile: Dockerfile.user
@@ -37,11 +42,16 @@ services:
     environment:
       JWT_SECRET: jwt-secret
       DB_LOCAL_URI: mongodb://mongo_db:27017/user
+      HISTORY_URL: http://history-service:8005
+      STATISTICS_URL: http://history-service:8005/stats
+      STATISTICS_CREATION_URL: http://history-service:8005/stats/create
     networks:
       - cs3219-project-network
 
   matching-service:
     container_name: matching-service
+    depends_on:
+      - question-service
     build:
       context: ./backend
       dockerfile: Dockerfile.matching
@@ -72,6 +82,9 @@ services:
 
   collaboration-service:
     container_name: collaboration-service
+    depends_on:
+      - redis
+      - history-service
     build:
       context: ./backend
       dockerfile: Dockerfile.collaboration
@@ -80,6 +93,8 @@ services:
       - /app/backend/collaboration-service/node_modules
     ports:
       - '8004:8004'
+    environment:
+      REDIS_HOST: 'redis'
     networks:
       - cs3219-project-network
 
@@ -123,6 +138,19 @@ services:
       - mongo_db:/data/db
     networks:
       - cs3219-project-network
+    logging:
+      driver: 'none'
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - cs3219-project-network
 
 networks:
   cs3219-project-network:
@@ -130,3 +158,4 @@ networks:
 
 volumes:
   mongo_db: {}
+  redisdata: {}

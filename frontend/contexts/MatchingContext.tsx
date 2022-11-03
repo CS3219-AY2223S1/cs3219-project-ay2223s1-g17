@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import useAuth from 'contexts/AuthContext';
 import { useRouter } from 'next/router';
 import {
   createContext,
@@ -10,7 +11,7 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
-import { DIFFICULTY, LANGUAGE } from 'utils/enums';
+import { DIFFICULTY, LANGUAGE, TOPIC } from 'utils/enums';
 
 export type Question = Partial<{
   _id: string;
@@ -20,6 +21,7 @@ export type Question = Partial<{
   examples: { input: string; output: string; explanation: string }[];
   constraints: string[];
   templates: Record<LANGUAGE, string>;
+  topics: TOPIC[];
 }>;
 
 const emptyCallBack = () => {};
@@ -27,14 +29,18 @@ const emptyCallBack = () => {};
 const MatchingContext = createContext<IMatchingContextValue>({
   startMatch: emptyCallBack,
   leaveRoom: emptyCallBack,
+  stopQueuing: emptyCallBack,
+  isMatching: false,
   questions: [{}],
 });
 
 export const MatchingProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const [socket, setSocket] = useState<Socket>();
   const [count, setCount] = useState<number>();
   const [roomId, setRoomId] = useState<number>();
   const [questions, setQuestions] = useState<Question[]>();
+  const [isMatching, setIsMatching] = useState(false);
 
   const router = useRouter();
 
@@ -49,10 +55,10 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     setSocket(socket);
 
     socket.on('matchCountdown', (counter) => {
-      console.log('cd socket: ', socket);
       // timeout
       if (counter === 0) {
         setCount(undefined);
+        setIsMatching(false);
         return toast.info(
           'Cannot find a match right now 😅 Please try again later'
         );
@@ -67,11 +73,14 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       setCount(undefined);
       setRoomId(id);
       setQuestions(questions);
+      setIsMatching(false);
       router.push('/room');
     });
 
     socket.on('matchLeave', () => {
-      router.push('/match');
+      setRoomId(undefined);
+      setQuestions([]);
+      router.push('/');
       toast.warn('The other user has left!');
     });
 
@@ -86,15 +95,24 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const startMatch = (difficulty: DIFFICULTY) => {
-    if (!socket) return;
+    if (!socket || !user) return;
     if (!socket.connected) socket.connect();
-    socket.emit('matchStart', difficulty);
+
+    setIsMatching(true);
+    socket.emit('matchStart', { difficulty, language: user.preferredLanguage });
     setCount(30);
   };
 
   const leaveRoom = () => {
     socket?.emit('matchLeave');
-    router.push('/match');
+    setRoomId(undefined);
+    setQuestions([]);
+    router.push('/');
+  };
+
+  const stopQueuing = () => {
+    socket?.emit('stopQueuing');
+    setIsMatching(false);
   };
 
   const memoedValue = useMemo(
@@ -102,11 +120,13 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       startMatch,
       count,
       leaveRoom,
+      isMatching,
       roomId,
+      stopQueuing,
       questions: questions || [{}],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [count, socket]
+    [count, isMatching, roomId, questions, socket, user]
   );
 
   return (
@@ -123,7 +143,9 @@ export const useMatchingContext = () => {
 interface IMatchingContextValue {
   startMatch: (difficulty: DIFFICULTY) => void;
   count?: number;
-  leaveRoom: () => void;
+  isMatching: boolean;
+  leaveRoom: (returnHome?: boolean) => void;
+  stopQueuing: () => void;
   roomId?: number;
   questions: Question[];
 }

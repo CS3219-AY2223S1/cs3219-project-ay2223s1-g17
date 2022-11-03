@@ -1,0 +1,3 @@
+export const MULTIAVATAR_NUM_FIELDS = 6;
+export const MULTIAVATAR_FIELD_MIN = 0;
+export const MULTIAVATAR_FIELD_MAX = 47;

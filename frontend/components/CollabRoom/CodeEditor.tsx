@@ -8,6 +8,7 @@ import { Box } from '@mui/material';
 // code
 import { useMatchingContext } from 'contexts/MatchingContext';
 import { LANGUAGE } from 'utils/enums';
+import LoadingWrapper from 'components/Loading/LoadingWrapper';
 
 const CodeEditor = ({
   language,
@@ -21,6 +22,8 @@ const CodeEditor = ({
   userSelect,
   pointerEvents,
   shouldDisplay,
+  readOnly,
+  isLoading,
 }: Props) => {
   const { roomId } = useMatchingContext();
   const isIncoming = useRef(false);
@@ -30,7 +33,7 @@ const CodeEditor = ({
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
     lineNumbersMinChars: 3,
-    // readOnly: isReadOnly ?? false,
+    readOnly: readOnly ?? false,
     scrollbar: {
       useShadows: false,
       verticalHasArrows: false,
@@ -44,6 +47,8 @@ const CodeEditor = ({
   const otherDecoration = useRef<string[]>([]);
 
   useEffect(() => {
+    if (readOnly) return;
+
     const sock = io(
       `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
       {
@@ -51,10 +56,7 @@ const CodeEditor = ({
       }
     );
 
-    if (!roomId) {
-      alert('Room not found, redirecting');
-      window.location.replace('/');
-    }
+    if (!roomId) return;
 
     sock.auth = { roomId };
     sock.connect();
@@ -101,16 +103,17 @@ const CodeEditor = ({
       sock.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [roomId]);
 
   function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
-    editor.onDidChangeCursorSelection(
-      (e: editor.ICursorSelectionChangedEvent) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        socket!.emit('selection', e);
-      }
-    );
+    if (!readOnly)
+      editor.onDidChangeCursorSelection(
+        (e: editor.ICursorSelectionChangedEvent) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          socket!.emit('selection', e);
+        }
+      );
   }
 
   const handleChange = (
@@ -127,29 +130,37 @@ const CodeEditor = ({
     socket?.emit('editorChange', event);
   };
 
-  return socket ? (
-    <Box
-      sx={{
-        flexGrow: 1,
-        display: shouldDisplay ? 'block' : 'none',
-        minHeight,
-        maxHeight,
-        minWidth,
-        maxWidth,
-        userSelect,
-        pointerEvents,
-      }}
+  return readOnly || socket ? (
+    <LoadingWrapper
+      isLoading={isLoading}
+      custom
+      repeat={4}
+      styles={{ width: '85%', mx: 'auto' }}
+      containerStyles={{ my: 'auto' }}
     >
-      <Editor
-        key={questionNumber}
-        defaultLanguage={language.toLowerCase()}
-        defaultValue={editorContent}
-        width="auto"
-        options={options}
-        onMount={handleEditorDidMount}
-        onChange={handleChange}
-      />
-    </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: shouldDisplay ? 'block' : 'none',
+          minHeight,
+          maxHeight,
+          minWidth,
+          maxWidth,
+          userSelect,
+          pointerEvents,
+        }}
+      >
+        <Editor
+          key={questionNumber}
+          defaultLanguage={(language ?? LANGUAGE.PYTHON).toLowerCase()}
+          defaultValue={editorContent ?? '# start coding here'}
+          width="auto"
+          options={options}
+          onMount={handleEditorDidMount}
+          onChange={handleChange}
+        />
+      </Box>
+    </LoadingWrapper>
   ) : (
     <></>
   );
@@ -158,9 +169,9 @@ const CodeEditor = ({
 export default CodeEditor;
 
 interface Props {
-  language: LANGUAGE;
+  language?: LANGUAGE;
   questionNumber: number;
-  editorContent: string;
+  editorContent?: string;
   editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
   minHeight: string;
   maxHeight: string;
@@ -169,4 +180,6 @@ interface Props {
   userSelect: string;
   pointerEvents: string;
   shouldDisplay: boolean;
+  readOnly?: boolean;
+  isLoading: boolean;
 }

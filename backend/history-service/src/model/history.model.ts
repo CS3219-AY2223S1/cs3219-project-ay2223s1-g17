@@ -7,11 +7,29 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
       type: String,
       required: true,
     },
-    questionId: {
+    otherUser: {
       type: String,
       required: true,
     },
+    question: {
+      type: {
+        title: {
+          type: String,
+        },
+        difficulty: {
+          type: String,
+        },
+        id: {
+          type: String,
+        },
+      },
+      required: true,
+    },
     code: {
+      type: String,
+      required: true,
+    },
+    language: {
       type: String,
       required: true,
     },
@@ -34,9 +52,6 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
             type: String,
             required: true,
           },
-          isConsecutive: {
-            type: Boolean,
-          },
         },
       ],
     },
@@ -55,9 +70,7 @@ historySchema.static(
   async function saveHistory(history: IHistory) {
     if (!history) throw new Error('History data is required');
 
-    const res = await History.create(history);
-
-    return { id: res._id };
+    await History.create(history);
   }
 );
 
@@ -76,6 +89,34 @@ historySchema.static(
     if (!history) throw new Error(`History record ${id} not found`);
 
     return history;
+  }
+);
+
+historySchema.static(
+  'findHistoryByUser',
+  /**
+   * Attempts to find a History records by user id
+   *
+   * @param userId id of user
+   */
+  async function findHistoryById(userId: string) {
+    if (!userId) throw new Error('User id is required');
+
+    return History.find({ user: userId }).sort({ createdAt: 'desc' });
+  }
+);
+
+historySchema.static(
+  'deleteHistoryByUser',
+  /**
+   * Attempts to delete History records by user id
+   *
+   * @param userId id of user
+   */
+  async function findHistoryById(userId: string) {
+    if (!userId) throw new Error('History id is required');
+
+    await History.deleteMany({ user: userId });
   }
 );
 

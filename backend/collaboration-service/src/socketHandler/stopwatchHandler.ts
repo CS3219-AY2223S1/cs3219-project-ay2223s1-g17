@@ -56,7 +56,7 @@ const onTimerStart =
     handleTimer(io, socket, roomId);
   };
 
-const onTimerStop = (io: InputOutput, socket: Socket, roomId: string) => () => {
+export const onTimerStop = (io: InputOutput, socket: Socket, roomId: string) => () => {
   const stopwatch = stopwatches[roomId];
   stopwatch.isActive = false;
   io.to(roomId).emit('timerLoad');
