@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { HttpStatusCode, PeerPrepError } from '../../../utils';
 import { IHistory, IHistoryModel } from './history.types';
 import Statistics from './statistics.model';
 
@@ -87,7 +88,12 @@ historySchema.static(
 
     const history = await History.findById(id);
 
-    if (!history) throw new Error(`History record ${id} not found`);
+    if (!history) {
+      throw new PeerPrepError(
+        HttpStatusCode.NOT_FOUND,
+        `History record ${id} not found`
+      );
+    }
 
     return history;
   }
@@ -103,7 +109,18 @@ historySchema.static(
   async function findHistoryById(userId: string) {
     if (!userId) throw new Error('User id is required');
 
-    return History.find({ user: userId }).sort({ createdAt: 'desc' });
+    const isRecordsFound = await History.exists({ user: userId });
+
+    if (!isRecordsFound) {
+      throw new PeerPrepError(
+        HttpStatusCode.NOT_FOUND,
+        'No history records of this user'
+      );
+    }
+
+    return await History.find({ user: userId }).sort({
+      createdAt: 'desc',
+    });
   }
 );
 
@@ -117,7 +134,15 @@ historySchema.static(
   async function findHistoryById(userId: string) {
     if (!userId) throw new Error('User id is required');
 
-    await History.deleteMany({ user: userId });
+    const { deletedCount } = await History.deleteMany({ user: userId });
+
+    if (deletedCount === 0) {
+      throw new PeerPrepError(
+        HttpStatusCode.NOT_FOUND,
+        'No history records of this user'
+      );
+    }
+
     await Statistics.deleteOne({ user: userId });
   }
 );
