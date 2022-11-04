@@ -68,16 +68,9 @@ io.on('connection', async (socket: ISocket) => {
     onTimerStop(io, socket, roomId);
     users.push(history.user);
     delete history.user;
-    const { status, data } = await axios.post(
-      `${
-        process.env.ENV === 'production'
-          ? process.env.HISTORY_URL_PROD
-          : process.env.HISTORY_URL_DEV
-      }`,
-      {
-        history: { ...history, users: Array.from(users) },
-      }
-    );
+    const { status, data } = await axios.post(`${process.env.HISTORY_URL}`, {
+      history: { ...history, users: Array.from(users) },
+    });
     await redisClient.del(roomId);
 
     if (status !== 200) return io.to(roomId).emit('error', data);

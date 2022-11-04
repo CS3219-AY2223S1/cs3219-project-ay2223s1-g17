@@ -41,11 +41,7 @@ userSchema.pre('save', async function (callback) {
     const userId = user._id.toString();
     // create user's initital statistics
     const { status: statisticsStatus, data: statisticsData } = await axios.post(
-      `${
-        process.env.ENV === 'production'
-          ? process.env.STATISTICS_URL_PROD
-          : process.env.STATISTICS_URL_DEV
-      }/${userId}`
+      `${process.env.STATISTICS_URL}/${userId}`
     );
     if (statisticsStatus !== HttpStatusCode.OK)
       throw new PeerPrepError(statisticsStatus, statisticsData);
@@ -60,11 +56,7 @@ userSchema.pre('remove', async function (callback) {
 
   // delete user's history and stats
   const { status, data } = await axios.delete(
-    `${
-      process.env.ENV === 'production'
-        ? process.env.HISTORY_URL_PROD
-        : process.env.HISTORY_URL_DEV
-    }/${userId}`
+    `${process.env.HISTORY_URL}/${userId}`
   );
   if (status !== HttpStatusCode.OK) throw new PeerPrepError(status, data);
 

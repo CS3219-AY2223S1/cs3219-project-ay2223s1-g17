@@ -10,10 +10,7 @@ const port = process.env.PORT || '8005';
 const app: Express = express();
 
 // set up default mongoose connection
-const mongoDbUrl =
-  process.env.ENV === 'production'
-    ? process.env.DB_CLOUD_URI
-    : process.env.DB_LOCAL_URI;
+const mongoDbUrl = process.env.DB_URI;
 
 mongoose.connect(mongoDbUrl ?? '');
 
