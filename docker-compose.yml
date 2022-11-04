@@ -41,7 +41,7 @@ services:
       - '8001:8001'
     environment:
       JWT_SECRET: jwt-secret
-      DB_LOCAL_URI: mongodb://mongo_db:27017/user
+      DB_URI: mongodb://mongo_db:27017/user
       HISTORY_URL: 'http://history-service:8005/history'
       STATISTICS_URL: 'http://history-service:8005/stats'
     networks:
