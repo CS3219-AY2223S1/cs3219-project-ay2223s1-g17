@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { DIFFICULTY, errorHandler, successHandler } from '../../../utils';
+import { DIFFICULTY, errorHandler, successHandler } from '../utils';
 import Question from '../model';
 
 /**

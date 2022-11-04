@@ -30,7 +30,10 @@ export const apiCall = async ({
   allowError,
   onSuccess,
 }: ApiCallOptions) => {
-  const apiUrl = `http://localhost:${servicePortMap[service]}${path}`;
+  const endpoint = 'http://13.215.250.157';
+  // const endpoint = 'http://localhost';
+  console.log({ servicePortMap, endpoint });
+  const apiUrl = `${endpoint}:${servicePortMap[service]}${path}`;
 
   try {
     const res = await fetch(apiUrl, {
@@ -42,6 +45,7 @@ export const apiCall = async ({
       },
       body: JSON.stringify(body),
     });
+    console.log({ res });
 
     if (!res.ok) {
       // override allowance for error if the error is login session expiry

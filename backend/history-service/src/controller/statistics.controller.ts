@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { successHandler, errorHandler } from '../../../utils';
+import { successHandler, errorHandler } from '../utils';
 import Statistics from '../model/statistics.model';
 
 export const createStatisticsForUser = async (req: Request, res: Response) => {
