@@ -87,7 +87,6 @@ const Stopwatch = () => {
   const handleResume = () => {
     socket?.emit('timerResume');
   };
-
   return isActive ? (
     <Stack
       sx={{ color: 'black', columnGap: 1, display: roomId ? 'flex' : 'none' }}
@@ -133,7 +132,11 @@ const Stopwatch = () => {
     </Stack>
   ) : (
     <Tooltip title="Start Timer">
-      <IconButton onClick={handleStart} disabled={isLoading}>
+      <IconButton
+        onClick={handleStart}
+        disabled={isLoading}
+        sx={{ display: roomId ? 'flex' : 'none' }}
+      >
         <AccessAlarmIcon />
       </IconButton>
     </Tooltip>

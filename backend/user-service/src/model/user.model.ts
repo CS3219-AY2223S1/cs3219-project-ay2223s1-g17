@@ -38,12 +38,10 @@ userSchema.pre('save', async function (callback) {
   }
 
   if (user.isNew) {
+    const userId = user._id.toString();
     // create user's initital statistics
     const { status: statisticsStatus, data: statisticsData } = await axios.post(
-      String(process.env.STATISTICS_CREATION_URL),
-      {
-        userId: user._id.toString(),
-      }
+      `${process.env.STATISTICS_URL}/${userId}`
     );
     if (statisticsStatus !== HttpStatusCode.OK)
       throw new PeerPrepError(statisticsStatus, statisticsData);
@@ -54,23 +52,13 @@ userSchema.pre('save', async function (callback) {
 
 userSchema.pre('remove', async function (callback) {
   const user = this;
-  const data = { userId: user._id.toString() };
+  const userId = user._id.toString();
 
-  // delete user's history
-  const { status: historyStatus, data: historyData } = await axios.delete(
-    String(process.env.HISTORY_URL),
-    { data }
+  // delete user's history and stats
+  const { status, data } = await axios.delete(
+    `${process.env.HISTORY_URL}/${userId}`
   );
-  if (historyStatus !== HttpStatusCode.OK)
-    throw new PeerPrepError(historyStatus, historyData);
-
-  // delete user's statistics
-  const { status: statisticsStatus, data: statisticsData } = await axios.delete(
-    String(process.env.STATISTICS_URL),
-    { data }
-  );
-  if (statisticsStatus !== HttpStatusCode.OK)
-    throw new PeerPrepError(statisticsStatus, statisticsData);
+  if (status !== HttpStatusCode.OK) throw new PeerPrepError(status, data);
 
   callback();
 });

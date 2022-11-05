@@ -68,7 +68,7 @@ io.on('connection', async (socket: ISocket) => {
     onTimerStop(io, socket, roomId);
     users.push(history.user);
     delete history.user;
-    const { status, data } = await axios.post('http://history-service:8005', {
+    const { status, data } = await axios.post(`${process.env.HISTORY_URL}`, {
       history: { ...history, users: Array.from(users) },
     });
     await redisClient.del(roomId);
@@ -88,5 +88,5 @@ io.on('connection', async (socket: ISocket) => {
 
 const port = process.env.PORT || 8004;
 server.listen(port, () => {
-  console.log(`Collaboration Service is running at https://localhost:${port}`);
+  console.log(`Collaboration Service is running at http://localhost:${port}`);
 });

@@ -11,11 +11,8 @@ export const useHistory = (userId: string) => {
   const queryFn = async (userId: string): Promise<History[]> => {
     const history = await apiCall({
       service: SERVICE.HISTORY,
-      method: HTTP_METHOD.POST,
-      path: '/get',
-      body: {
-        userId,
-      },
+      method: HTTP_METHOD.GET,
+      path: `/history/${userId}`,
     });
 
     return history;
@@ -40,11 +37,8 @@ export const useStatistics = (userId: string) => {
   const queryFn = async (userId: string): Promise<Statistics> => {
     const statistics = await apiCall({
       service: SERVICE.HISTORY,
-      method: HTTP_METHOD.POST,
-      path: '/stats',
-      body: {
-        userId,
-      },
+      method: HTTP_METHOD.GET,
+      path: `/stats/${userId}`,
     });
 
     return statistics;

@@ -23,10 +23,6 @@ const MatchMake = () => {
   const theme = useTheme();
   const skills = [FUNDAMENTAL, INTERMEDIATE, ADVANCED];
 
-  // return
-  // isMatching ? (
-  //   <Countdown count={count} />
-  // ) : (
   return (
     <Paper
       sx={{
@@ -37,7 +33,12 @@ const MatchMake = () => {
       elevation={2}
     >
       <Stack>
-        <Typography align="center" variant="h4" color="primary">
+        <Typography
+          align="center"
+          variant="h4"
+          fontWeight={500}
+          color="primary"
+        >
           {isMatching
             ? 'Please wait while we find you a match'
             : 'Select Difficulty'}
@@ -49,8 +50,8 @@ const MatchMake = () => {
             fontWeight="light"
             color="secondary.dark"
           >
-            You can view the queue timer or cancel the queue at the top of the
-            page
+            Feel free to leave this page. You can view the queue timer or cancel
+            the queue at the top of the page
           </Typography>
         ) : (
           <></>

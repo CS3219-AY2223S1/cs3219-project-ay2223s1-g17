@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { HttpStatusCode, LANGUAGE, PeerPrepError, TOPIC } from '../../../utils';
+import { HttpStatusCode, LANGUAGE, PeerPrepError } from '../../../utils';
 import { IStatistics, IStatisticsModel, Question } from './statistics.types';
 
 const statisticsSchema = new Schema<IStatistics, IStatisticsModel>({

@@ -24,7 +24,7 @@ export const useCodingSession = (id?: string) => {
     const question = await apiCall({
       service: SERVICE.QUESTION,
       method: HTTP_METHOD.GET,
-      path: `/question/${history.question.id}`,
+      path: `/${history.question.id}`,
     });
 
     return { ...history, question };

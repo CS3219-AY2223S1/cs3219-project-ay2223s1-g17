@@ -10,10 +10,7 @@ const port = process.env.PORT || '8003';
 const app: Express = express();
 
 // set up default mongoose connection
-const mongoDbUrl =
-  process.env.ENV === 'production'
-    ? process.env.DB_CLOUD_URI
-    : process.env.DB_LOCAL_URI;
+const mongoDbUrl = process.env.DB_URI;
 
 mongoose.connect(mongoDbUrl ?? '');
 
@@ -51,8 +48,8 @@ app.use(
 );
 
 // routes
-app.use('/question', router);
+app.use('/', router);
 
 app.listen(port, () => {
-  console.log(`Server is running at https://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });
