@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { useRouter } from 'next/router';
 import {
   createContext,
   ReactNode,
@@ -7,6 +8,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { JWT_TOKEN_KEY } from 'utils/constants';
 import { HTTP_METHOD, LANGUAGE, SERVICE } from 'utils/enums';
 import { apiCall } from 'utils/helpers';
 
@@ -20,17 +22,14 @@ type User = {
 interface IAuthContext {
   user: User | undefined;
   isLoading: boolean;
+  refreshToken: (onSuccess?: () => void) => Promise<void>;
   register: (
     username: string,
     password: string,
     preferredLanguage: LANGUAGE,
     onSuccess: () => void
   ) => Promise<void>;
-  login: (
-    username: string,
-    password: string,
-    onSuccess: () => void
-  ) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   changePassword: (
     currentPassword: string,
@@ -47,6 +46,7 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext>({
   user: undefined,
   isLoading: true,
+  refreshToken: async () => {},
   register: async () => {},
   login: async () => {},
   logout: async () => {},
@@ -56,21 +56,27 @@ const AuthContext = createContext<IAuthContext>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
   const [user, setUser] = useState<User | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
 
-  const refreshUserInfobyToken = async () => {
+  const refreshUserInfobyToken = async (onSuccess?: () => void) => {
     setIsLoading(true);
+    const token = localStorage.getItem(JWT_TOKEN_KEY);
 
     const res = await apiCall({
       path: '/refresh',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      requiresCredentials: true,
       allowError: true,
+      token,
+      onSuccess,
     });
+
+    setIsLoading(false);
     setUser(res as User);
   };
+
   useEffect(() => {
     if (!user) refreshUserInfobyToken();
   }, [user]);
@@ -90,31 +96,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const login = async (
-    username: string,
-    password: string,
-    onSuccess: () => void
-  ) => {
-    await apiCall({
+  const login = async (username: string, password: string) => {
+    const { token, ..._user } = await apiCall({
       path: '/login',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      requiresCredentials: true,
       body: { username, password },
-      onSuccess: () => {
-        refreshUserInfobyToken();
-        onSuccess();
-      },
     });
+
+    setUser(_user as User);
+    localStorage.setItem(JWT_TOKEN_KEY, `Bearer ${token}`);
+    router.push('/');
   };
 
   const logout = async () => {
+    const token = localStorage.getItem(JWT_TOKEN_KEY);
+    const onSuccess = () => {
+      setUser(undefined);
+      localStorage.removeItem(JWT_TOKEN_KEY);
+    };
+
     await apiCall({
       path: '/logout',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      requiresCredentials: true,
-      onSuccess: () => setUser(undefined),
+      token,
+      onSuccess,
     });
   };
 
@@ -123,11 +130,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     newPassword: string,
     onSuccess: () => void
   ) => {
+    const token = localStorage.getItem(JWT_TOKEN_KEY);
+
     await apiCall({
       path: '/',
       service: SERVICE.USER,
       method: HTTP_METHOD.PUT,
-      requiresCredentials: true,
+      token,
       body: { currentPassword, newPassword },
       onSuccess,
     });
@@ -137,11 +146,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     preferredLanguage: LANGUAGE,
     onSuccess: () => void
   ) => {
+    const token = localStorage.getItem(JWT_TOKEN_KEY);
+
     await apiCall({
       path: '/language',
       service: SERVICE.USER,
       method: HTTP_METHOD.PUT,
-      requiresCredentials: true,
+      token,
       body: { preferredLanguage },
       onSuccess: () => {
         onSuccess();
@@ -151,13 +162,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const deleteAccount = async (onSuccess: () => void) => {
+    const token = localStorage.getItem(JWT_TOKEN_KEY);
+
     await apiCall({
       path: '/',
       service: SERVICE.USER,
       method: HTTP_METHOD.DELETE,
-      requiresCredentials: true,
+      token,
       onSuccess: () => {
         setUser(undefined);
+        localStorage.removeItem(JWT_TOKEN_KEY);
         onSuccess();
       },
     });
@@ -167,6 +181,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       user,
       isLoading,
+      refreshToken: refreshUserInfobyToken,
       register,
       login,
       logout,

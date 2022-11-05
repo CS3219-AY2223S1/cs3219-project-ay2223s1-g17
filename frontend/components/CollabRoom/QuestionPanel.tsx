@@ -34,7 +34,7 @@ const QuestionPanel: FC<Props> = ({
   isLoading,
 }) => {
   const theme = useTheme();
-  const placeholderQuestion: Required<Question> = {
+  const placeholderQuestion: Omit<Required<Question>, 'topics'> = {
     _id: 'placeholder',
     title: 'placeholder title',
     difficulty: DIFFICULTY.EASY,

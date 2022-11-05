@@ -1,6 +1,6 @@
 /**
  * Hypertext Transfer Protocol (HTTP) response status codes.
- * @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
+ * // @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
  */
 enum HttpStatusCode {
   /**
@@ -315,6 +315,11 @@ enum HttpStatusCode {
    * A server operator has received a legal demand to deny access to a resource or to a set of resources
    * that includes the requested resource. The code 451 was chosen as a reference to the novel Fahrenheit 451.
    */
+
+  /**
+   * JWT token expired
+   */
+  LOGIN_TIMEOUT = 440,
   UNAVAILABLE_FOR_LEGAL_REASONS = 451,
 
   /**

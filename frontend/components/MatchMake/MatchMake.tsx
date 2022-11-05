@@ -17,11 +17,17 @@ import {
   SKILL,
 } from 'utils/enums';
 import { useMatchingContext } from 'contexts/MatchingContext';
+import useAuth from 'contexts/AuthContext';
 
 const MatchMake = () => {
+  const { refreshToken } = useAuth();
   const { startMatch, isMatching } = useMatchingContext();
   const theme = useTheme();
   const skills = [FUNDAMENTAL, INTERMEDIATE, ADVANCED];
+
+  const findMatch = async (difficulty: DIFFICULTY) => {
+    await refreshToken(() => startMatch(difficulty));
+  };
 
   return (
     <Paper
@@ -80,7 +86,7 @@ const MatchMake = () => {
                       },
                     }}
                     disabled={isMatching}
-                    onClick={() => startMatch(difficulty)}
+                    onClick={() => findMatch(difficulty)}
                   >
                     {difficulty.toLowerCase()}
                   </Button>

@@ -1,11 +1,12 @@
 import { toast } from 'react-toastify';
+import { JWT_TOKEN_KEY, LOGIN_TIMEOUT_STATUS_CODE } from './constants';
 import { HTTP_METHOD, SERVICE } from './enums';
 
 type ApiCallOptions = {
   path: string;
   service: SERVICE;
   method: HTTP_METHOD;
-  requiresCredentials?: boolean;
+  token?: string | null;
   body?: Record<string, unknown>;
   allowError?: boolean;
   onSuccess?: () => void;
@@ -24,7 +25,7 @@ export const apiCall = async ({
   path,
   service,
   method,
-  requiresCredentials,
+  token,
   body,
   allowError,
   onSuccess,
@@ -34,17 +35,28 @@ export const apiCall = async ({
   try {
     const res = await fetch(apiUrl, {
       method,
-      credentials: requiresCredentials ? 'include' : undefined,
+      credentials: token ? 'include' : undefined,
       headers: {
         ...(body ? { 'Content-Type': 'application/json' } : {}),
+        ...(token != undefined ? { Authorization: `${token}` } : {}),
       },
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
-      if (allowError) return;
+      // override allowance for error if the error is login session expiry
+      if (
+        allowError &&
+        (res.status !== LOGIN_TIMEOUT_STATUS_CODE ||
+          !localStorage.getItem(JWT_TOKEN_KEY))
+      )
+        return;
+
+      if (res.status === LOGIN_TIMEOUT_STATUS_CODE)
+        localStorage.removeItem(JWT_TOKEN_KEY);
 
       const { error } = await res.json();
+
       return handleErrorWithToast(error);
     }
 

@@ -2,6 +2,8 @@ import { SKILL, TOPIC } from './enums';
 
 export const NAVBAR_HEIGHT_PX = 64;
 export const RESIZER_HEIGHT_WIDTH_PX = 14;
+export const JWT_TOKEN_KEY = 'jwt-token';
+export const LOGIN_TIMEOUT_STATUS_CODE = 440;
 
 export const TopicSkillMapping: Record<SKILL, TOPIC[]> = {
   ADVANCED: [

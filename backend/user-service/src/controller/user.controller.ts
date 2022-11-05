@@ -28,8 +28,8 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
     const verifiedUser = await User.findVerifiedUser(username, password);
-    const jwtToken = verifiedUser.generateJwtToken();
-    successHandler(res, verifiedUser, { setToken: jwtToken });
+    const token = verifiedUser.generateJwtToken();
+    successHandler(res, { ...verifiedUser.toObject(), token });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
  */
 export const logout = async (_: Request, res: Response) => {
   try {
-    successHandler(res, null, { clearToken: true });
+    successHandler(res);
   } catch (error) {
     errorHandler(res, error);
   }
@@ -73,7 +73,7 @@ export const deleteAccount = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
     await User.deleteUserById(userId);
-    successHandler(res, null, { clearToken: true });
+    successHandler(res);
   } catch (error) {
     errorHandler(res, error);
   }
@@ -89,7 +89,7 @@ export const refreshUserInfoByToken = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
     const user = await User.findUserById(userId);
-    successHandler(res, user);
+    successHandler(res, user.toObject());
   } catch (error) {
     errorHandler(res, error);
   }
