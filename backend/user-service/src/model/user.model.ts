@@ -115,7 +115,7 @@ userSchema.static(
    * @throws Error if no user is found
    */
   async function findUserByUsername(username: string) {
-    const user = await User.findOne({ username }).exec();
+    const user = await User.findOne({ username }).lean();
 
     if (!user) throw new Error(`User ${username} not found`);
     return user;
@@ -134,7 +134,7 @@ userSchema.static(
    */
   async function findUserById(id: string) {
     if (!id) throw new Error('User id is required');
-    const user = await User.findById(id).exec();
+    const user = await User.findById(id).lean();
     if (!user)
       throw new PeerPrepError(HttpStatusCode.NOT_FOUND, 'User not found');
 
@@ -211,7 +211,9 @@ userSchema.method(
   function generateJwtToken() {
     const user: UserDocument = this;
 
-    return jwt.sign({ _id: user._id }, String(process.env.JWT_SECRET));
+    return jwt.sign({ _id: user._id }, String(process.env.JWT_SECRET), {
+      expiresIn: '24h',
+    });
   }
 );
 

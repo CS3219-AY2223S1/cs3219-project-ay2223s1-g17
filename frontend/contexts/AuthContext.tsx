@@ -26,11 +26,7 @@ interface IAuthContext {
     preferredLanguage: LANGUAGE,
     onSuccess: () => void
   ) => Promise<void>;
-  login: (
-    username: string,
-    password: string,
-    onSuccess: () => void
-  ) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   changePassword: (
     currentPassword: string,
@@ -59,17 +55,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
 
-  const refreshUserInfobyToken = async () => {
+  const refreshUserInfobyToken = async (token?: string) => {
     setIsLoading(true);
+
+    if (token) {
+      localStorage.setItem('jwt-token', token);
+    } else {
+      const jwtToken = localStorage.getItem('jwt-token');
+      if (!jwtToken) return setIsLoading(false);
+      token = jwtToken;
+    }
 
     const res = await apiCall({
       path: '/refresh',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      requiresCredentials: true,
       allowError: true,
+      token,
     });
     setUser(res as User);
+    setIsLoading(false);
   };
   useEffect(() => {
     if (!user) refreshUserInfobyToken();
@@ -90,31 +95,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const login = async (
-    username: string,
-    password: string,
-    onSuccess: () => void
-  ) => {
-    await apiCall({
+  const login = async (username: string, password: string) => {
+    const { token } = await apiCall({
       path: '/login',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      requiresCredentials: true,
       body: { username, password },
-      onSuccess: () => {
-        refreshUserInfobyToken();
-        onSuccess();
-      },
     });
+    await refreshUserInfobyToken(token);
   };
 
   const logout = async () => {
+    const onSuccess = () => {
+      setUser(undefined);
+      localStorage.removeItem('jwt-token');
+    };
+
     await apiCall({
       path: '/logout',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
-      requiresCredentials: true,
-      onSuccess: () => setUser(undefined),
+      onSuccess,
     });
   };
 
@@ -123,11 +124,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     newPassword: string,
     onSuccess: () => void
   ) => {
+    const token = localStorage.getItem('jwt-token');
+    if (!token) return;
+
     await apiCall({
       path: '/',
       service: SERVICE.USER,
       method: HTTP_METHOD.PUT,
-      requiresCredentials: true,
+      token,
       body: { currentPassword, newPassword },
       onSuccess,
     });
@@ -137,11 +141,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     preferredLanguage: LANGUAGE,
     onSuccess: () => void
   ) => {
+    const token = localStorage.getItem('jwt-token');
+    if (!token) return;
+
     await apiCall({
       path: '/language',
       service: SERVICE.USER,
       method: HTTP_METHOD.PUT,
-      requiresCredentials: true,
+      token,
       body: { preferredLanguage },
       onSuccess: () => {
         onSuccess();
@@ -151,13 +158,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const deleteAccount = async (onSuccess: () => void) => {
+    const token = localStorage.getItem('jwt-token');
+    if (!token) return;
+
     await apiCall({
       path: '/',
       service: SERVICE.USER,
       method: HTTP_METHOD.DELETE,
-      requiresCredentials: true,
+      token,
       onSuccess: () => {
         setUser(undefined);
+        localStorage.removeItem('jwt-token');
         onSuccess();
       },
     });

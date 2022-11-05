@@ -18,13 +18,21 @@ export const authenticate = (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.token;
-    if (!token)
+    const bearerHeader = req.headers['authorization'];
+    if (!bearerHeader)
       throw new PeerPrepError(
         HttpStatusCode.UNAUTHORIZED,
         'Authentication Required'
       );
 
+    const bearer = bearerHeader.split(' ');
+    if (bearer.length !== 2 || bearer[0] !== 'Bearer')
+      throw new PeerPrepError(
+        HttpStatusCode.UNAUTHORIZED,
+        'Authentication Required'
+      );
+
+    const token = bearer[1];
     const user = jwt.verify(token, process.env.JWT_SECRET ?? '');
     req.body.userId = (user as JwtPayload)._id;
     next();

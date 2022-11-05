@@ -5,7 +5,7 @@ type ApiCallOptions = {
   path: string;
   service: SERVICE;
   method: HTTP_METHOD;
-  requiresCredentials?: boolean;
+  token?: string;
   body?: Record<string, unknown>;
   allowError?: boolean;
   onSuccess?: () => void;
@@ -24,7 +24,7 @@ export const apiCall = async ({
   path,
   service,
   method,
-  requiresCredentials,
+  token,
   body,
   allowError,
   onSuccess,
@@ -34,9 +34,10 @@ export const apiCall = async ({
   try {
     const res = await fetch(apiUrl, {
       method,
-      credentials: requiresCredentials ? 'include' : undefined,
+      credentials: token ? 'include' : undefined,
       headers: {
         ...(body ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(body),
     });
