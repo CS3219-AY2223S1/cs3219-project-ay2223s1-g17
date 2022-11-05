@@ -88,7 +88,9 @@ export const apiCall = async ({
 
       const { error } = await res.json();
 
-      return handleErrorWithToast(error);
+      handleErrorWithToast(error);
+
+      return;
     }
 
     return onSuccess ? onSuccess() : res.json();
