@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
 
     if (token) {
-      localStorage.setItem('jwt-token', token);
+      localStorage.setItem('jwt-token', `Bearer ${token}`);
     } else {
       const jwtToken = localStorage.getItem('jwt-token');
       if (!jwtToken) return setIsLoading(false);
