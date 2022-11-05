@@ -1,25 +1,25 @@
 FROM amd64/node:alpine AS build-stage
 
-WORKDIR /app/question-service
+WORKDIR /question-service
 
-COPY ./question-service/package.json ./
-COPY ./question-service/yarn.lock ./
+COPY ./package.json ./
+COPY ./yarn.lock ./
 
 RUN yarn install
 
-COPY ./question-service ./
+COPY . .
 
 RUN yarn build
 
 FROM amd64/node:alpine AS prod-stage
 
-WORKDIR /app
+WORKDIR /question-service
 
-COPY ./question-service/package.json ./
+COPY ./package.json ./
 
 RUN yarn install --production
 
-COPY --from=build-stage /app/question-service/dist .
+COPY --from=build-stage /question-service/dist .
 
 ENV DB_CLOUD_URI=mongodb+srv://3219group17:3219group17@cluster0.cjyzex1.mongodb.net/?retryWrites=true&w=majority
 ENV ENV=production

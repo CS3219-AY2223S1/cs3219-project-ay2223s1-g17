@@ -29,7 +29,6 @@ export const successHandler = (
         httpOnly: true,
         // sameSite: process.env.NODE_ENV === 'test' ? 'lax' : 'none',
         sameSite: 'lax',
-        // secure: process.env.NODE_ENV !== 'test',
         secure: false,
         maxAge: 1000 * 60 * 60 * 24,
       })

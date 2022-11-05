@@ -22,8 +22,8 @@ RUN yarn install --production
 COPY --from=build-stage /matching-service/dist .
 
 ENV ENV=production
-ENV PORT=8004
+ENV PORT=8002
 
-EXPOSE 8004
+EXPOSE 8002
 
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]

@@ -12,15 +12,6 @@ type ApiCallOptions = {
   onSuccess?: () => void;
 };
 
-const servicePortMap: Record<SERVICE, number> = {
-  USER: Number(process.env.NEXT_PUBLIC_USER_SERVICE_PORT),
-  MATCHING: Number(process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT),
-  QUESTION: Number(process.env.NEXT_PUBLIC_QUESTION_SERVICE_PORT),
-  COLLABORATION: Number(process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT),
-  HISTORY: Number(process.env.NEXT_PUBLIC_HISTORY_SERVICE_PORT),
-  COMMUNICATION: Number(process.env.NEXT_PUBLIC_COMMUNICATION_SERVICE_PORT),
-};
-
 export const apiCall = async ({
   path,
   service,
@@ -30,10 +21,31 @@ export const apiCall = async ({
   allowError,
   onSuccess,
 }: ApiCallOptions) => {
-  const endpoint = 'http://13.215.250.157';
-  // const endpoint = 'http://localhost';
-  console.log({ servicePortMap, endpoint });
-  const apiUrl = `${endpoint}:${servicePortMap[service]}${path}`;
+  let baseUrl = '';
+  switch (service) {
+    case SERVICE.USER:
+      baseUrl = process.env.NEXT_PUBLIC_USER_ENDPOINT || '';
+      break;
+    case SERVICE.HISTORY:
+      baseUrl = process.env.NEXT_PUBLIC_HISTORY_ENDPOINT || '';
+      break;
+    case SERVICE.QUESTION:
+      baseUrl = process.env.NEXT_PUBLIC_QUESTION_ENDPOINT || '';
+      break;
+    case SERVICE.MATCHING:
+      baseUrl = process.env.NEXT_PUBLIC_MATCHING_ENDPOINT || '';
+      break;
+    case SERVICE.COLLABORATION:
+      baseUrl = process.env.NEXT_PUBLIC_COLLABORATION_ENDPOINT || '';
+      break;
+    case SERVICE.COMMUNICATION:
+      baseUrl = process.env.NEXT_PUBLIC_COMMUNICATION_ENDPOINT || '';
+      break;
+    default:
+  }
+
+  const apiUrl = `http://${baseUrl}${path}`;
+  console.log({ apiUrl });
 
   try {
     const res = await fetch(apiUrl, {
@@ -66,6 +78,7 @@ export const apiCall = async ({
 
     return onSuccess ? onSuccess() : res.json();
   } catch (error) {
+    console.log({ error });
     handleErrorWithToast(error);
   }
 };
