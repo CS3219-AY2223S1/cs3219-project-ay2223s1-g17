@@ -212,7 +212,7 @@ userSchema.method(
     const user: UserDocument = this;
 
     return jwt.sign({ _id: user._id }, String(process.env.JWT_SECRET), {
-      expiresIn: '30', // '24h',
+      expiresIn: '24h',
     });
   }
 );

@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { LOGIN_TIMEOUT_STATUS_CODE } from './constants';
+import { JWT_TOKEN_KEY, LOGIN_TIMEOUT_STATUS_CODE } from './constants';
 import { HTTP_METHOD, SERVICE } from './enums';
 
 type ApiCallOptions = {
@@ -45,7 +45,15 @@ export const apiCall = async ({
 
     if (!res.ok) {
       // override allowance for error if the error is login session expiry
-      if (allowError && res.status !== LOGIN_TIMEOUT_STATUS_CODE) return;
+      if (
+        allowError &&
+        (res.status !== LOGIN_TIMEOUT_STATUS_CODE ||
+          !localStorage.getItem(JWT_TOKEN_KEY))
+      )
+        return;
+
+      if (res.status === LOGIN_TIMEOUT_STATUS_CODE)
+        localStorage.removeItem(JWT_TOKEN_KEY);
 
       const { error } = await res.json();
 

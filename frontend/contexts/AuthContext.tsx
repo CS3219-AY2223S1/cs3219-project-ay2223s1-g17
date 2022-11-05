@@ -22,6 +22,7 @@ type User = {
 interface IAuthContext {
   user: User | undefined;
   isLoading: boolean;
+  refreshToken: (onSuccess?: () => void) => Promise<void>;
   register: (
     username: string,
     password: string,
@@ -45,6 +46,7 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext>({
   user: undefined,
   isLoading: true,
+  refreshToken: async () => {},
   register: async () => {},
   login: async () => {},
   logout: async () => {},
@@ -57,7 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const refreshUserInfobyToken = async () => {
+
+  const refreshUserInfobyToken = async (onSuccess?: () => void) => {
     setIsLoading(true);
     const token = localStorage.getItem(JWT_TOKEN_KEY);
 
@@ -67,11 +70,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: HTTP_METHOD.POST,
       allowError: true,
       token,
+      onSuccess,
     });
 
     setIsLoading(false);
     setUser(res as User);
   };
+
   useEffect(() => {
     if (!user) refreshUserInfobyToken();
   }, [user]);
@@ -176,6 +181,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       user,
       isLoading,
+      refreshToken: refreshUserInfobyToken,
       register,
       login,
       logout,

@@ -4,7 +4,6 @@ import HttpStatusCode from './httpStatusCode';
 import PeerPrepError from './peerPrepError';
 
 export const successHandler = (res: Response, body?: any) => {
-  console.log('sh: ', body);
   return res.status(HttpStatusCode.OK).json(body ?? {});
 };
 
