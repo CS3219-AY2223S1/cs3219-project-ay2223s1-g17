@@ -1,0 +1,29 @@
+FROM amd64/node:alpine AS build-stage
+
+WORKDIR /communication-service
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+FROM amd64/node:alpine AS prod-stage
+
+WORKDIR /communication-service
+
+COPY ./package.json ./
+
+RUN yarn install --production
+
+COPY --from=build-stage /communication-service/dist .
+
+ENV ENV=production
+ENV PORT=8006
+
+EXPOSE 8006
+
+CMD ["node", "index.js"]

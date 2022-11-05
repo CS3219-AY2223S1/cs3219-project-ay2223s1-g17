@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import { IUser, IUserModel, UserDocument } from './user.types';
 import jwt from 'jsonwebtoken';
-import { HttpStatusCode, LANGUAGE, PeerPrepError } from '../../../utils';
+import { HttpStatusCode, LANGUAGE, PeerPrepError } from '../utils';
 import axios from 'axios';
 
 const userSchema = new mongoose.Schema<IUser, IUserModel>(

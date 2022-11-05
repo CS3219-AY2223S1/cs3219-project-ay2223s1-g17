@@ -5,7 +5,7 @@ import express, { Express } from 'express';
 import router from './routes';
 import mongoose from 'mongoose';
 
-const port = process.env.PORT || '8005';
+const port = process.env.PORT || 8005;
 // initialize express app
 const app: Express = express();
 
@@ -17,15 +17,14 @@ mongoose.connect(mongoDbUrl ?? '');
 const database = mongoose.connection;
 database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
 
-// middleware
-// TODO: add hosted frontend domain here
-
 // TODO: Might have to add chat-service in
 const allowedOrigins = [
+  'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
   'http://localhost:3000',
-  'http://user-service:8001',
-  'http://collaboration-service:8004',
 ];
+
+console.log(allowedOrigins);
+
 // only allows requests coming in from allowed origins
 app.use(
   cors({

@@ -4,10 +4,17 @@ import http from 'http';
 
 const app: Express = express();
 
+app.get('/', (_, res) => {
+  res.send('Hello World from comms-service');
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
+      'http://localhost:3000',
+    ],
   },
 });
 

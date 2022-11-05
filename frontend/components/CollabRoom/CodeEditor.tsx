@@ -49,12 +49,13 @@ const CodeEditor = ({
   useEffect(() => {
     if (readOnly) return;
 
-    const sock = io(
-      `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
-      {
-        autoConnect: false,
-      }
-    );
+    const url =
+      process.env.NEXT_PUBLIC_ENV === 'production'
+        ? process.env.NEXT_PUBLIC_COLLABORATION_ENDPOINT
+        : `http://localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`;
+    const sock = io(url || '', {
+      autoConnect: false,
+    });
 
     if (!roomId) return;
 

@@ -1,5 +1,5 @@
 import { Types, Model, Document } from 'mongoose';
-import { LANGUAGE } from '../../../utils';
+import { LANGUAGE } from '../utils';
 
 export interface IUser {
   username: string;

@@ -5,7 +5,7 @@ import {
   LANGUAGE,
   successHandler,
   TOPIC,
-} from '../../../utils';
+} from '../utils';
 import History from '../model/history.model';
 import { IHistory } from '../model/history.types';
 import Statistics from '../model/statistics.model';

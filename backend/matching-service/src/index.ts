@@ -20,7 +20,8 @@ app.get('/', (_, res) => {
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
+    methods: ['GET', 'POST'],
   },
 });
 

@@ -1,5 +1,5 @@
 import { Document, Model, Types } from 'mongoose';
-import { LANGUAGE, DIFFICULTY } from '../../../utils';
+import { LANGUAGE, DIFFICULTY } from '../utils';
 
 export type Question = {
   id: string;

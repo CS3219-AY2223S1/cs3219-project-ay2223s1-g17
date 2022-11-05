@@ -1,5 +1,5 @@
 import { LeanDocument, Model, Types } from 'mongoose';
-import { DIFFICULTY, LANGUAGE, TOPIC } from '../../../utils';
+import { DIFFICULTY, LANGUAGE, TOPIC } from '../utils';
 
 export interface IQuestion {
   title: string;

@@ -97,12 +97,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async (username: string, password: string) => {
-    const { token, ..._user } = await apiCall({
+    const res = await apiCall({
       path: '/login',
       service: SERVICE.USER,
       method: HTTP_METHOD.POST,
       body: { username, password },
     });
+
+    if (!res) {
+      return;
+    }
+
+    const { token, ..._user } = res;
 
     setUser(_user as User);
     localStorage.setItem(JWT_TOKEN_KEY, `Bearer ${token}`);

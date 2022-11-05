@@ -20,7 +20,7 @@ database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
 // TODO: Make use of env variable when deployed to prod
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://matching-service:8002',
+  'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
 ];
 // only allows requests coming in from allowed origins
 app.use(

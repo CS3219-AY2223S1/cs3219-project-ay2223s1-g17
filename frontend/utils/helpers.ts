@@ -30,7 +30,37 @@ export const apiCall = async ({
   allowError,
   onSuccess,
 }: ApiCallOptions) => {
-  const apiUrl = `http://localhost:${servicePortMap[service]}${path}`;
+  const apiUrl_dev = `http://localhost:${servicePortMap[service]}${path}`;
+
+  let baseUrl = '';
+  switch (service) {
+    case SERVICE.USER:
+      baseUrl = process.env.NEXT_PUBLIC_USER_ENDPOINT || '';
+      break;
+    case SERVICE.HISTORY:
+      baseUrl = process.env.NEXT_PUBLIC_HISTORY_ENDPOINT || '';
+      break;
+    case SERVICE.QUESTION:
+      baseUrl = process.env.NEXT_PUBLIC_QUESTION_ENDPOINT || '';
+      break;
+    case SERVICE.MATCHING:
+      baseUrl = process.env.NEXT_PUBLIC_MATCHING_ENDPOINT || '';
+      break;
+    case SERVICE.COLLABORATION:
+      baseUrl = process.env.NEXT_PUBLIC_COLLABORATION_ENDPOINT || '';
+      break;
+    case SERVICE.COMMUNICATION:
+      baseUrl = process.env.NEXT_PUBLIC_COMMUNICATION_ENDPOINT || '';
+      break;
+    default:
+  }
+
+  const apiUrl =
+    process.env.NEXT_PUBLIC_ENV === 'production'
+      ? `${baseUrl}${path}`
+      : apiUrl_dev;
+
+  console.log({ apiUrl });
 
   try {
     const res = await fetch(apiUrl, {
@@ -42,6 +72,7 @@ export const apiCall = async ({
       },
       body: JSON.stringify(body),
     });
+    console.log({ res });
 
     if (!res.ok) {
       // override allowance for error if the error is login session expiry
@@ -57,11 +88,14 @@ export const apiCall = async ({
 
       const { error } = await res.json();
 
-      return handleErrorWithToast(error);
+      handleErrorWithToast(error);
+
+      return;
     }
 
     return onSuccess ? onSuccess() : res.json();
   } catch (error) {
+    console.log({ error });
     handleErrorWithToast(error);
   }
 };

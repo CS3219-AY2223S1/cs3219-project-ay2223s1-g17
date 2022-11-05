@@ -1,0 +1,30 @@
+FROM amd64/node:alpine AS build-stage
+
+WORKDIR /question-service
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+FROM amd64/node:alpine AS prod-stage
+
+WORKDIR /question-service
+
+COPY ./package.json ./
+
+RUN yarn install --production
+
+COPY --from=build-stage /question-service/dist .
+
+ENV DB_URI=mongodb+srv://3219group17:3219group17@cluster0.cjyzex1.mongodb.net/?retryWrites=true&w=majority
+ENV ENV=production
+ENV PORT=8003
+
+EXPOSE 8003
+
+CMD ["node", "app.js"]
