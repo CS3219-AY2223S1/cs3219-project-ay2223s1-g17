@@ -20,10 +20,8 @@ app.get('/', (_, res) => {
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
-      'http://localhost:3000',
-    ],
+    origin: '*',
+    methods: ['GET', 'POST'],
   },
 });
 

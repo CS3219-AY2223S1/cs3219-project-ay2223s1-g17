@@ -52,13 +52,13 @@ const ChatPanel: FC<Props> = ({
 
   useEffect(() => {
     if (readOnly) return;
-
-    const sock = io(
-      `localhost:${process.env.NEXT_PUBLIC_COMMUNICATION_SERVICE_PORT}`,
-      {
-        autoConnect: false,
-      }
-    );
+    const url =
+      process.env.NEXT_PUBLIC_ENV === 'production'
+        ? process.env.NEXT_PUBLIC_COMMUNICATION_ENDPOINT
+        : `http://localhost:${process.env.NEXT_PUBLIC_COMMUNICATION_SERVICE_PORT}`;
+    const sock = io(url || '', {
+      autoConnect: false,
+    });
 
     sock.auth = { roomId };
     sock.connect();

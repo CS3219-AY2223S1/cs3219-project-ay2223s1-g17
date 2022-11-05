@@ -12,6 +12,15 @@ type ApiCallOptions = {
   onSuccess?: () => void;
 };
 
+const servicePortMap: Record<SERVICE, number> = {
+  USER: Number(process.env.NEXT_PUBLIC_USER_SERVICE_PORT),
+  MATCHING: Number(process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT),
+  QUESTION: Number(process.env.NEXT_PUBLIC_QUESTION_SERVICE_PORT),
+  COLLABORATION: Number(process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT),
+  HISTORY: Number(process.env.NEXT_PUBLIC_HISTORY_SERVICE_PORT),
+  COMMUNICATION: Number(process.env.NEXT_PUBLIC_COMMUNICATION_SERVICE_PORT),
+};
+
 export const apiCall = async ({
   path,
   service,
@@ -21,6 +30,8 @@ export const apiCall = async ({
   allowError,
   onSuccess,
 }: ApiCallOptions) => {
+  const apiUrl_dev = `http://localhost:${servicePortMap[service]}${path}`;
+
   let baseUrl = '';
   switch (service) {
     case SERVICE.USER:
@@ -44,7 +55,11 @@ export const apiCall = async ({
     default:
   }
 
-  const apiUrl = `http://${baseUrl}${path}`;
+  const apiUrl =
+    process.env.NEXT_PUBLIC_ENV === 'production'
+      ? `${baseUrl}${path}`
+      : apiUrl_dev;
+
   console.log({ apiUrl });
 
   try {

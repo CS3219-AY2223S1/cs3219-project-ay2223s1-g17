@@ -3,40 +3,8 @@ import mongoose from 'mongoose';
 import HttpStatusCode from './httpStatusCode';
 import PeerPrepError from './peerPrepError';
 
-type SuccessfulResponseOptions =
-  | { clearToken: boolean; setToken?: never }
-  | { setToken: string; clearToken?: never };
-
-/**
- * Standardized success handler for all routes
- *
- * @param res Incoming HTTP request
- * @param body Data to be sent back by outgoing HTTP response
- */
-export const successHandler = (
-  res: Response,
-  body?: any,
-  options?: SuccessfulResponseOptions
-) => {
-  if (options?.clearToken) {
-    return res
-      .clearCookie('token')
-      .status(HttpStatusCode.OK)
-      .json(body ?? {});
-  } else if (options?.setToken) {
-    return res
-      .cookie('token', options.setToken, {
-        httpOnly: true,
-        // sameSite: process.env.NODE_ENV === 'test' ? 'lax' : 'none',
-        sameSite: 'lax',
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24,
-      })
-      .status(HttpStatusCode.OK)
-      .json(body ?? {});
-  } else {
-    return res.status(HttpStatusCode.OK).json(body ?? {});
-  }
+export const successHandler = (res: Response, body?: any) => {
+  return res.status(HttpStatusCode.OK).json(body ?? {});
 };
 
 /**
@@ -52,6 +20,15 @@ export const errorHandler = (res: Response, error: unknown) => {
         ? Object.values((error as mongoose.Error.ValidationError).errors).map(
             (val) => val.message
           )
+        : error.name === 'MongoServerError' && (error as any).code == 11000
+        ? Object.entries((error as any).keyValue)[0]
+            .join(' ')
+            .charAt(0)
+            .toUpperCase() +
+          Object.entries((error as any).keyValue)[0]
+            .join(' ')
+            .slice(1) +
+          ' already exists'
         : error.message
       : error;
 

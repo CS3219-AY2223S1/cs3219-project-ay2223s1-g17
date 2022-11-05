@@ -13,7 +13,10 @@ const app: Express = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
+      'http://localhost:3000',
+    ],
   },
 });
 

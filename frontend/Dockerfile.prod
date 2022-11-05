@@ -25,12 +25,13 @@ COPY ./public ./public
 COPY ./styles ./styles
 COPY ./utils ./utils
 
-ENV NEXT_PUBLIC_USER_ENDPOINT=alb-user-1403000661.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_QUESTION_ENDPOINT=alb-question-1460523593.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_MATCHING_ENDPOINT=alb-matching-288815299.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_HISTORY_ENDPOINT=alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_COMMUNICATION_ENDPOINT=alb-comms-1482418122.ap-southeast-1.elb.amazonaws.com
+ENV NEXT_PUBLIC_USER_ENDPOINT=http://alb-user-1403000661.ap-southeast-1.elb.amazonaws.com
+ENV NEXT_PUBLIC_QUESTION_ENDPOINT=http://alb-question-1460523593.ap-southeast-1.elb.amazonaws.com
+ENV NEXT_PUBLIC_MATCHING_ENDPOINT=http://alb-matching-288815299.ap-southeast-1.elb.amazonaws.com
+ENV NEXT_PUBLIC_HISTORY_ENDPOINT=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
+ENV NEXT_PUBLIC_COMMUNICATION_ENDPOINT=http://alb-comms-1482418122.ap-southeast-1.elb.amazonaws.com
 ENV NEXT_PUBLIC_COLLABORATION_ENDPOINT=
+ENV NEXT_PUBLIC_ENV=production
 
 RUN yarn build
 

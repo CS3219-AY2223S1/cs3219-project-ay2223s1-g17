@@ -1,14 +1,5 @@
 FROM node:alpine
 
-WORKDIR /app/backend
-
-COPY ./utils/package.json ./
-COPY ./utils/yarn.lock ./
-
-RUN yarn install
-
-COPY ./utils ./utils
-
 WORKDIR /app/backend/question-service
 
 COPY ./question-service/package.json ./

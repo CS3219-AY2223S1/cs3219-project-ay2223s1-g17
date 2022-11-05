@@ -45,12 +45,13 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const socket = io(
-      `http://localhost:${process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT ?? ''}`,
-      {
-        autoConnect: false,
-      }
-    );
+    const url =
+      process.env.NEXT_PUBLIC_ENV === 'production'
+        ? process.env.NEXT_PUBLIC_MATCHING_ENDPOINT
+        : `http://localhost:${process.env.NEXT_PUBLIC_MATCHING_SERVICE_PORT}`;
+    const socket = io(url || '', {
+      autoConnect: false,
+    });
 
     setSocket(socket);
 

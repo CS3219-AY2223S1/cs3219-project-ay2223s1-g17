@@ -22,7 +22,8 @@ RUN yarn install --production
 COPY --from=build-stage /matching-service/dist .
 
 ENV ENV=production
-ENV PORT=8002
+ENV PORT=8002      
+ENV QUESTION_DIFFICULTY_URL='http://alb-question-1460523593.ap-southeast-1.elb.amazonaws.com/difficulty'
 
 EXPOSE 8002
 

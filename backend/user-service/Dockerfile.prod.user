@@ -21,7 +21,7 @@ RUN yarn install --production
 
 COPY --from=build-stage /user-service/dist .
 
-ENV DB_CLOUD_URI=mongodb+srv://cs3219:cs3219@cluster0.njztvm9.mongodb.net/?retryWrites=true&w=majority
+ENV DB_URI=mongodb+srv://cs3219:cs3219@cluster0.njztvm9.mongodb.net/?retryWrites=true&w=majority
 ENV ENV=production
 ENV PORT=8001
 
