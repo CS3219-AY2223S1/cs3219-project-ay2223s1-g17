@@ -29,8 +29,7 @@ export const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const verifiedUser = await User.findVerifiedUser(username, password);
     const token = verifiedUser.generateJwtToken();
-    console.log(token);
-    successHandler(res, { ...verifiedUser, token });
+    successHandler(res, { ...verifiedUser.toObject(), token });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -90,7 +89,7 @@ export const refreshUserInfoByToken = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
     const user = await User.findUserById(userId);
-    successHandler(res, user);
+    successHandler(res, user.toObject());
   } catch (error) {
     errorHandler(res, error);
   }

@@ -1,11 +1,12 @@
 import { toast } from 'react-toastify';
+import { LOGIN_TIMEOUT_STATUS_CODE } from './constants';
 import { HTTP_METHOD, SERVICE } from './enums';
 
 type ApiCallOptions = {
   path: string;
   service: SERVICE;
   method: HTTP_METHOD;
-  token?: string;
+  token?: string | null;
   body?: Record<string, unknown>;
   allowError?: boolean;
   onSuccess?: () => void;
@@ -37,15 +38,17 @@ export const apiCall = async ({
       credentials: token ? 'include' : undefined,
       headers: {
         ...(body ? { 'Content-Type': 'application/json' } : {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(token != undefined ? { Authorization: `${token}` } : {}),
       },
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
-      if (allowError) return;
+      // override allowance for error if the error is login session expiry
+      if (allowError && res.status !== LOGIN_TIMEOUT_STATUS_CODE) return;
 
       const { error } = await res.json();
+
       return handleErrorWithToast(error);
     }
 

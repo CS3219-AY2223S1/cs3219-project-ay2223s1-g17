@@ -37,7 +37,27 @@ export const authenticate = (
     req.body.userId = (user as JwtPayload)._id;
     next();
   } catch (error) {
-    errorHandler(res, error);
+    const errorName = (error as any).name;
+    switch (errorName) {
+      case 'TokenExpiredError':
+        return errorHandler(
+          res,
+          new PeerPrepError(
+            HttpStatusCode.LOGIN_TIMEOUT,
+            'Your login session has expired, please re-login to continue'
+          )
+        );
+      case 'JsonWebTokenError':
+        return errorHandler(
+          res,
+          new PeerPrepError(
+            HttpStatusCode.UNAUTHORIZED,
+            'Unauthoized, please login to continue'
+          )
+        );
+      default:
+        errorHandler(res, error);
+    }
   }
 };
 
