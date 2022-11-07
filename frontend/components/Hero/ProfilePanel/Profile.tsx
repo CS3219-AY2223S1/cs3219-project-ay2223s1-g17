@@ -6,6 +6,7 @@ import { amber } from '@mui/material/colors';
 import LoadingWrapper from 'components/Loading/LoadingWrapper';
 import { LANGUAGE } from 'utils/enums';
 import { useRouter } from 'next/router';
+import { useMatchingContext } from 'contexts/MatchingContext';
 
 type Props = {
   username: string;
@@ -22,7 +23,9 @@ const Profile: FC<Props> = ({
   dailyStreak,
   isLoading,
 }) => {
+  const { isMatching } = useMatchingContext();
   const router = useRouter();
+
   return (
     <Stack justifyContent="center" width="100%" rowGap={0.5}>
       <LoadingWrapper isLoading={isLoading} custom>
@@ -73,7 +76,11 @@ const Profile: FC<Props> = ({
           >
             {preferredLanguage.toLowerCase()}
             <Tooltip title="Edit your preferred language">
-              <IconButton onClick={() => router.push('/auth')} disableRipple>
+              <IconButton
+                onClick={() => router.push('/auth')}
+                disableRipple
+                disabled={isMatching}
+              >
                 <EditIcon
                   fontSize="small"
                   sx={{

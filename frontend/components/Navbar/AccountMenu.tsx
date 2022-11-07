@@ -7,6 +7,7 @@ import {
   MenuItem,
   useTheme,
 } from '@mui/material';
+import { useMatchingContext } from 'contexts/MatchingContext';
 import React, { FC } from 'react';
 
 type Props = {
@@ -24,6 +25,7 @@ const AccountMenu: FC<Props> = ({
   handleProfile,
   handleLogout,
 }) => {
+  const { isMatching } = useMatchingContext();
   const theme = useTheme();
   return (
     <Menu
@@ -62,11 +64,15 @@ const AccountMenu: FC<Props> = ({
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuItem onClick={handleProfile}>
+      <MenuItem onClick={handleProfile} disabled={isMatching}>
         <Avatar /> Edit Profile
       </MenuItem>
       <Divider />
-      <MenuItem onClick={handleLogout} sx={{ color: theme.palette.error.main }}>
+      <MenuItem
+        onClick={handleLogout}
+        sx={{ color: theme.palette.error.main }}
+        disabled={isMatching}
+      >
         <ListItemIcon>
           <Logout fontSize="small" color="error" />
         </ListItemIcon>
