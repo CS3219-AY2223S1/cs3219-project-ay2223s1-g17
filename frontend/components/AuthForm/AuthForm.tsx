@@ -155,7 +155,7 @@ const AuthForm = () => {
     <>
       <Stack
         spacing={2}
-        sx={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}
+        sx={{ justifyContent: 'center', alignItems: 'center', height: '100%', mt: '4rem' }}
       >
         <form onSubmit={handleSubmit}>
           <Stack
