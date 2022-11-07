@@ -98,7 +98,7 @@ const AuthForm = () => {
         ? await changePreferredLanguage(preferredLanguage, onSuccess)
         : await changePassword(password, newPassword, onSuccess)
       : isLogin
-      ? await login(username, password, onSuccess)
+      ? await login(username, password)
       : await register(username, password, preferredLanguage, onSuccess);
   };
 
