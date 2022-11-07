@@ -13,6 +13,8 @@ RUN yarn build
 
 FROM amd64/node:alpine AS prod-stage
 
+ARG QUESTION_DIFFICULTY_URL
+
 WORKDIR /matching-service
 
 COPY ./package.json ./
@@ -23,7 +25,7 @@ COPY --from=build-stage /matching-service/dist .
 
 ENV ENV=production
 ENV PORT=8002      
-ENV QUESTION_DIFFICULTY_URL='http://alb-question-1460523593.ap-southeast-1.elb.amazonaws.com/difficulty'
+ENV QUESTION_DIFFICULTY_URL=${QUESTION_DIFFICULTY_URL}
 
 EXPOSE 8002
 

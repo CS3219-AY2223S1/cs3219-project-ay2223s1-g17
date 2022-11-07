@@ -13,6 +13,8 @@ RUN yarn build
 
 FROM amd64/node:alpine AS prod-stage
 
+ARG HISTORY_URL
+
 WORKDIR /collaboration-service
 
 COPY ./package.json ./
@@ -23,7 +25,7 @@ COPY --from=build-stage /collaboration-service/dist .
 
 ENV ENV=production
 ENV PORT=8004
-ENV HISTORY_URL=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
+ENV HISTORY_URL=${HISTORY_URL}
 
 EXPOSE 8004
 

@@ -13,6 +13,12 @@ RUN yarn build
 
 FROM amd64/node:alpine AS prod-stage
 
+ARG STATISTICS_CREATION_URL
+ARG HISTORY_URL
+ARG STATISTICS_URL
+ARG JWT_SECRET
+ARG DB_URI
+
 WORKDIR /user-service
 
 COPY ./package.json ./
@@ -21,14 +27,14 @@ RUN yarn install --production
 
 COPY --from=build-stage /user-service/dist .
 
-ENV DB_URI=mongodb+srv://cs3219:cs3219@cluster0.njztvm9.mongodb.net/?retryWrites=true&w=majority
 ENV ENV=production
 ENV PORT=8001
 
-ENV JWT_SECRET=cs3219_cs3219
-ENV HISTORY_URL=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
-ENV STATISTICS_URL=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com/stats
-ENV STATISTICS_CREATION_URL=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com/stats/create
+ENV DB_URI=${DB_URI}
+ENV JWT_SECRET=${JWT_SECRET}
+ENV HISTORY_URL=${HISTORY_URL}
+ENV STATISTICS_URL=${STATISTICS_URL}
+ENV STATISTICS_CREATION_URL=${STATISTICS_CREATION_URL}
 
 EXPOSE 8001
 

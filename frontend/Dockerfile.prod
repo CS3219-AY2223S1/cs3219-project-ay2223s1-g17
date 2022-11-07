@@ -10,8 +10,14 @@ FROM amd64/node:alpine AS builder
 
 WORKDIR /app
 
+ARG USER_URL
+ARG QUESTION_URL
+ARG MATCHING_URL
+ARG HISTORY_URL
+ARG COMMUNICATION_URL
+ARG COLLABORATION_URL
+
 COPY next.config.js ./
-COPY next-env.d.ts ./
 COPY tsconfig.json ./
 COPY package.json yarn.lock ./
 COPY --from=deps /app/node_modules ./node_modules
@@ -25,12 +31,12 @@ COPY ./public ./public
 COPY ./styles ./styles
 COPY ./utils ./utils
 
-ENV NEXT_PUBLIC_USER_ENDPOINT=http://alb-user-1403000661.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_QUESTION_ENDPOINT=http://alb-question-1460523593.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_MATCHING_ENDPOINT=http://alb-matching-288815299.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_HISTORY_ENDPOINT=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_COMMUNICATION_ENDPOINT=http://alb-comms-1482418122.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_COLLABORATION_ENDPOINT=http://alb-collab-639023196.ap-southeast-1.elb.amazonaws.com
+ENV NEXT_PUBLIC_USER_ENDPOINT=${USER_URL}
+ENV NEXT_PUBLIC_QUESTION_ENDPOINT=${QUESTION_URL}
+ENV NEXT_PUBLIC_MATCHING_ENDPOINT=${MATCHING_URL}
+ENV NEXT_PUBLIC_HISTORY_ENDPOINT=${HISTORY_URL}
+ENV NEXT_PUBLIC_COMMUNICATION_ENDPOINT=${COMMUNICATION_URL}
+ENV NEXT_PUBLIC_COLLABORATION_ENDPOINT=${COLLABORATION_URL}
 ENV NEXT_PUBLIC_ENV=production
 
 RUN yarn build
