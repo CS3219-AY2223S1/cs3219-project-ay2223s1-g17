@@ -1,18 +1,9 @@
-import { FC, Dispatch, SetStateAction, ReactNode } from 'react';
-import {
-  Box,
-  Button,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
+import { FC, Dispatch, SetStateAction } from 'react';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { VIEW } from 'utils/enums';
-import CodeIcon from '@mui/icons-material/Code';
-import DescriptionIcon from '@mui/icons-material/Description';
-import ChatIcon from '@mui/icons-material/Chat';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NextQuestionPrompt from './NextQuestionPrompt';
+import ViewSelector from './ViewSelector';
 
 type Props = {
   view: VIEW[];
@@ -39,12 +30,6 @@ const RoomOptions: FC<Props> = ({
   handleReject,
   readOnly,
 }) => {
-  const ViewButtonMap: Record<VIEW, ReactNode> = {
-    QUESTION: <DescriptionIcon />,
-    CHAT: <ChatIcon />,
-    EDITOR: <CodeIcon />,
-  };
-
   const isLastQuestion = questionNumber === maxQuestionNumber;
 
   return (
@@ -72,24 +57,7 @@ const RoomOptions: FC<Props> = ({
         justifyContent="space-between"
         alignItems="center"
       >
-        <ToggleButtonGroup
-          value={view}
-          onChange={(_, newView: VIEW[]) => {
-            setView(newView);
-          }}
-          color="primary"
-        >
-          {Object.values(VIEW).map((viewType) => (
-            <ToggleButton
-              key={viewType}
-              value={viewType}
-              sx={{ display: 'flex', columnGap: 1, alignItems: 'center' }}
-            >
-              {ViewButtonMap[viewType]}
-              <Typography variant="caption">{viewType}</Typography>
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
+        <ViewSelector view={view} setView={setView} />
 
         {readOnly ? (
           <></>

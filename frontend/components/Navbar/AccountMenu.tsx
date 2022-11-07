@@ -5,10 +5,8 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  Typography,
   useTheme,
 } from '@mui/material';
-import useAuth from 'contexts/AuthContext';
 import React, { FC } from 'react';
 
 type Props = {
@@ -27,7 +25,6 @@ const AccountMenu: FC<Props> = ({
   handleLogout,
 }) => {
   const theme = useTheme();
-  const { user } = useAuth();
   return (
     <Menu
       id="account-menu"
@@ -35,6 +32,7 @@ const AccountMenu: FC<Props> = ({
       anchorEl={anchorEl}
       onClose={handleClose}
       onClick={handleClose}
+      disableScrollLock
       PaperProps={{
         elevation: 0,
         sx: {
@@ -65,8 +63,7 @@ const AccountMenu: FC<Props> = ({
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
       <MenuItem onClick={handleProfile}>
-        <Avatar src={`data:image/svg+xml;base64,${user?.avatarImage}`} /> Edit
-        Profile
+        <Avatar /> Edit Profile
       </MenuItem>
       <Divider />
       <MenuItem onClick={handleLogout} sx={{ color: theme.palette.error.main }}>

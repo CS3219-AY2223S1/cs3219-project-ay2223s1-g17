@@ -60,8 +60,6 @@ export const apiCall = async ({
       ? `${baseUrl}${path}`
       : apiUrl_dev;
 
-  console.log({ apiUrl });
-
   try {
     const res = await fetch(apiUrl, {
       method,
@@ -72,13 +70,12 @@ export const apiCall = async ({
       },
       body: JSON.stringify(body),
     });
-    console.log({ res });
 
     if (!res.ok) {
       // override allowance for error if the error is login session expiry
       if (
         allowError &&
-        (res.status !== LOGIN_TIMEOUT_STATUS_CODE ||
+        (res.status !== LOGIN_TIMEOUT_STATUS_CODE || // if token is already deleted then continue to allow error
           !localStorage.getItem(JWT_TOKEN_KEY))
       )
         return;

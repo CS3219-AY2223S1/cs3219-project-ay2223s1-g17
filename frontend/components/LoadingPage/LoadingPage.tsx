@@ -4,7 +4,7 @@ import React from 'react';
 
 const LoadingPage = () => {
   return (
-    <PageWrapper whiteBackground>
+    <PageWrapper whiteBackground fixedHeight>
       <Stack
         sx={{
           width: '100%',

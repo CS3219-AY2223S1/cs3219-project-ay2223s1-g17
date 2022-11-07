@@ -18,7 +18,7 @@ const PageWrapper: FC<Props> = ({
   return (
     <Box
       sx={{
-        height: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`,
+        minHeight: `calc(100vh - ${NAVBAR_HEIGHT_PX}px)`,
         backgroundColor: whiteBackground ? 'white' : '#f7f8fa',
         position: 'absolute',
         top: `${NAVBAR_HEIGHT_PX}px`,

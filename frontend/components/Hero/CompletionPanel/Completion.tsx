@@ -1,7 +1,6 @@
 import {
   Box,
   LinearProgress,
-  Skeleton,
   Stack,
   Typography,
   useTheme,

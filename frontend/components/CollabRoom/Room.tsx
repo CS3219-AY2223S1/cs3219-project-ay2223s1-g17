@@ -74,7 +74,7 @@ const Room: FC<Props> = ({
     if (router.asPath === '/room' && roomId === undefined) {
       router.push('/');
     }
-  }, [roomId]);
+  }, [roomId, router]);
 
   const editorContent = readOnly
     ? readOnlyEditorContent

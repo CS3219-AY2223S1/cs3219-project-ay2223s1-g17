@@ -139,7 +139,7 @@ const Navbar = () => {
           </>
         ) : (
           <NavbarOption
-            onClick={() => router.push('/auth')}
+            onClick={() => router.push('/auth?mode=login')}
             label="Login"
             icon={<Login />}
             styles={{
