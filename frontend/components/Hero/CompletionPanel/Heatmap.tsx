@@ -113,7 +113,7 @@ const Heatmap: FC<Props> = ({
                           item
                           key={`${monthLabel}-${dayIndex}`}
                           sx={{
-                            width: '9px',
+                            width: { xs: '7px', lg: '9px' },
                             aspectRatio: '1/1',
                             display: 'flex',
                             justifyContent: 'center',

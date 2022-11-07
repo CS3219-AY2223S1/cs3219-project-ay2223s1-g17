@@ -46,16 +46,29 @@ const LanguageUsage: FC<Props> = ({ languagesUsed, isLoading }) => {
                   />
                   <Stack
                     flexDirection="row"
-                    columnGap={0.5}
+                    columnGap={{ xs: 0.125, lg: 0.5 }}
                     alignItems="center"
                   >
-                    <Typography fontWeight="bold" variant="subtitle1">
+                    <Typography
+                      fontWeight="light"
+                      color="secondary.dark"
+                      variant="caption"
+                      display={{ xs: 'inline-block', lg: 'none' }}
+                    >
+                      x
+                    </Typography>
+                    <Typography
+                      fontWeight="bold"
+                      variant="subtitle1"
+                      pb={{ xs: 0.25, lg: 0 }}
+                    >
                       {count}
                     </Typography>
                     <Typography
                       fontWeight="light"
                       variant="body2"
                       color="secondary.light"
+                      display={{ xs: 'none', lg: 'inline-block' }}
                     >
                       questions completed
                     </Typography>
