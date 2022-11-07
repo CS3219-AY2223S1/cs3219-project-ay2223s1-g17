@@ -1,6 +1,8 @@
 import express, { Express } from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
+import cors from 'cors';
+
 import {
   onTimerStop,
   registerStopwatchHandler,
@@ -9,14 +11,16 @@ import axios from 'axios';
 import * as redis from 'redis';
 
 const app: Express = express();
+app.use(cors());
+
+app.get('/', (_, res) => {
+  res.send('<h1>Hello world from collab service</h1>');
+});
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
-      'http://localhost:3000',
-    ],
+    origin: '*',
   },
 });
 
@@ -39,7 +43,7 @@ io.on('connection', async (socket: ISocket) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const roomId = socket.roomId!;
   socket.join(roomId);
-  const host = `${process.env.REDIS_HOST ?? 'redis'}`;
+  const host = `${process.env.REDIS_HOST ?? 'localhost'}`;
   const redisClient = redis.createClient({
     socket: {
       host,

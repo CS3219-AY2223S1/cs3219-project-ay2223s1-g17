@@ -27,4 +27,4 @@ ENV HISTORY_URL=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
 
 EXPOSE 8004
 
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]

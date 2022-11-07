@@ -30,7 +30,7 @@ ENV NEXT_PUBLIC_QUESTION_ENDPOINT=http://alb-question-1460523593.ap-southeast-1.
 ENV NEXT_PUBLIC_MATCHING_ENDPOINT=http://alb-matching-288815299.ap-southeast-1.elb.amazonaws.com
 ENV NEXT_PUBLIC_HISTORY_ENDPOINT=http://alb-history-1252952845.ap-southeast-1.elb.amazonaws.com
 ENV NEXT_PUBLIC_COMMUNICATION_ENDPOINT=http://alb-comms-1482418122.ap-southeast-1.elb.amazonaws.com
-ENV NEXT_PUBLIC_COLLABORATION_ENDPOINT=
+ENV NEXT_PUBLIC_COLLABORATION_ENDPOINT=http://alb-collab-639023196.ap-southeast-1.elb.amazonaws.com
 ENV NEXT_PUBLIC_ENV=production
 
 RUN yarn build
