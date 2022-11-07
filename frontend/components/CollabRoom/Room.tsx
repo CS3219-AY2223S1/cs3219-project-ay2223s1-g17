@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import { editor } from 'monaco-editor';
+import useCollab from 'contexts/CollabContext';
 
 export type View = {
   showQuestion: boolean;
@@ -42,6 +43,7 @@ const Room: FC<Props> = ({
   isLoading,
 }) => {
   const { roomId, endSession } = useMatchingContext();
+  const { handleStop } = useCollab();
   const { user } = useAuth();
   const router = useRouter();
 
@@ -210,6 +212,7 @@ const Room: FC<Props> = ({
 
       if (questionNumber >= questions.length - 1) {
         endSession();
+        handleStop();
       }
     });
 
