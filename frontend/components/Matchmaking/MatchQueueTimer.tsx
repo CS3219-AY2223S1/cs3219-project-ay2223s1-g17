@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useMatchingContext } from 'contexts/MatchingContext';
 import TimeDisplay from './TimeDisplay';
@@ -16,9 +16,11 @@ const MatchQueueTimer = () => {
         </Stack>
         <TimeDisplay count={count ?? 0} />
       </Stack>
-      <IconButton onClick={stopQueuing}>
-        <CloseIcon color="error" />
-      </IconButton>
+      <Tooltip title="Cancel matchmaking">
+        <IconButton onClick={stopQueuing}>
+          <CloseIcon color="error" />
+        </IconButton>
+      </Tooltip>
     </Stack>
   );
 };
