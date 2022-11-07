@@ -1,5 +1,12 @@
 import { Logout } from '@mui/icons-material';
-import { Divider, ListItemIcon, Menu, MenuItem, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Divider,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  useTheme,
+} from '@mui/material';
 import React, { FC } from 'react';
 
 type Props = {
@@ -54,7 +61,9 @@ const AccountMenu: FC<Props> = ({
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuItem onClick={handleProfile}>Edit Profile</MenuItem>
+      <MenuItem onClick={handleProfile}>
+        <Avatar /> Edit Profile
+      </MenuItem>
       <Divider />
       <MenuItem onClick={handleLogout} sx={{ color: theme.palette.error.main }}>
         <ListItemIcon>
