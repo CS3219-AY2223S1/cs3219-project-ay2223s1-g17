@@ -11,59 +11,54 @@ import { io, Socket } from 'socket.io-client';
 
 import { useMatchingContext } from 'contexts/MatchingContext';
 
+type Time = {
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
 type Timer = {
   time: Time;
   isActive: boolean;
   isPaused: boolean;
 };
 
-export type Time = {
-  hours: number;
-  minutes: number;
-  seconds: number;
+const initialTime: Time = { seconds: 0, minutes: 0, hours: 0 };
+const initialTimer: Timer = {
+  time: initialTime,
+  isActive: false,
+  isPaused: false,
 };
 
 interface ICollabContext {
   isActive: boolean;
-  time: Time;
   isPaused: boolean;
+  isLoading: boolean;
+  time: Time;
   handleStop: () => void;
   handlePause: () => void;
   handleResume: () => void;
   handleStart: () => void;
-  isLoading: boolean;
 }
 
 const CollabContext = createContext<ICollabContext>({
   isActive: false,
-  time: { seconds: 0, minutes: 0, hours: 0 },
   isPaused: false,
+  isLoading: false,
+  time: initialTime,
   handleStop: () => {},
   handleResume: () => {},
   handlePause: () => {},
   handleStart: () => {},
-  isLoading: false,
 });
 
 export const CollabProvider = ({ children }: { children: ReactNode }) => {
   const { roomId } = useMatchingContext();
 
-  const initialTime: Time = { seconds: 0, minutes: 0, hours: 0 };
   const [socket, setSocket] = useState<Socket>();
-  const [timer, setTimer] = useState<Timer>({
-    time: initialTime,
-    isActive: false,
-    isPaused: false,
-  });
+  const [timer, setTimer] = useState<Timer>(initialTimer);
   const [isLoading, setIsLoading] = useState(false);
   const { time, isActive, isPaused } = timer;
-
-  const timerLoad = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
 
   useEffect(() => {
     const url =
@@ -75,24 +70,33 @@ export const CollabProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (!roomId) return;
-
-    sock.Collab = { roomId };
+    console.log('ue: ', roomId);
+    sock.auth = { roomId };
     sock.connect();
     setSocket(sock);
 
     sock.on('timerTick', (newTimer: Timer) => {
+      console.log('tick');
       setTimer(newTimer);
     });
 
-    sock.on('timerLoad', () => timerLoad());
+    sock.on('timerLoad', () => {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    });
 
     return () => {
+      setIsLoading(false);
+      setTimer(initialTimer);
       sock.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   const handleStart = () => {
+    console.log('timer started', roomId, socket);
     socket?.emit('timerStart');
   };
 
@@ -111,16 +115,16 @@ export const CollabProvider = ({ children }: { children: ReactNode }) => {
   const memoedValue = useMemo(
     () => ({
       isActive,
-      time,
       isPaused,
+      isLoading,
+      time,
       handleStop,
       handlePause,
       handleResume,
       handleStart,
-      isLoading,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isLoading]
+    [isActive, isPaused, isLoading, time, socket, roomId]
   );
 
   return (

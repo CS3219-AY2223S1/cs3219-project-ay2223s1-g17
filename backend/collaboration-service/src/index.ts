@@ -3,10 +3,7 @@ import { Server, Socket } from 'socket.io';
 import http from 'http';
 import cors from 'cors';
 
-import {
-  onTimerStop,
-  registerStopwatchHandler,
-} from './socketHandler/stopwatchHandler';
+import { registerStopwatchHandler } from './socketHandler/stopwatchHandler';
 import axios from 'axios';
 import * as redis from 'redis';
 
@@ -42,7 +39,6 @@ io.use((socket: ISocket, next) => {
 io.on('connection', async (socket: ISocket) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const roomId = socket.roomId!;
-  socket.join(roomId);
   const host = `${process.env.REDIS_HOST ?? 'localhost'}`;
   const redisClient = redis.createClient({
     socket: {
@@ -50,6 +46,7 @@ io.on('connection', async (socket: ISocket) => {
     },
   });
   await redisClient.connect();
+  socket.join(roomId);
 
   socket.on('editorChange', (event) => {
     socket.to(roomId).emit('editorChange', event);
@@ -72,7 +69,6 @@ io.on('connection', async (socket: ISocket) => {
       return;
     }
 
-    onTimerStop(io, socket, roomId);
     users.push(history.user);
     delete history.user;
     const { status, data } = await axios.post(`${process.env.HISTORY_URL}`, {

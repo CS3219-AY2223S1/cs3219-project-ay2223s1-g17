@@ -17,13 +17,13 @@ const Stopwatch = () => {
   const { roomId } = useMatchingContext();
   const {
     isActive,
-    time,
     isPaused,
+    isLoading,
+    time,
     handleStop,
     handlePause,
     handleResume,
     handleStart,
-    isLoading,
   } = useCollab();
 
   return isActive ? (

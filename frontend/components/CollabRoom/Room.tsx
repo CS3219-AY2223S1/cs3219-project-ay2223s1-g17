@@ -18,6 +18,7 @@ import { io, Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import { editor } from 'monaco-editor';
 import useCollab from 'contexts/CollabContext';
+import LoadingPage from 'components/LoadingPage/LoadingPage';
 
 export type View = {
   showQuestion: boolean;
@@ -67,6 +68,7 @@ const Room: FC<Props> = ({
   );
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const [isEnding, setIsEnding] = useState(false);
 
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
@@ -209,10 +211,14 @@ const Room: FC<Props> = ({
       resetConfirmations();
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
+      handleStop();
 
       if (questionNumber >= questions.length - 1) {
-        endSession();
-        handleStop();
+        setIsEnding(true);
+        setTimeout(() => {
+          endSession();
+          setIsEnding(false);
+        }, 1500);
       }
     });
 
@@ -326,6 +332,8 @@ const Room: FC<Props> = ({
       horizontalResizer.removeEventListener('mousedown', mouseDownYHandler);
     };
   }, []);
+
+  if (isEnding) return <LoadingPage />;
 
   return (
     <Box sx={{ cursor }}>
