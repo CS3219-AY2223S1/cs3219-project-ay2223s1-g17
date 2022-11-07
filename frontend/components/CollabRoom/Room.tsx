@@ -208,7 +208,9 @@ const Room: FC<Props> = ({
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
 
-      if (questionNumber >= questions.length - 1) endSession();
+      if (questionNumber >= questions.length - 1) {
+        endSession();
+      }
     });
 
     sock.on('error', (error) => {
