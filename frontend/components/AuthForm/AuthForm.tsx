@@ -32,6 +32,7 @@ import { toast } from 'react-toastify';
 import { LANGUAGE } from 'utils/enums';
 import { handleErrorWithToast } from 'utils/helpers';
 import DeleteAccountPrompt from './DeleteAccountPrompt';
+import { useMatchingContext } from 'contexts/MatchingContext';
 
 const AuthForm = () => {
   const {
@@ -42,6 +43,7 @@ const AuthForm = () => {
     changePreferredLanguage,
     deleteAccount,
   } = useAuth();
+  const { isMatching } = useMatchingContext();
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -96,7 +98,9 @@ const AuthForm = () => {
       return handleErrorWithToast('Passwords do not match');
 
     user
-      ? isChangePreferredLanguage
+      ? isMatching
+        ? toast.error('Cannot edit profile while in matching queue')
+        : isChangePreferredLanguage
         ? await changePreferredLanguage(preferredLanguage, onSuccess)
         : await changePassword(password, newPassword, onSuccess)
       : isLogin
