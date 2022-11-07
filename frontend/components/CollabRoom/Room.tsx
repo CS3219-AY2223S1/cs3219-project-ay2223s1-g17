@@ -41,7 +41,7 @@ const Room: FC<Props> = ({
   readOnlyEditorContent,
   isLoading,
 }) => {
-  const { roomId, leaveRoom } = useMatchingContext();
+  const { roomId, endSession } = useMatchingContext();
   const { user } = useAuth();
   const router = useRouter();
 
@@ -208,7 +208,7 @@ const Room: FC<Props> = ({
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
 
-      if (questionNumber >= questions.length - 1) leaveRoom();
+      if (questionNumber >= questions.length - 1) endSession();
     });
 
     sock.on('error', (error) => {

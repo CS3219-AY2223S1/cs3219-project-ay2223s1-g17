@@ -33,7 +33,7 @@ export type InputOutput = typeof io;
 io.use((socket: ISocket, next) => {
   const roomId = socket.handshake.auth.roomId;
   if (!roomId) {
-    return console.log('ERROR: no room ID!');
+    return;
   }
   socket.roomId = roomId;
   next();
