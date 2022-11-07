@@ -1,14 +1,5 @@
 import { Logout } from '@mui/icons-material';
-import {
-  Avatar,
-  Divider,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Typography,
-  useTheme,
-} from '@mui/material';
-import useAuth from 'contexts/AuthContext';
+import { Divider, ListItemIcon, Menu, MenuItem, useTheme } from '@mui/material';
 import React, { FC } from 'react';
 
 type Props = {
@@ -27,7 +18,6 @@ const AccountMenu: FC<Props> = ({
   handleLogout,
 }) => {
   const theme = useTheme();
-  const { user } = useAuth();
   return (
     <Menu
       id="account-menu"
@@ -64,10 +54,7 @@ const AccountMenu: FC<Props> = ({
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuItem onClick={handleProfile}>
-        <Avatar src={`data:image/svg+xml;base64,${user?.avatarImage}`} /> Edit
-        Profile
-      </MenuItem>
+      <MenuItem onClick={handleProfile}>Edit Profile</MenuItem>
       <Divider />
       <MenuItem onClick={handleLogout} sx={{ color: theme.palette.error.main }}>
         <ListItemIcon>
