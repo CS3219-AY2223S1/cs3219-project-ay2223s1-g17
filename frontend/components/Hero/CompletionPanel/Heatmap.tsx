@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Tooltip, Typography } from '@mui/material';
 import LoadingWrapper from 'components/Loading/LoadingWrapper';
 
 type Props = {
@@ -107,27 +107,41 @@ const Heatmap: FC<Props> = ({
                       const completedQuestionsToday = emptyDay
                         ? 0
                         : completedQuestionsByDay?.[String(++dayCounter)] ?? 0;
+                      const dayString = new Date(
+                        thisYear,
+                        0,
+                        dayCounter + 1
+                      ).toLocaleDateString('en-sg', {
+                        month: 'short',
+                        day: '2-digit',
+                      });
+                      const dayLabel = `${completedQuestionsToday} submissions on ${dayString}`;
 
                       return (
-                        <Grid
-                          item
+                        <Tooltip
                           key={`${monthLabel}-${dayIndex}`}
-                          sx={{
-                            width: { xs: '7px', lg: '9px' },
-                            aspectRatio: '1/1',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: '2px',
-                            bgcolor: emptyDay
-                              ? 'white'
-                              : completedQuestionsToday
-                              ? completionGreenPalette[
-                                  Math.min(10, completedQuestionsToday)
-                                ]
-                              : 'rgba(0,0,0,0.05)',
-                          }}
-                        />
+                          title={dayLabel}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <Grid
+                            item
+                            sx={{
+                              width: { xs: '7px', lg: '9px' },
+                              aspectRatio: '1/1',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: '2px',
+                              bgcolor: emptyDay
+                                ? 'white'
+                                : completedQuestionsToday
+                                ? completionGreenPalette[
+                                    Math.min(10, completedQuestionsToday)
+                                  ]
+                                : 'rgba(0,0,0,0.05)',
+                            }}
+                          />
+                        </Tooltip>
                       );
                     }
                   )}
