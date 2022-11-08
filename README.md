@@ -8,7 +8,7 @@
 
 1. Clone git repository
 
-Open your terminal and clone the frontend repository into a directory of your choice.
+Open your terminal and clone this repository into a directory of your choice.
 ```
 cd <path to directory of choice>
 git clone https://github.com/CS3219-AY2223S1/cs3219-project-ay2223s1-g17.git
