@@ -1,4 +1,6 @@
+import axios from 'axios';
 import mongoose from 'mongoose';
+import { HttpStatusCode, PeerPrepError } from '../utils';
 import { IHistory, IHistoryModel } from './history.types';
 import Statistics from './statistics.model';
 
@@ -90,6 +92,36 @@ historySchema.static(
     if (!history) throw new Error(`History record ${id} not found`);
 
     return history;
+  }
+);
+
+historySchema.static(
+  'findCompleteHistoryById',
+  /**
+   * Attempts to find a History record by ID along with question data
+   *
+   * @param id id of a History record
+   */
+  async function findCompleteHistoryById(id: string) {
+    if (!id) throw new Error('History id is required');
+
+    const history = (await History.findById(id))?.toObject();
+    if (!history) throw new Error(`History record ${id} not found`);
+
+    const { status, data } = await axios.get(
+      `${process.env.QUESTION_URL}/${history.question.id}`
+    );
+    if (status !== HttpStatusCode.OK) throw new PeerPrepError(status, data);
+
+    const { question: incompleteQuestion, ...incompleteHistory } = history;
+    const { _id, __v, ...completeQuestion } = data;
+    const completeHistory = {
+      ...incompleteHistory,
+      question: completeQuestion,
+    };
+
+    console.log(completeHistory);
+    return completeHistory;
   }
 );
 

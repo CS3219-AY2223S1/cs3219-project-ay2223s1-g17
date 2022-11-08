@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import {
   addHistory,
   deleteHistoryForUser,
+  getCompleteHistoryById,
   getHistoryById,
   getHistoryForUser,
 } from '../controller';
@@ -20,6 +21,8 @@ router
   .post(addHistory);
 
 router.route('/:id').get(getHistoryById);
+
+router.route('/complete/:id').get(getCompleteHistoryById);
 
 router
   .route('/history/:userId')
