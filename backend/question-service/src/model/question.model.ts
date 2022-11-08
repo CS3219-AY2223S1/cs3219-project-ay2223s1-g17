@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { DIFFICULTY, LANGUAGE, TOPIC } from '../utils';
 import { QUESTIONS } from '../data';
+import { DIFFICULTY, LANGUAGE, TOPIC } from '../utils';
 import {
   FormattedQuestionDocument,
   IQuestion,
@@ -71,6 +71,39 @@ const questionSchema = new mongoose.Schema<IQuestion, IQuestionModel>({
 const getQuestionsCount = async () => {
   return await Question.countDocuments();
 };
+
+questionSchema.static(
+  'findNumberOfQuestionsByDifficulty',
+  /**
+   * Gets number of documents in Question collection by difficulty
+   *
+   * @returns An array of objects consisting of difficulty and number of questions
+   */
+  async function findNumberOfQuestionsByDifficulty() {
+    const count = await getQuestionsCount();
+
+    if (count === 0) throw new Error('No question found, seed questions');
+
+    const difficultyCountArray = await Promise.all(
+      Object.keys(DIFFICULTY).map(async (difficulty) => {
+        const difficultyCount = await Question.countDocuments({
+          difficulty: difficulty,
+        });
+
+        const tempObj = {
+          difficulty,
+          count: difficultyCount,
+        };
+
+        return tempObj;
+      })
+    );
+
+    console.log(`>>> ${JSON.stringify(difficultyCountArray)}`);
+
+    return difficultyCountArray;
+  }
+);
 
 questionSchema.static(
   'findQuestionsByDifficulty',
