@@ -6,15 +6,12 @@ import express, { Express } from 'express';
 import router from './routes';
 import mongoose from 'mongoose';
 
-const port = process.env.PORT || '8001';
+const port = process.env.PORT || 8001;
 // initialize express app
 const app: Express = express();
 
 // set up default mongoose connection
-const mongoDbUrl =
-  process.env.ENV === 'production'
-    ? process.env.DB_CLOUD_URI
-    : process.env.DB_LOCAL_URI;
+const mongoDbUrl = process.env.DB_URI;
 
 mongoose.connect(mongoDbUrl ?? '');
 
@@ -24,12 +21,18 @@ database.on('error', console.error.bind(console, 'MongoDB Connection Error: '));
 // middleware
 // TODO: add hosted frontend domain here
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = [
+  'http://alb-peerprep-2137662650.ap-southeast-1.elb.amazonaws.com',
+  'http://localhost:3000',
+];
 // only allows requests coming in from allowed origins
 app.use(
   cors({
     credentials: true,
+    // origin: true,
     origin: function (origin, callback) {
+      console.log(origin);
+      console.log({ origin });
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         const msg =
@@ -53,9 +56,15 @@ app.use(
   })
 );
 
+app.get('/service-status', (req, res) => {
+  res.json({
+    user_service: 'OK',
+  });
+});
+
 // routes
 app.use('/', router);
 
 app.listen(port, () => {
-  console.log(`Server is running at https://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });

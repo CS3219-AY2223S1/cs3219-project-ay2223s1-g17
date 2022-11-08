@@ -1,0 +1,32 @@
+FROM amd64/node:alpine AS build-stage
+
+WORKDIR /collaboration-service
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+FROM amd64/node:alpine AS prod-stage
+
+ARG HISTORY_URL
+
+WORKDIR /collaboration-service
+
+COPY ./package.json ./
+
+RUN yarn install --production
+
+COPY --from=build-stage /collaboration-service/dist .
+
+ENV ENV=production
+ENV PORT=8004
+ENV HISTORY_URL=${HISTORY_URL}
+
+EXPOSE 8004
+
+CMD ["node", "index.js"]

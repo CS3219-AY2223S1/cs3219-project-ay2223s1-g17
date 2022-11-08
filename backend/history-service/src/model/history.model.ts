@@ -1,5 +1,8 @@
+import axios from 'axios';
 import mongoose from 'mongoose';
+import { HttpStatusCode, PeerPrepError } from '../utils';
 import { IHistory, IHistoryModel } from './history.types';
+import Statistics from './statistics.model';
 
 const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
   {
@@ -7,11 +10,29 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
       type: String,
       required: true,
     },
-    questionId: {
+    otherUser: {
       type: String,
       required: true,
     },
+    question: {
+      type: {
+        title: {
+          type: String,
+        },
+        difficulty: {
+          type: String,
+        },
+        id: {
+          type: String,
+        },
+      },
+      required: true,
+    },
     code: {
+      type: String,
+      required: true,
+    },
+    language: {
       type: String,
       required: true,
     },
@@ -34,9 +55,6 @@ const historySchema = new mongoose.Schema<IHistory, IHistoryModel>(
             type: String,
             required: true,
           },
-          isConsecutive: {
-            type: Boolean,
-          },
         },
       ],
     },
@@ -55,9 +73,7 @@ historySchema.static(
   async function saveHistory(history: IHistory) {
     if (!history) throw new Error('History data is required');
 
-    const res = await History.create(history);
-
-    return { id: res._id };
+    await History.create(history);
   }
 );
 
@@ -76,6 +92,65 @@ historySchema.static(
     if (!history) throw new Error(`History record ${id} not found`);
 
     return history;
+  }
+);
+
+historySchema.static(
+  'findCompleteHistoryById',
+  /**
+   * Attempts to find a History record by ID along with question data
+   *
+   * @param id id of a History record
+   */
+  async function findCompleteHistoryById(id: string) {
+    if (!id) throw new Error('History id is required');
+
+    const history = (await History.findById(id))?.toObject();
+    if (!history) throw new Error(`History record ${id} not found`);
+
+    const { status, data } = await axios.get(
+      `${process.env.QUESTION_URL}/${history.question.id}`
+    );
+    if (status !== HttpStatusCode.OK) throw new PeerPrepError(status, data);
+
+    const { question: incompleteQuestion, ...incompleteHistory } = history;
+    const { _id, __v, ...completeQuestion } = data;
+    const completeHistory = {
+      ...incompleteHistory,
+      question: completeQuestion,
+    };
+
+    console.log(completeHistory);
+    return completeHistory;
+  }
+);
+
+historySchema.static(
+  'findHistoryByUser',
+  /**
+   * Attempts to find a History records by user id
+   *
+   * @param userId id of user
+   */
+  async function findHistoryById(userId: string) {
+    if (!userId) throw new Error('User id is required');
+
+    return History.find({ user: userId }).sort({ createdAt: 'desc' });
+  }
+);
+
+historySchema.static(
+  'deleteHistoryByUser',
+  /**
+   * Attempts to delete History records by user id
+   *
+   * @param userId id of user
+   */
+  async function findHistoryById(userId: string) {
+    if (!userId) throw new Error('User id is required');
+
+    await History.deleteMany({ user: userId });
+    await Statistics.deleteOne({ user: userId });
   }
 );
 

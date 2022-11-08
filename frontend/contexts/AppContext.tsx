@@ -1,11 +1,14 @@
 import { MatchingProvider } from 'contexts/MatchingContext';
 import { AuthProvider } from 'contexts/AuthContext';
 import { ReactNode } from 'react';
+import { StopwatchProvider } from './CollabContext';
 
 const AppContext = ({ children }: { children: ReactNode }) => {
   return (
     <AuthProvider>
-      <MatchingProvider>{children}</MatchingProvider>
+      <MatchingProvider>
+        <StopwatchProvider>{children}</StopwatchProvider>
+      </MatchingProvider>
     </AuthProvider>
   );
 };

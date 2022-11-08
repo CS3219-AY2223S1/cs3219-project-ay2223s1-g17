@@ -1,0 +1,32 @@
+FROM amd64/node:alpine AS build-stage
+
+WORKDIR /matching-service
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+FROM amd64/node:alpine AS prod-stage
+
+ARG QUESTION_DIFFICULTY_URL
+
+WORKDIR /matching-service
+
+COPY ./package.json ./
+
+RUN yarn install --production
+
+COPY --from=build-stage /matching-service/dist .
+
+ENV ENV=production
+ENV PORT=8002      
+ENV QUESTION_DIFFICULTY_URL=${QUESTION_DIFFICULTY_URL}
+
+EXPOSE 8002
+
+CMD ["node", "index.js"]

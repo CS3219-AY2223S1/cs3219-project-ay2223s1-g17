@@ -1,0 +1,35 @@
+FROM amd64/node:alpine AS build-stage
+
+WORKDIR /history-service
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+FROM amd64/node:alpine AS prod-stage
+
+ARG DB_URI
+ARG QUESTION_URL
+
+WORKDIR /history-service
+
+COPY ./package.json ./
+
+RUN yarn install --production
+
+COPY --from=build-stage /history-service/dist .
+
+ENV QUESTION_URL=${QUESTION_URL}
+ENV DB_URI=${DB_URI}
+
+ENV ENV=production
+ENV PORT=8005
+
+EXPOSE 8005
+
+CMD ["node", "app.js"]

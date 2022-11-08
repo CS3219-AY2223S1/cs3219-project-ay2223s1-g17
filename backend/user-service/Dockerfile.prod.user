@@ -1,0 +1,41 @@
+FROM amd64/node:alpine AS build-stage
+
+WORKDIR /user-service
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+FROM amd64/node:alpine AS prod-stage
+
+ARG STATISTICS_CREATION_URL
+ARG HISTORY_URL
+ARG STATISTICS_URL
+ARG JWT_SECRET
+ARG DB_URI
+
+WORKDIR /user-service
+
+COPY ./package.json ./
+
+RUN yarn install --production
+
+COPY --from=build-stage /user-service/dist .
+
+ENV ENV=production
+ENV PORT=8001
+
+ENV DB_URI=${DB_URI}
+ENV JWT_SECRET=${JWT_SECRET}
+ENV HISTORY_URL=${HISTORY_URL}
+ENV STATISTICS_URL=${STATISTICS_URL}
+ENV STATISTICS_CREATION_URL=${STATISTICS_CREATION_URL}
+
+EXPOSE 8001
+
+CMD ["node", "app.js"]

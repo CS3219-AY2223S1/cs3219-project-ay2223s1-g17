@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "license": "ISC",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,6 +15,7 @@
     "@monaco-editor/react": "^4.4.5",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.3",
+    "@tanstack/react-query": "^4.13.0",
     "monaco-editor": "^0.34.0",
     "next": "12.2.5",
     "react": "18.2.0",

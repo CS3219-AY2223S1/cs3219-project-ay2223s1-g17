@@ -1,101 +1,45 @@
-import { Stack, Typography, Button, ButtonGroup } from '@mui/material';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
-import { useMatchingContext } from 'contexts/MatchingContext';
-import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-
-type Timer = {
-  time: Time;
-  isActive: boolean;
-  isPaused: boolean;
-};
-
-export type Time = {
-  hours: number;
-  minutes: number;
-  seconds: number;
-};
+import {
+  Button,
+  ButtonGroup,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import useStopwatch from 'contexts/CollabContext';
+import { useMatching } from 'contexts/MatchingContext';
 
 const Stopwatch = () => {
-  const { roomId } = useMatchingContext();
-
-  const initialTime: Time = { seconds: 0, minutes: 0, hours: 0 };
-  const [socket, setSocket] = useState<Socket>();
-  const [timer, setTimer] = useState<Timer>({
-    time: initialTime,
-    isActive: false,
-    isPaused: false,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const { time, isActive, isPaused } = timer;
-
-  const timerLoad = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    const sock = io(
-      `localhost:${process.env.NEXT_PUBLIC_COLLABORATION_SERVICE_PORT}`,
-      {
-        autoConnect: false,
-      }
-    );
-
-    if (!roomId) {
-      alert('Room not found, redirecting');
-      window.location.replace('/');
-    }
-
-    sock.auth = { roomId };
-    sock.connect();
-    setSocket(sock);
-
-    sock.on('timerTick', (newTimer: Timer) => {
-      setTimer(newTimer);
-    });
-
-    sock.on('timerLoad', () => timerLoad());
-
-    return () => {
-      sock.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleStart = () => {
-    socket?.emit('timerStart');
-  };
-
-  const handleStop = () => {
-    socket?.emit('timerStop');
-  };
-
-  const handlePause = () => {
-    socket?.emit('timerPause');
-  };
-
-  const handleResume = () => {
-    socket?.emit('timerResume');
-  };
+  const { roomId } = useMatching();
+  const {
+    isActive,
+    isPaused,
+    isLoading,
+    time,
+    handleStop,
+    handlePause,
+    handleResume,
+    handleStart,
+  } = useStopwatch();
 
   return isActive ? (
     <Stack
-      sx={{ color: 'black', columnGap: 1 }}
+      sx={{ color: 'black', columnGap: 1, display: roomId ? 'flex' : 'none' }}
       flexDirection="row"
       alignItems="center"
     >
-      <ButtonGroup variant="outlined">
+      <ButtonGroup variant="outlined" size="small">
         <Button
           disabled
           sx={{
             color: 'black !important',
             backgroundColor: 'white !important',
           }}
+          size="small"
         >
           <Typography
             sx={{
@@ -111,18 +55,30 @@ const Stopwatch = () => {
         <Button
           onClick={isPaused ? handleResume : handlePause}
           disabled={isLoading}
+          size="small"
         >
           {isPaused ? <PlayArrowIcon /> : <PauseIcon />}
         </Button>
-        <Button onClick={handleStop} color="error" disabled={isLoading}>
+        <Button
+          onClick={handleStop}
+          color="error"
+          disabled={isLoading}
+          size="small"
+        >
           <StopIcon />
         </Button>
       </ButtonGroup>
     </Stack>
   ) : (
-    <Button variant="outlined" onClick={handleStart} disabled={isLoading}>
-      Start Timer
-    </Button>
+    <Tooltip title="Start Timer">
+      <IconButton
+        onClick={handleStart}
+        disabled={isLoading}
+        sx={{ display: roomId ? 'flex' : 'none' }}
+      >
+        <AccessAlarmIcon />
+      </IconButton>
+    </Tooltip>
   );
 };
 

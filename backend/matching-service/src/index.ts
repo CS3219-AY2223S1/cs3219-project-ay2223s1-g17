@@ -4,7 +4,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 
 import './db';
-import { RoomModel, UserModel, WaitRoomModel } from './model';
+import { UserModel } from './model';
 import { registerMatchHandler } from './socketHandler/matchHandler';
 
 const app = express();
@@ -20,7 +20,8 @@ app.get('/', (_, res) => {
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
+    methods: ['GET', 'POST'],
   },
 });
 
@@ -34,18 +35,18 @@ const onConnection = async (socket: Socket) => {
 io.on('connection', onConnection);
 
 // for debugging
-setInterval(async () => {
-  const { count: numRooms } = await RoomModel.findAndCountAll({
-    logging: false,
-  });
-  const { count: numWaitRooms } = await WaitRoomModel.findAndCountAll({
-    logging: false,
-  });
-  const { count: numUsers } = await UserModel.findAndCountAll({
-    logging: false,
-  });
-  console.log({ numRooms, numUsers, numWaitRooms });
-}, 5000);
+// setInterval(async () => {
+//   const { count: numRooms } = await RoomModel.findAndCountAll({
+//     logging: false,
+//   });
+//   const { count: numWaitRooms } = await WaitRoomModel.findAndCountAll({
+//     logging: false,
+//   });
+//   const { count: numUsers } = await UserModel.findAndCountAll({
+//     logging: false,
+//   });
+//   console.log({ numRooms, numUsers, numWaitRooms });
+// }, 5000);
 
 const port = process.env.PORT || 8002;
 

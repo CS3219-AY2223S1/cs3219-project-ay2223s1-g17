@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { DIFFICULTY, LANGUAGE, TOPIC } from '../../../utils';
 import { QUESTIONS } from '../data';
+import { DIFFICULTY, LANGUAGE, TOPIC } from '../utils';
 import {
-  FormattedQuestionedDocument,
+  FormattedQuestionDocument,
   IQuestion,
   IQuestionModel,
   QuestionDocument,
@@ -73,6 +73,34 @@ const getQuestionsCount = async () => {
 };
 
 questionSchema.static(
+  'findNumberOfQuestionsByDifficulty',
+  /**
+   * Gets number of documents in Question collection by difficulty
+   *
+   * @returns An array of objects consisting of difficulty and number of questions
+   */
+  async function findNumberOfQuestionsByDifficulty() {
+    const count = await getQuestionsCount();
+
+    if (count === 0) throw new Error('No question found, seed questions');
+
+    const res: Record<string, number> = Object.fromEntries(
+      Object.values(DIFFICULTY).map((difficulty) => [difficulty, 0])
+    );
+
+    for (const difficulty of Object.values(DIFFICULTY)) {
+      const count = await Question.countDocuments({
+        difficulty: difficulty,
+      });
+
+      res[difficulty] = count;
+    }
+
+    return res;
+  }
+);
+
+questionSchema.static(
   'findQuestionsByDifficulty',
   /**
    * Attempts to find some number of Question(s) randomly based on difficulty specified
@@ -118,7 +146,7 @@ questionSchema.static(
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const question = await Question.findById(id);
+    const question = await Question.findById(id).lean();
 
     if (!question) throw new Error(`No question with id ${id} found`);
 
@@ -160,13 +188,17 @@ questionSchema.static(
 
 const formatQuestion = (
   question: QuestionDocument
-): FormattedQuestionedDocument => {
+): FormattedQuestionDocument => {
   const templatesMap = new Map<LANGUAGE, string>();
   question.templates.forEach((template) =>
     templatesMap.set(template.language, template.starterCode)
   );
   const templates = Object.fromEntries(templatesMap);
-  return { ...question, templates };
+
+  return {
+    ...question,
+    templates,
+  };
 };
 
 const Question = mongoose.model<IQuestion, IQuestionModel>(

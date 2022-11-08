@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { DIFFICULTY, errorHandler, successHandler } from '../../../utils';
+import { DIFFICULTY, errorHandler, successHandler } from '../utils';
 import Question from '../model';
 
 /**
@@ -61,6 +61,24 @@ export const getQuestions = async (_: Request, res: Response) => {
 export const getQuestionsCount = async (_: Request, res: Response) => {
   try {
     const count = await Question.findNumberOfQuestions();
+
+    successHandler(res, count);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+/**
+ * Gets number of questions grouped by difficulty
+ *
+ * @param res Outgoing HTTP response indicating success of counting questions
+ */
+export const getQuestionsCountByDifficulty = async (
+  _: Request,
+  res: Response
+) => {
+  try {
+    const count = await Question.findNumberOfQuestionsByDifficulty();
 
     successHandler(res, count);
   } catch (error) {

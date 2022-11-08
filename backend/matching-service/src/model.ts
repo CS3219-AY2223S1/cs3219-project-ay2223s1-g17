@@ -16,12 +16,19 @@ export const WaitRoomModel = sequelize.define('WaitRoom', {
     }),
     allowNull: false,
   },
+  language: {
+    type: DataTypes.ENUM({
+      values: ['PYTHON', 'JAVA', 'C++', 'JAVSCRIPT'],
+    }),
+    allowNull: false,
+  },
 });
 
 export interface WaitRoom {
   id: string;
   waitingSocketId: string;
   difficulty: DIFFICULTY;
+  language: LANGUAGE;
 }
 export interface Room {
   id: string;
@@ -50,19 +57,34 @@ export const UserModel = sequelize.define('User', {
     primaryKey: true,
     allowNull: false,
   },
-  isMatched: {
-    type: DataTypes.BOOLEAN,
+  status: {
+    type: DataTypes.ENUM({
+      values: ['IDLE', 'IN_QUEUE', 'IN_ROOM'],
+    }),
     allowNull: false,
+    defaultValue: 'IDLE',
   },
 });
 
 export interface User {
   socketId: string;
-  isMatched: boolean;
+  status: USER_STATUS;
 }
 
 export enum DIFFICULTY {
   EASY = 'EASY',
   MEDIUM = 'MEDIUM',
   HARD = 'HARD',
+}
+export enum USER_STATUS {
+  IDLE = 'IDLE',
+  IN_QUEUE = 'IN_QUEUE',
+  IN_ROOM = 'IN_ROOM',
+}
+
+export enum LANGUAGE {
+  PYTHON = 'PYTHON',
+  JAVA = 'JAVA',
+  CPP = 'C++',
+  JAVASCRIPT = 'JAVASCRIPT',
 }

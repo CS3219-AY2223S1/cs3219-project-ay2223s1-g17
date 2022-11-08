@@ -45,7 +45,7 @@ const LandingPage = () => {
             borderRadius: '12px',
             filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
           }}
-          onClick={() => router.push('/auth')}
+          onClick={() => router.push('/auth?mode=register')}
         >
           Sign Up
         </Button>

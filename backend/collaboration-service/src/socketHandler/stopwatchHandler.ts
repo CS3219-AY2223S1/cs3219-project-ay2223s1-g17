@@ -21,7 +21,6 @@ const stopwatches: Stopwatches = {};
 
 const handleTimer = (io: InputOutput, _: Socket, roomId: string) => {
   const timer = setInterval(() => {
-    console.log('tick');
     const stopwatch = stopwatches[roomId];
     const { interval, time, isActive, isPaused } = stopwatch;
 
@@ -58,6 +57,8 @@ const onTimerStart =
 
 const onTimerStop = (io: InputOutput, socket: Socket, roomId: string) => () => {
   const stopwatch = stopwatches[roomId];
+  if (!stopwatch) return;
+  
   stopwatch.isActive = false;
   io.to(roomId).emit('timerLoad');
 
