@@ -113,15 +113,19 @@ const Heatmap: FC<Props> = ({
                         dayCounter + 1
                       ).toLocaleDateString('en-sg', {
                         month: 'short',
-                        day: '2-digit',
+                        day: 'numeric',
                       });
-                      const dayLabel = `${completedQuestionsToday} submissions on ${dayString}`;
+                      const dayLabel = `${
+                        completedQuestionsToday || 'No'
+                      } submissions on ${dayString}`;
 
                       return (
                         <Tooltip
                           key={`${monthLabel}-${dayIndex}`}
                           title={dayLabel}
                           sx={{ cursor: 'pointer' }}
+                          placement="top"
+                          arrow
                         >
                           <Grid
                             item
