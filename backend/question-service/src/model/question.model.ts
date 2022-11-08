@@ -84,24 +84,19 @@ questionSchema.static(
 
     if (count === 0) throw new Error('No question found, seed questions');
 
-    const difficultyCountArray = await Promise.all(
-      Object.keys(DIFFICULTY).map(async (difficulty) => {
-        const difficultyCount = await Question.countDocuments({
-          difficulty: difficulty,
-        });
-
-        const tempObj = {
-          difficulty,
-          count: difficultyCount,
-        };
-
-        return tempObj;
-      })
+    const res: Record<string, number> = Object.fromEntries(
+      Object.values(DIFFICULTY).map((difficulty) => [difficulty, 0])
     );
 
-    console.log(`>>> ${JSON.stringify(difficultyCountArray)}`);
+    for (const difficulty of Object.values(DIFFICULTY)) {
+      const count = await Question.countDocuments({
+        difficulty: difficulty,
+      });
 
-    return difficultyCountArray;
+      res[difficulty] = count;
+    }
+
+    return res;
   }
 );
 
