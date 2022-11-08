@@ -16,7 +16,7 @@ const router = Router();
 router
   .route('/')
   .get((_: Request, res: Response) => {
-    res.status(200).send('<h1>History Service</h1>');
+    res.status(200).send('<h1>Hello world from History Service</h1>');
   })
   .post(addHistory);
 

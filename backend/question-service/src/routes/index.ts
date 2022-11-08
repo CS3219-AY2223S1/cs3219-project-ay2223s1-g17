@@ -11,7 +11,7 @@ import {
 const router = Router();
 
 router.get('/', (_: Request, res: Response) => {
-  res.status(200).send('<h1>Question Service</h1>');
+  res.status(200).send('<h1>Hello World from Question Service</h1>');
 });
 
 router.route('/difficulty/:difficulty').get(getQuestionByDifficulty);
