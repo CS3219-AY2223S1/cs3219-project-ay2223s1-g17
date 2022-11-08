@@ -16,12 +16,12 @@ import {
   INTERMEDIATE,
   SKILL,
 } from 'utils/enums';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import useAuth from 'contexts/AuthContext';
 
 const MatchMake = () => {
   const { refreshToken } = useAuth();
-  const { startMatch, isMatching } = useMatchingContext();
+  const { startMatch, isMatching } = useMatching();
   const theme = useTheme();
   const skills = [FUNDAMENTAL, INTERMEDIATE, ADVANCED];
 

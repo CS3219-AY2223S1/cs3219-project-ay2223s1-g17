@@ -1,10 +1,10 @@
 import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import TimeDisplay from './TimeDisplay';
 
 const MatchQueueTimer = () => {
-  const { count, stopQueuing } = useMatchingContext();
+  const { count, stopQueuing } = useMatching();
 
   return (
     <Stack flexDirection="row" alignItems="center">

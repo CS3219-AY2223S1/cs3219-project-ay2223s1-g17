@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography, useTheme } from '@mui/material';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import useAuth from 'contexts/AuthContext';
 import {
   Dispatch,
@@ -44,7 +44,7 @@ const ChatPanel: FC<Props> = ({
   readOnly,
   isLoading,
 }) => {
-  const { roomId } = useMatchingContext();
+  const { roomId } = useMatching();
   const { user } = useAuth();
   const theme = useTheme();
   const [socket, setSocket] = useState<Socket>();

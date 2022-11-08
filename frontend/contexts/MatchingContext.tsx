@@ -151,7 +151,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useMatchingContext = () => {
+export const useMatching = () => {
   return useContext(MatchingContext);
 };
 

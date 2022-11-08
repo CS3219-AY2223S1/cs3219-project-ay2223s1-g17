@@ -10,11 +10,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import useCollab from 'contexts/CollabContext';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import useStopwatch from 'contexts/CollabContext';
+import { useMatching } from 'contexts/MatchingContext';
 
 const Stopwatch = () => {
-  const { roomId } = useMatchingContext();
+  const { roomId } = useMatching();
   const {
     isActive,
     isPaused,
@@ -24,7 +24,7 @@ const Stopwatch = () => {
     handlePause,
     handleResume,
     handleStart,
-  } = useCollab();
+  } = useStopwatch();
 
   return isActive ? (
     <Stack

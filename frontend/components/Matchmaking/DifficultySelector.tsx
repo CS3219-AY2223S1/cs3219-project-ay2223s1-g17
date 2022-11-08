@@ -1,6 +1,6 @@
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { DIFFICULTY } from 'utils/enums';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import { FC } from 'react';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 
 const DifficultySelector: FC<Props> = ({ hideLabel, large }) => {
   const theme = useTheme();
-  const { isMatching, startMatch } = useMatchingContext();
+  const { isMatching, startMatch } = useMatching();
 
   return (
     <Stack flexDirection="row" columnGap={2} alignItems="center">

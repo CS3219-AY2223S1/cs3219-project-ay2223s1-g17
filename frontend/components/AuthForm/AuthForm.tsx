@@ -32,7 +32,7 @@ import { toast } from 'react-toastify';
 import { LANGUAGE } from 'utils/enums';
 import { handleErrorWithToast } from 'utils/helpers';
 import DeleteAccountPrompt from './DeleteAccountPrompt';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 
 const AuthForm = () => {
   const {
@@ -43,7 +43,7 @@ const AuthForm = () => {
     changePreferredLanguage,
     deleteAccount,
   } = useAuth();
-  const { isMatching } = useMatchingContext();
+  const { isMatching } = useMatching();
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

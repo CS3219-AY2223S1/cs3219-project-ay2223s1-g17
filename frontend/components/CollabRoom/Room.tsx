@@ -5,7 +5,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
-import { Question, useMatchingContext } from 'contexts/MatchingContext';
+import { Question, useMatching } from 'contexts/MatchingContext';
 import { LANGUAGE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
@@ -17,8 +17,8 @@ import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import { editor } from 'monaco-editor';
-import useCollab from 'contexts/CollabContext';
 import LoadingPage from 'components/LoadingPage/LoadingPage';
+import useStopwatch from 'contexts/CollabContext';
 
 export type View = {
   showQuestion: boolean;
@@ -43,13 +43,13 @@ const Room: FC<Props> = ({
   readOnlyEditorContent,
   isLoading,
 }) => {
-  const { roomId, endSession } = useMatchingContext();
-  const { handleStop } = useCollab();
+  const { roomId, endSession } = useMatching();
+  const { handleStop } = useStopwatch();
   const { user } = useAuth();
   const router = useRouter();
 
   const [socket, setSocket] = useState<Socket>();
-  const { questions } = useMatchingContext();
+  const { questions } = useMatching();
   const [questionNumber, setQuestionNumber] = useState(0);
   const [width, setWidth] = useState('33%');
   const [height, setHeight] = useState('33%');

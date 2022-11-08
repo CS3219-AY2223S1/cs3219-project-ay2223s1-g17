@@ -6,7 +6,7 @@ import { amber } from '@mui/material/colors';
 import LoadingWrapper from 'components/Loading/LoadingWrapper';
 import { LANGUAGE } from 'utils/enums';
 import { useRouter } from 'next/router';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 
 type Props = {
   username: string;
@@ -23,7 +23,7 @@ const Profile: FC<Props> = ({
   dailyStreak,
   isLoading,
 }) => {
-  const { isMatching } = useMatchingContext();
+  const { isMatching } = useMatching();
   const router = useRouter();
 
   return (

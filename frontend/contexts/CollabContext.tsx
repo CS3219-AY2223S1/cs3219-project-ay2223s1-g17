@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 
 type Time = {
   hours: number;
@@ -30,7 +30,7 @@ const initialTimer: Timer = {
   isPaused: false,
 };
 
-interface ICollabContext {
+interface IStopwatchContext {
   isActive: boolean;
   isPaused: boolean;
   isLoading: boolean;
@@ -41,7 +41,7 @@ interface ICollabContext {
   handleStart: () => void;
 }
 
-const CollabContext = createContext<ICollabContext>({
+const StopwatchContext = createContext<IStopwatchContext>({
   isActive: false,
   isPaused: false,
   isLoading: false,
@@ -52,8 +52,8 @@ const CollabContext = createContext<ICollabContext>({
   handleStart: () => {},
 });
 
-export const CollabProvider = ({ children }: { children: ReactNode }) => {
-  const { roomId } = useMatchingContext();
+export const StopwatchProvider = ({ children }: { children: ReactNode }) => {
+  const { roomId } = useMatching();
 
   const [socket, setSocket] = useState<Socket>();
   const [timer, setTimer] = useState<Timer>(initialTimer);
@@ -128,14 +128,14 @@ export const CollabProvider = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <CollabContext.Provider value={memoedValue}>
+    <StopwatchContext.Provider value={memoedValue}>
       {children}
-    </CollabContext.Provider>
+    </StopwatchContext.Provider>
   );
 };
 
-const useCollab = () => {
-  return useContext(CollabContext);
+const useStopwatch = () => {
+  return useContext(StopwatchContext);
 };
 
-export default useCollab;
+export default useStopwatch;
