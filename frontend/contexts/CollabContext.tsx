@@ -70,13 +70,11 @@ export const StopwatchProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (!roomId) return;
-    console.log('ue: ', roomId);
     sock.auth = { roomId };
     sock.connect();
     setSocket(sock);
 
     sock.on('timerTick', (newTimer: Timer) => {
-      console.log('tick');
       setTimer(newTimer);
     });
 
