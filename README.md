@@ -1,16 +1,32 @@
-# CS3219-AY22-23-Project-Skeleton
+# Getting Started
 
-This is a template repository for CS3219 project.
+## Prerequisites
 
-## User Service
+1. Install [Docker](https://www.docker.com/)
 
-1. Rename `.env.sample` file to `.env`.
-2. Create a Cloud DB URL using Mongo Atlas.
-3. Enter the DB URL created as `DB_CLOUD_URI` in `.env` file.
-4. Install npm packages using `npm i`.
-5. Run User Service using `npm run dev`.
+## Setup for Local Development
 
-## Frontend
+1. Clone git repository
 
-1. Install npm packages using `npm i`.
-2. Run Frontend using `npm start`.
+Open your terminal and clone the frontend repository into a directory of your choice.
+```
+cd <path to directory of choice>
+git clone https://github.com/CS3219-AY2223S1/cs3219-project-ay2223s1-g17.git
+```
+
+2. Build and run local docker environment
+
+Start up your docker desktop application and ensure that docker daemon is up and running. 
+Then, use this command to boot up the local development environment:
+```
+docker compose up --build 
+```
+
+Subsequently, you can boot up the local development environment without the build flag:
+```
+docker compose up
+```
+
+3. Access the application
+
+You can now access the frontend of the application at `http://localhost:3000`
