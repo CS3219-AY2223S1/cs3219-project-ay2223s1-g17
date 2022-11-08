@@ -4,6 +4,7 @@ import {
   getQuestionByDifficulty,
   getQuestions,
   getQuestionsCount,
+  getQuestionsCountByDifficulty,
   loadQuestions,
 } from '../controller';
 
@@ -16,6 +17,7 @@ router.get('/', (_: Request, res: Response) => {
 router.route('/difficulty/:difficulty').get(getQuestionByDifficulty);
 router.route('/all').get(getQuestions);
 router.route('/count').get(getQuestionsCount);
+router.route('/count/difficulty').get(getQuestionsCountByDifficulty);
 router.route('/:id').get(getQuestion);
 router.route('/seed').post(loadQuestions);
 

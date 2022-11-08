@@ -23,6 +23,11 @@ interface ITemplate {
   starterCode: string;
 }
 
+// export interface IQuestionDifficulty {
+//   difficulty: DIFFICULTY;
+//   count: number;
+// }
+
 export type QuestionDocument = LeanDocument<IQuestion> &
   IQuestion & { _id: Types.ObjectId } & IQuestionMethods;
 
@@ -40,5 +45,6 @@ export interface IQuestionModel extends Model<IQuestion, {}, IQuestionMethods> {
   findQuestionById(id: string): Promise<QuestionDocument>;
   findAllQuestions(): Promise<QuestionDocument[]>;
   findNumberOfQuestions(): Promise<Number>;
+  findNumberOfQuestionsByDifficulty(): Promise<Record<DIFFICULTY, number>>;
   seedQuestions(): Promise<QuestionDocument[]>;
 }

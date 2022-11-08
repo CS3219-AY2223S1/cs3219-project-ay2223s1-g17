@@ -1,9 +1,9 @@
 import { Statistics } from 'components/Hero/Hero';
-import { SERVICE, HTTP_METHOD } from 'utils/enums';
+import { SERVICE, HTTP_METHOD, DIFFICULTY } from 'utils/enums';
 import { apiCall } from 'utils/helpers';
-import { useQuery } from '@tanstack/react-query';
 import { History } from 'components/Hero/CompletionPanel/CompletionPanel';
 import { reactQueryConfig } from './config';
+import { useQuery } from '@tanstack/react-query';
 
 export const useHistory = (userId: string) => {
   const queryKey = ['history'];
@@ -28,6 +28,32 @@ export const useHistory = (userId: string) => {
     history: data,
     isLoadingHistory: isLoading,
     isFetchingHistory: isFetching,
+  };
+};
+
+export const useQuestionsCount = () => {
+  const queryKey = ['questions'];
+
+  const queryFn = async (): Promise<Record<DIFFICULTY, number>> => {
+    const questionsCount = await apiCall({
+      service: SERVICE.QUESTION,
+      method: HTTP_METHOD.GET,
+      path: '/count/difficulty',
+    });
+
+    return questionsCount;
+  };
+
+  const { data, isLoading, isFetching } = useQuery(
+    queryKey,
+    () => queryFn(),
+    reactQueryConfig
+  );
+
+  return {
+    questionsCount: data,
+    isLoadingQuestionsCount: isLoading,
+    isFetchingQuestionsCount: isFetching,
   };
 };
 

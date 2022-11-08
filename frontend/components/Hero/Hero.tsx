@@ -1,9 +1,9 @@
 import { Stack } from '@mui/material/';
+import { useHistory, useQuestionsCount, useStatistics } from 'api/hero';
 import { FC } from 'react';
-import { useHistory, useStatistics } from 'api/hero';
-import ProfilePanel from './ProfilePanel';
-import CompletionPanel from './CompletionPanel';
 import { LANGUAGE } from 'utils/enums';
+import CompletionPanel from './CompletionPanel';
+import ProfilePanel from './ProfilePanel';
 
 export type Statistics = {
   completedQuestions: string[];
@@ -31,10 +31,15 @@ const Hero: FC<Props> = ({
   const { history, isLoadingHistory, isFetchingHistory } = useHistory(userId);
   const { statistics, isLoadingStatistics, isFetchingStatistics } =
     useStatistics(userId);
+  const { questionsCount, isLoadingQuestionsCount, isFetchingQuestionsCount } =
+    useQuestionsCount();
 
   const showHistorySkeleton = isLoadingHistory || isFetchingHistory;
   const showStatisticsSkeleton = isLoadingStatistics || isFetchingStatistics;
-  const isLoading = showHistorySkeleton || showStatisticsSkeleton;
+  const showQuestionsCountSkeleton =
+    isLoadingQuestionsCount || isFetchingQuestionsCount;
+  const isLoading =
+    showHistorySkeleton || showStatisticsSkeleton || showQuestionsCountSkeleton;
 
   const profilePanelProps = {
     username,
@@ -47,6 +52,7 @@ const Hero: FC<Props> = ({
     statistics,
     history,
     isLoading,
+    questionsCount,
   };
 
   return (

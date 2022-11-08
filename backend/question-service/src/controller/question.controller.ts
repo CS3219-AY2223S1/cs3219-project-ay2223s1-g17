@@ -69,6 +69,24 @@ export const getQuestionsCount = async (_: Request, res: Response) => {
 };
 
 /**
+ * Gets number of questions grouped by difficulty
+ *
+ * @param res Outgoing HTTP response indicating success of counting questions
+ */
+export const getQuestionsCountByDifficulty = async (
+  _: Request,
+  res: Response
+) => {
+  try {
+    const count = await Question.findNumberOfQuestionsByDifficulty();
+
+    successHandler(res, count);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+/**
  * Seeds preloaded questions
  *
  * @param res Outgoing HTTP response indicating success of the seed
