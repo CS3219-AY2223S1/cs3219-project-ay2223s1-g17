@@ -7,7 +7,7 @@ import {
   MenuItem,
   useTheme,
 } from '@mui/material';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import React, { FC } from 'react';
 
 type Props = {
@@ -25,7 +25,7 @@ const AccountMenu: FC<Props> = ({
   handleProfile,
   handleLogout,
 }) => {
-  const { isMatching } = useMatchingContext();
+  const { isMatching } = useMatching();
   const theme = useTheme();
   return (
     <Menu

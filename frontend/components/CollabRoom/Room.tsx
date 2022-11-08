@@ -5,7 +5,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 
 // code
 import CodeEditor from 'components/CollabRoom/CodeEditor';
-import { Question, useMatchingContext } from 'contexts/MatchingContext';
+import { Question, useMatching } from 'contexts/MatchingContext';
 import { LANGUAGE, VIEW } from 'utils/enums';
 import RoomOptions from './RoomOptions';
 import { NAVBAR_HEIGHT_PX, RESIZER_HEIGHT_WIDTH_PX } from 'utils/constants';
@@ -17,6 +17,8 @@ import { toast } from 'react-toastify';
 import { io, Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 import { editor } from 'monaco-editor';
+import LoadingPage from 'components/LoadingPage/LoadingPage';
+import useStopwatch from 'contexts/CollabContext';
 
 export type View = {
   showQuestion: boolean;
@@ -41,12 +43,13 @@ const Room: FC<Props> = ({
   readOnlyEditorContent,
   isLoading,
 }) => {
-  const { roomId, leaveRoom } = useMatchingContext();
+  const { roomId, endSession } = useMatching();
+  const { handleStop } = useStopwatch();
   const { user } = useAuth();
   const router = useRouter();
 
   const [socket, setSocket] = useState<Socket>();
-  const { questions } = useMatchingContext();
+  const { questions } = useMatching();
   const [questionNumber, setQuestionNumber] = useState(0);
   const [width, setWidth] = useState('33%');
   const [height, setHeight] = useState('33%');
@@ -65,6 +68,7 @@ const Room: FC<Props> = ({
   );
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const [isEnding, setIsEnding] = useState(false);
 
   const showQuestion = view.includes(VIEW.QUESTION);
   const showEditor = view.includes(VIEW.EDITOR);
@@ -207,8 +211,15 @@ const Room: FC<Props> = ({
       resetConfirmations();
       setQuestionNumber((prev) => prev + 1);
       setChats([]);
+      handleStop();
 
-      if (questionNumber >= questions.length - 1) leaveRoom();
+      if (questionNumber >= questions.length - 1) {
+        setIsEnding(true);
+        setTimeout(() => {
+          endSession();
+          setIsEnding(false);
+        }, 1500);
+      }
     });
 
     sock.on('error', (error) => {
@@ -321,6 +332,8 @@ const Room: FC<Props> = ({
       horizontalResizer.removeEventListener('mousedown', mouseDownYHandler);
     };
   }, []);
+
+  if (isEnding) return <LoadingPage />;
 
   return (
     <Box sx={{ cursor }}>

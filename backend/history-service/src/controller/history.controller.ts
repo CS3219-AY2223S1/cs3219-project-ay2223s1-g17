@@ -2,13 +2,16 @@ import { Request, Response } from 'express';
 import {
   DIFFICULTY,
   errorHandler,
+  HttpStatusCode,
   LANGUAGE,
+  PeerPrepError,
   successHandler,
   TOPIC,
 } from '../utils';
 import History from '../model/history.model';
 import { IHistory } from '../model/history.types';
 import Statistics from '../model/statistics.model';
+import axios from 'axios';
 
 /**
  * Gets a History record based on its ID
@@ -23,6 +26,24 @@ export const getHistoryById = async (req: Request, res: Response) => {
     const history = await History.findHistoryById(id);
 
     successHandler(res, history);
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+/**
+ * Gets a History record based on its ID along with question data
+ *
+ * @param req Incoming HTTP request with history ID
+ * @param res Outgoing HTTP response indicating success of complete history record retrieval
+ */
+export const getCompleteHistoryById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const completeHistory = await History.findCompleteHistoryById(id);
+
+    successHandler(res, completeHistory);
   } catch (error) {
     errorHandler(res, error);
   }

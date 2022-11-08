@@ -6,7 +6,7 @@ import { io, Socket } from 'socket.io-client';
 import { Box } from '@mui/material';
 
 // code
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import { LANGUAGE } from 'utils/enums';
 import LoadingWrapper from 'components/Loading/LoadingWrapper';
 
@@ -25,7 +25,7 @@ const CodeEditor = ({
   readOnly,
   isLoading,
 }: Props) => {
-  const { roomId } = useMatchingContext();
+  const { roomId } = useMatching();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
   const [options] = useState<editor.IStandaloneEditorConstructionOptions>({

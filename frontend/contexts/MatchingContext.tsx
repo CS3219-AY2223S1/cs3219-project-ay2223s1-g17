@@ -30,6 +30,7 @@ const MatchingContext = createContext<IMatchingContextValue>({
   startMatch: emptyCallBack,
   leaveRoom: emptyCallBack,
   stopQueuing: emptyCallBack,
+  endSession: emptyCallBack,
   isMatching: false,
   questions: [{}],
 });
@@ -79,10 +80,9 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     });
 
     socket.on('matchLeave', () => {
-      setRoomId(undefined);
-      setQuestions([]);
-      router.push('/');
-      toast.warn('The other user has left!');
+      reset(() => {
+        toast.warn('The other user has left!');
+      });
     });
 
     return () => {
@@ -104,11 +104,24 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     setCount(30);
   };
 
-  const leaveRoom = () => {
-    socket?.emit('matchLeave');
+  const reset = (callback: () => void) => {
     setRoomId(undefined);
     setQuestions([]);
     router.push('/');
+    callback();
+  };
+
+  const endSession = () => {
+    socket?.emit('matchEndSession', roomId);
+    reset(() => {
+      toast.success('The coding session has successfully ended.');
+    });
+  };
+
+  const leaveRoom = () => {
+    reset(() => {
+      socket?.emit('matchLeave');
+    });
   };
 
   const stopQueuing = () => {
@@ -121,6 +134,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       startMatch,
       count,
       leaveRoom,
+      endSession,
       isMatching,
       roomId,
       stopQueuing,
@@ -137,7 +151,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useMatchingContext = () => {
+export const useMatching = () => {
   return useContext(MatchingContext);
 };
 
@@ -146,6 +160,7 @@ interface IMatchingContextValue {
   count?: number;
   isMatching: boolean;
   leaveRoom: (returnHome?: boolean) => void;
+  endSession: () => void;
   stopQueuing: () => void;
   roomId?: number;
   questions: Question[];

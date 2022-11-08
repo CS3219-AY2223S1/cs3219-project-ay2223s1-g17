@@ -55,6 +55,25 @@ const handleLeaveRoom = async (io: InputOutput, socket: Socket) => {
   });
 };
 
+const onSessionEnd = async (socket: Socket, roomId: string) => {
+  // leave socket room and update database
+  socket.leave(roomId);
+  await UserModel.update(
+    { status: USER_STATUS.IDLE },
+    {
+      where: {
+        socketId: socket.id,
+      },
+    }
+  );
+
+  await RoomModel.destroy({
+    where: {
+      id: roomId,
+    },
+  });
+};
+
 const onDisconnect = async (io: InputOutput, socket: Socket) => {
   const user = (await UserModel.findByPk(socket.id)) as unknown as User;
 
@@ -89,7 +108,10 @@ const onStopQueuing = async (socket: Socket) => {
 
 export const registerMatchHandler = (io: InputOutput, socket: Socket) => {
   socket.on('matchStart', (data) => onMatchStart(socket, data));
+  // abrupt departure
   socket.on('matchLeave', () => handleLeaveRoom(io, socket));
-  socket.on('disconnect', () => onDisconnect(io, socket));
+  // end of session
+  socket.on('matchEndSession', (data) => onSessionEnd(socket, data));
   socket.on('stopQueuing', () => onStopQueuing(socket));
+  socket.on('disconnect', () => onDisconnect(io, socket));
 };

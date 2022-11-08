@@ -8,7 +8,7 @@ import { Handshake, Login } from '@mui/icons-material';
 import { IconButton, Stack } from '@mui/material';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import Matchmaking from 'components/Matchmaking';
-import { useMatchingContext } from 'contexts/MatchingContext';
+import { useMatching } from 'contexts/MatchingContext';
 import LeaveRoomPrompt from './LeaveRoomPrompt';
 import AccountMenu from './AccountMenu';
 import NavbarOption from './NavbarOption';
@@ -16,7 +16,7 @@ import Stopwatch from 'components/Stopwatch';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { isMatching, roomId, leaveRoom } = useMatchingContext();
+  const { isMatching, roomId, leaveRoom } = useMatching();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);

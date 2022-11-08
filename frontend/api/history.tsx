@@ -15,19 +15,13 @@ export const useCodingSession = (id?: string) => {
   const queryFn = async (id?: string): Promise<CompleteHistory | undefined> => {
     if (!id) return;
 
-    const history = await apiCall({
+    const completeHistory = await apiCall({
       service: SERVICE.HISTORY,
       method: HTTP_METHOD.GET,
-      path: `/${id}`,
+      path: `/complete/${id}`,
     });
 
-    const question = await apiCall({
-      service: SERVICE.QUESTION,
-      method: HTTP_METHOD.GET,
-      path: `/${history.question.id}`,
-    });
-
-    return { ...history, question };
+    return completeHistory;
   };
 
   return useQuery(queryKey, () => queryFn(id), reactQueryConfig);
