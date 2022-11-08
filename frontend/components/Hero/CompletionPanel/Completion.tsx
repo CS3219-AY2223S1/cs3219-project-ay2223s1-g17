@@ -9,40 +9,48 @@ import LoadingWrapper from 'components/Loading/LoadingWrapper';
 import React, { FC } from 'react';
 import { DIFFICULTY } from 'utils/enums';
 
-type Props = CompletionCircleProps & CompletionByDifficultyProps;
+type Props = Omit<
+  CompletionCircleProps & CompletionByDifficultyProps,
+  'totalNumberQuestions'
+>;
 
 type CompletionCircleProps = {
   numCompletedQuestions?: number;
   isLoading: boolean;
+  totalNumberQuestions: number;
 };
 
 type CompletionByDifficultyProps = {
   completedQuestionsByDifficulty?: Record<string, number>;
   isLoading: boolean;
+  questionsCount?: QuestionsCountProps;
+  totalNumberQuestions: number;
 };
 
-// TODO: fetch this instead?
-const TOTAL_NUM_QUESTIONS = 30;
-const TOTAL_NUM_QUESTIONS_BY_DIFFICULTY: Record<DIFFICULTY, number> = {
-  EASY: 10,
-  MEDIUM: 10,
-  HARD: 10,
-};
+type QuestionsCountProps = Record<DIFFICULTY, number>;
 
 const Completion: FC<Props> = ({
   numCompletedQuestions,
   completedQuestionsByDifficulty,
   isLoading,
+  questionsCount,
 }) => {
+  const TOTAL_NUM_QUESTIONS = questionsCount
+    ? Object.values(questionsCount).reduce((a, b) => a + b, 0)
+    : 0;
+
   return (
     <Stack flexDirection="row" width="100%" columnGap={2} sx={{ mx: 'auto' }}>
       <CompletionCircle
         numCompletedQuestions={numCompletedQuestions}
         isLoading={isLoading}
+        totalNumberQuestions={TOTAL_NUM_QUESTIONS}
       />
       <CompletionByDifficulty
         completedQuestionsByDifficulty={completedQuestionsByDifficulty}
         isLoading={isLoading}
+        questionsCount={questionsCount}
+        totalNumberQuestions={TOTAL_NUM_QUESTIONS}
       />
     </Stack>
   );
@@ -51,10 +59,11 @@ const Completion: FC<Props> = ({
 const CompletionCircle: FC<CompletionCircleProps> = ({
   numCompletedQuestions,
   isLoading,
+  totalNumberQuestions,
 }) => {
   const theme = useTheme();
   const completionPercentage =
-    ((numCompletedQuestions ?? 0) / TOTAL_NUM_QUESTIONS) * 100;
+    ((numCompletedQuestions ?? 0) / totalNumberQuestions) * 100;
 
   return (
     <LoadingWrapper isLoading={isLoading} variant="circular">
@@ -110,6 +119,7 @@ const CompletionCircle: FC<CompletionCircleProps> = ({
 const CompletionByDifficulty: FC<CompletionByDifficultyProps> = ({
   completedQuestionsByDifficulty,
   isLoading,
+  questionsCount,
 }) => {
   const theme = useTheme();
   return (
@@ -144,7 +154,7 @@ const CompletionByDifficulty: FC<CompletionByDifficultyProps> = ({
                     fontStyle="italic"
                     fontWeight="light"
                   >
-                    /{TOTAL_NUM_QUESTIONS_BY_DIFFICULTY[difficulty]}
+                    /{questionsCount?.[difficulty] ?? 0}
                   </Typography>
                 </Stack>
               </Stack>
@@ -152,7 +162,7 @@ const CompletionByDifficulty: FC<CompletionByDifficultyProps> = ({
                 variant="determinate"
                 value={
                   (completedQuestionsOfDifficulty /
-                    TOTAL_NUM_QUESTIONS_BY_DIFFICULTY[difficulty]) *
+                    (questionsCount?.[difficulty] ?? 0)) *
                   100
                 }
                 sx={{
