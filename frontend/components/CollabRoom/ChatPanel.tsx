@@ -110,7 +110,7 @@ const ChatPanel: FC<Props> = ({
         justifyContent="space-between"
       >
         <Stack
-          id="chat-box"
+          id="chat-panel"
           sx={{
             color: 'black',
             wordBreak: 'break-word',
